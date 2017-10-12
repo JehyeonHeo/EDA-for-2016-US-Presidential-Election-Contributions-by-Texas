@@ -24,6 +24,12 @@ a margin line to help you keep track of this guideline!
 # want it to. This will clean up the flow of your report.
 
 library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+library(GGally)
+library(scales)
+library(memisc)
+library(reshape2)
 ```
 
 ```{r echo=FALSE, Load_the_Data}
