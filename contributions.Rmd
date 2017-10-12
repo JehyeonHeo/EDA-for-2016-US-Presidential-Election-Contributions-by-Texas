@@ -45,6 +45,12 @@ ctrbs <- ctrbs[,-19]
 colnames(ctrbs) <- ctrbs_headers
 
 cands <- read.csv('candidates')
+
+ctrbs <- merge(x = ctrbs, 
+               y = cands,
+               by.x = 'cand_nm',
+               by.y = 'X',
+               all.x = TRUE)
 ```
 
 > **Tip**: Before you create any plots, it is a good idea to provide a short
