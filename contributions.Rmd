@@ -67,7 +67,11 @@ There should be multiple code chunks and text sections; the first one below is
 just to help you get started.
 
 ```{r echo=FALSE, Univariate_Plots}
+dim(ctrbs)
 
+str(ctrbs)
+
+summary(ctrbs)
 ```
 
 > **Tip**: Make sure that you leave a blank line between the start / end of
