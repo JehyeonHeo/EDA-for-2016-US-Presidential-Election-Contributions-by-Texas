@@ -28,7 +28,8 @@ library(ggplot2)
 
 ```{r echo=FALSE, Load_the_Data}
 # Load the Data
-
+ctrbs <- read.csv('ctrbsTX.csv',
+                  row.names = NULL)
 ```
 
 > **Tip**: Before you create any plots, it is a good idea to provide a short
