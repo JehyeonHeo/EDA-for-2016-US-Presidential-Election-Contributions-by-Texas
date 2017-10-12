@@ -43,6 +43,8 @@ ctrbs_headers <- colnames(ctrbs)[-1]
 ctrbs <- ctrbs[,-19]
 
 colnames(ctrbs) <- ctrbs_headers
+
+cands <- read.csv('candidates')
 ```
 
 > **Tip**: Before you create any plots, it is a good idea to provide a short
