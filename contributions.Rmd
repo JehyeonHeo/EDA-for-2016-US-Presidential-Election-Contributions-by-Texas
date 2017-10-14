@@ -109,9 +109,18 @@ summary(cand)
  
 ```{r echo=FALSE, Univariate_Plots}
 
+Sys.setlocale("LC_TIME", "C")
+
+## Sys.setlocale("LC_TIME", lct)
+
+Data$contb_receipt_dt <- as.Date(
+  Data$contb_receipt_dt, '%d-%b-%y'
+)
+
+str(Data$contb_receipt_dt)
 ```
 
-
+ contb_receipt_dt types of values are changed to date.
 > **Tip**: Make sure that you leave a blank line between the start / end of
 each code block and the end / start of your Markdown text so that it is
 formatted nicely in the knitted text. Note as well that text on consecutive
