@@ -129,7 +129,7 @@ str(Data$contb_receipt_dt)
 ```{r echo=FALSE, Univariate_Plots}
 
 # First, I'm going to show the distribution of the count of contributions for each candidates.
-name_counts <- as.data.frame(sort(table(Data$cand_nm, dnn = list('name')),
+name_counts <- as.data.frame(sort(table(Data$cand_nm, dnn = 'name'),
                                   decreasing = T),
                              responseName = 'count')
 
@@ -152,6 +152,30 @@ ggplot(aes(x = name, y = count/sum(count)),
 
   Clinton got the most number of contributions. After her, Cruz, Sanders, Trump, Carson, etc. follow. When change the counts to percentages, Clinton got about 38% and Cruz, Sanders, Trump and Carson followed by about 25%, 15%, 14%, 5% each.
 
+```{r echo=FALSE, Univariate_Plots}
+
+# I'm going to show the distribution of the count of contributers in each cities in Texas.
+
+# Get count of contributions by cities.
+cities_counts <- as.data.frame(sort(table(Data$contbr_city, dnn = 'name'),
+                                    decreasing = T),
+                               responseName = 'count')
+
+# Show the number of cities.
+length(cities_counts$name)
+
+# Show the counts of top10.
+ggplot(aes(x = name, y = count),
+       data = cities_counts[1:10, ]) +
+  geom_bar(stat = 'identity') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+ There are 2252 city names in the data that I showed top 10 result.
+ The top 10 cities of Texas by population are Houston, San Antonio, Dallas, Austin, Fort Worth, El paso, Arlington, Corpus Christi, Plano and Laredo ordered by rank. But when I see the counts by top 10 count of contributers' cities, the rank is a little different from the former rank. San Antonio changed the rank with Austin. And Corpus Christi and Laredo didn't appear at top 10 count, while they are inclued in populated top 10.
+ I got counts of contributions by each cities. This makes me wonder whether there are some contributers who contributed more than once. If if is true, it would be worth trying to get the distribution of the cities by unique contributers, not by count. 
+ 
 > **Tip**: Make sure that you leave a blank line between the start / end of
 each code block and the end / start of your Markdown text so that it is
 formatted nicely in the knitted text. Note as well that text on consecutive
