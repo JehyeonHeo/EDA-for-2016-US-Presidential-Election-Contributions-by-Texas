@@ -69,6 +69,13 @@ quoted text with that general information!
  
  I got the financial data from [FEC site](http://classic.fec.gov/disclosurep/pnational.do). And I also used the data about candidates. It has gender, party, height and age information of each candidates. I made the data by searching the internet.
  
+ Before I enter into analysis, I'm going to introduce the questions that I got about the data.
+ 1. How was the distribution of the contributions? 
+ 2. How did the sum of distributions differ by parties or dates or candidates, etc?
+ 3. Which contributer contributed the maximum amount? And who contributed most often?
+ 
+ I'm sure that I'll get more questions as I explore the datas. I'll show you which questions I get when I explore the data and show the results of the exploration.
+ 
 # Univariate Plots Section
 
 > **Tip**: In this section, you should perform some preliminary exploration of
