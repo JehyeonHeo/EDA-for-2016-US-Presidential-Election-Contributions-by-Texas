@@ -90,13 +90,27 @@ just to help you get started.
 # Get the number of observations and columns.
 dim(Data)
 
-# Get the structure of the data.
+# Show the structure of the data.
 str(Data)
 
-# Get the summary of the data.
+# Show the distributions of the data by summary.
 summary(Data)
 
+# Get the number of candidates and columns.
+length(unique(Data$cand_nm))
+
+# Show the distributions of the candidates information by summary.
+summary(cand)
+
 ```
+
+ Merged data has about 550,000 observations and 22 variables.
+ When I see the structure of the data, I found that the type of contb_receipt_dt should be date, not string. I'm going to change the type.
+ 
+```{r echo=FALSE, Univariate_Plots}
+
+```
+
 
 > **Tip**: Make sure that you leave a blank line between the start / end of
 each code block and the end / start of your Markdown text so that it is
