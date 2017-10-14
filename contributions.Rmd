@@ -99,12 +99,14 @@ summary(Data)
 # Get the number of candidates and columns.
 length(unique(Data$cand_nm))
 
+# Show whether the unique values of the candidates' names are all equal to the cand's X values.
+all(unique(Data$cand_nm) == cand$X)
+
 # Show the distributions of the candidates information by summary.
 summary(cand)
-
 ```
 
- Merged data has about 550,000 observations and 22 variables.
+ Merged data has about 550,000 observations and 22 variables. And there are 25 candidates' information in the data. The values of the candidates' names are same for Data and cand that that I could show the information about the candidates in Data by using the summary function to cand.
  When I see the structure of the data, I found that the type of contb_receipt_dt should be date, not string. I'm going to change the type.
  
 ```{r echo=FALSE, Univariate_Plots}
@@ -121,6 +123,7 @@ str(Data$contb_receipt_dt)
 ```
 
  contb_receipt_dt types of values are changed to date.
+
 > **Tip**: Make sure that you leave a blank line between the start / end of
 each code block and the end / start of your Markdown text so that it is
 formatted nicely in the knitted text. Note as well that text on consecutive
