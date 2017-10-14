@@ -63,7 +63,12 @@ Data <- merge(x = Data,
 introduction into the dataset that you are planning to explore. Replace this
 quoted text with that general information!
 
-
+ In 2016, there was presidential election in United States. At the result of it, Donald Trump became the 45th president of US. He gave sensational impact to Repulican party and became the nominee of it. His biggest rival was Hillary Clinton, Democratic party nominee. Lots of people forecasted that Hillary Clinton would win. But even if she got more votes than Trump in the election, she lost.
+ 
+ In this document, I'm going to explore about financial contributions in Texas to presidential campaigns of 2016 US election. I chose Texas because I was interested in the state.
+ 
+ I got the financial data from [FEC site](http://classic.fec.gov/disclosurep/pnational.do). And I also used the data about candidates. It has gender, party, height and age information of each candidates. I made the data by searching the internet.
+ 
 # Univariate Plots Section
 
 > **Tip**: In this section, you should perform some preliminary exploration of
