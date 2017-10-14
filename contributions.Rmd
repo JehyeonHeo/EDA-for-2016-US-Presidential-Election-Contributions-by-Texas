@@ -33,19 +33,25 @@ library(reshape2)
 ```
 
 ```{r echo=FALSE, Load_the_Data}
-# Load the Data
+
+# Load the main data.
 ctrbs <- read.csv('ctrbsTX.csv',
                   row.names = NULL,
                   header = TRUE)
 
+# Get header names without 'row.names'.
 ctrbs_headers <- colnames(ctrbs)[-1]
 
+# In the data, remove the last column which is all NAs.
 ctrbs <- ctrbs[,-19]
 
+# Give the data right header names for each columns.
 colnames(ctrbs) <- ctrbs_headers
 
-cands <- read.csv('candidates')
+# Load the data about candidates.
+cands <- read.csv('candidates.csv')
 
+# Merge the 'data' and 'cand' by left join.
 ctrbs <- merge(x = ctrbs, 
                y = cands,
                by.x = 'cand_nm',
@@ -57,6 +63,7 @@ ctrbs <- merge(x = ctrbs,
 introduction into the dataset that you are planning to explore. Replace this
 quoted text with that general information!
 
+
 # Univariate Plots Section
 
 > **Tip**: In this section, you should perform some preliminary exploration of
@@ -67,11 +74,16 @@ There should be multiple code chunks and text sections; the first one below is
 just to help you get started.
 
 ```{r echo=FALSE, Univariate_Plots}
+
+# Get the number of observations and columns.
 dim(ctrbs)
 
+# Get the structure of the data.
 str(ctrbs)
 
+# Get the summary of the data.
 summary(ctrbs)
+
 ```
 
 > **Tip**: Make sure that you leave a blank line between the start / end of
