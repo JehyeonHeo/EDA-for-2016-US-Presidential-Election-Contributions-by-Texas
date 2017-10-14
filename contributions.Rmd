@@ -35,28 +35,28 @@ library(reshape2)
 ```{r echo=FALSE, Load_the_Data}
 
 # Load the main data.
-ctrbs <- read.csv('ctrbsTX.csv',
+Data <- read.csv('ctrbsTX.csv',
                   row.names = NULL,
                   header = TRUE)
 
 # Get header names without 'row.names'.
-ctrbs_headers <- colnames(ctrbs)[-1]
+data_headers <- colnames(Data)[-1]
 
 # In the data, remove the last column which is all NAs.
-ctrbs <- ctrbs[,-19]
+Data <- Data[,-19]
 
 # Give the data right header names for each columns.
-colnames(ctrbs) <- ctrbs_headers
+colnames(Data) <- data_headers
 
 # Load the data about candidates.
-cands <- read.csv('candidates.csv')
+cand <- read.csv('candidates.csv')
 
-# Merge the 'data' and 'cand' by left join.
-ctrbs <- merge(x = ctrbs, 
-               y = cands,
-               by.x = 'cand_nm',
-               by.y = 'X',
-               all.x = TRUE)
+# Merge the 'Data' and 'cand' by left join.
+Data <- merge(x = Data, 
+              y = cand,
+              by.x = 'cand_nm',
+              by.y = 'X',
+              all.x = TRUE)
 ```
 
 > **Tip**: Before you create any plots, it is a good idea to provide a short
@@ -76,13 +76,13 @@ just to help you get started.
 ```{r echo=FALSE, Univariate_Plots}
 
 # Get the number of observations and columns.
-dim(ctrbs)
+dim(Data)
 
 # Get the structure of the data.
-str(ctrbs)
+str(Data)
 
 # Get the summary of the data.
-summary(ctrbs)
+summary(Data)
 
 ```
 
