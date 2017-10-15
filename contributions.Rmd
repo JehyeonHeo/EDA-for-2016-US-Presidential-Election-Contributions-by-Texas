@@ -71,8 +71,9 @@ quoted text with that general information!
  
  Before I enter into analysis, I'm going to introduce the questions that I got about the data.
  1. How was the distribution of the contributions? 
- 2. How did the sum of distributions differ by parties or dates or candidates, etc?
- 3. Which contributer contributed the maximum amount? And who contributed most often?
+ 2. How did the sum of contributions differ by parties or dates or candidates, etc?
+ 3. I want to know the results of above questions by comparing Hillary and Trump. And also for Republican party and Democratic party.
+ 4. Which contributer contributed the maximum amount? And who contributed most often?
  
  I'm sure that I'll get more questions as I explore the datas. I'll show you which questions I get when I explore the data and show the results of the exploration.
  
