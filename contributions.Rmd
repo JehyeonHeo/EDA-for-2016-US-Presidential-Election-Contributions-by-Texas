@@ -85,7 +85,7 @@ forget to add a comment after each plot or closely-related group of plots!
 There should be multiple code chunks and text sections; the first one below is
 just to help you get started.
 
-```{r echo=FALSE, Univariate_Plots}
+```{r echo=FALSE, Basic_Exploration}
 
 # Get the number of observations and columns.
 dim(Data)
@@ -109,11 +109,9 @@ summary(cand)
  Merged data has about 550,000 observations and 22 variables. And there are 25 candidates' information in the data. The values of the candidates' names are same for Data and cand that that I could show the information about the candidates in Data by using the summary function to cand.
  When I see the structure of the data, I found that the type of contb_receipt_dt should be date, not string. I'm going to change the type.
  
-```{r echo=FALSE, Univariate_Plots}
+```{r echo=FALSE, from_string_to_date}
 
 Sys.setlocale("LC_TIME", "C")
-
-## Sys.setlocale("LC_TIME", lct)
 
 Data$contb_receipt_dt <- as.Date(
   Data$contb_receipt_dt, '%d-%b-%y'
@@ -126,7 +124,7 @@ str(Data$contb_receipt_dt)
 
  Now I'm going to get univariate plots.
  
-```{r echo=FALSE, Univariate_Plots}
+```{r echo=FALSE, Univariate_cand_nm_counts}
 
 # First, I'm going to show the distribution of the count of contributions for each candidates.
 name_counts <- as.data.frame(sort(table(Data$cand_nm, dnn = 'name'),
@@ -152,7 +150,7 @@ ggplot(aes(x = name, y = count/sum(count)),
 
   Clinton got the most number of contributions. After her, Cruz, Sanders, Trump, Carson, etc. follow. When change the counts to percentages, Clinton got about 38% and Cruz, Sanders, Trump and Carson followed by about 25%, 15%, 14%, 5% each.
 
-```{r echo=FALSE, Univariate_Plots}
+```{r echo=FALSE, Univariate_city_counts}
 
 # I'm going to show the distribution of the count of contributers in each cities in Texas.
 
