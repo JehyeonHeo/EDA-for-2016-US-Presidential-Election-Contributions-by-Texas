@@ -140,14 +140,14 @@ name_counts
 ggplot(aes(x = name, y = count),
        data = name_counts) +
   geom_bar(stat = 'identity') +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 # Show the percentages.
 ggplot(aes(x = name, y = count/sum(count)),
        data = name_counts) +
   geom_bar(stat = 'identity') +
   scale_y_continuous(labels = percent_format()) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
@@ -169,7 +169,7 @@ length(cities_counts$name)
 ggplot(aes(x = name, y = count),
        data = cities_counts[1:10, ]) +
   geom_bar(stat = 'identity') +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
