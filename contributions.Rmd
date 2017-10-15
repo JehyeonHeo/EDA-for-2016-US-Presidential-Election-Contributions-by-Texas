@@ -177,11 +177,42 @@ ggplot(aes(x = name, y = count),
  The top 10 cities of Texas by population are Houston, San Antonio, Dallas, Austin, Fort Worth, El paso, Arlington, Corpus Christi, Plano and Laredo ordered by rank. But when I see the counts by top 10 count of contributers' cities, the rank is a little different from the former rank. San Antonio changed the rank with Austin. And Corpus Christi and Laredo didn't appear at top 10 count, while they are inclued in populated top 10.
  I got counts of contributions by each cities. This makes me wonder whether there are some contributers who contributed more than once. If if is true, it would be worth trying to get the distribution of the cities by unique contributers, not by count. 
  
+```{r echo=FALSE, Univariate_contribution_amount}
+
+# I'm going to show the distribution of contribution amounts in Texas.
+summary(Data$contb_receipt_amt)
+
+head(sort(table(Data$contb_receipt_amt), decreasing = T))
+
+# Show the histogram. I designated binwidth as 100$.
+ggplot(aes(x = contb_receipt_amt),
+       data = Data) +
+  geom_histogram(binwidth = 100) +
+  scale_x_continuous(breaks = seq(-15000, 15000, 5000))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+# Show the histogram for center 50% of amounts. I designated binwidth as 1$.
+ggplot(aes(x = contb_receipt_amt),
+       data = subset(Data,
+                     contb_receipt_amt >= quantile(Data$contb_receipt_amt, 0.25) & contb_receipt_amt <= quantile(Data$contb_receipt_amt, 0.75))) +
+  geom_histogram(binwidth = 1) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+  scale_x_continuous(limits = c(15, 105))
+
+```
+ 
+ The minimun and maximum amount was -16600$ and 15,000$ each. It is weird that there are - values of contributions. I need to find what causes it.
+ 
+ The most common contribution amount is 25$. 50$, 100$ follow it. It is unexpected to see that 25$ is the most common one because I thought that it is convenient to contribute an amount in the tens.
+ 
+ I can see from the table and histogram that most of contributions are in between 20$ and 100$.
+ 
 > **Tip**: Make sure that you leave a blank line between the start / end of
 each code block and the end / start of your Markdown text so that it is
 formatted nicely in the knitted text. Note as well that text on consecutive
 lines is treated as a single space. Make sure you have a blank line between
 your paragraphs so that they too are formatted for easy readability.
+
 
 # Univariate Analysis
 
