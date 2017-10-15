@@ -100,6 +100,8 @@ summary(Data)
 length(unique(Data$cand_nm))
 
 # Show whether the unique values of the candidates' names are all equal to the cand's X values.
+print("If the unique values of the candidates' names in Data are all equal to the values in cand:")
+
 all(unique(Data$cand_nm) == cand$X)
 
 # Show the distributions of the candidates information by summary.
