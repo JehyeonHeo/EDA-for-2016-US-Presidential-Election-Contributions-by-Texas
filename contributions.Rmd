@@ -207,6 +207,38 @@ ggplot(aes(x = contb_receipt_amt),
  
  I can see from the table and histogram that most of contributions are in between 20$ and 100$.
  
+```{r echo=FALSE, Univariate_contribution_date}
+
+# I'm going to show the distribution of contribution dates in Texas.
+
+# Get count of contributions by dates.
+dates_counts <- as.data.frame(table(Data$contb_receipt_dt, dnn = 'date'),
+                              responseName = 'count')
+
+dates_counts$date <- as.Date(dates_counts$date, format = '%Y-%m-%d')
+
+# Show the top 6 dates of counts.
+head(dates_counts[order(-dates_counts$count),])
+
+# Show the counts for each date by line graph.
+# I chose line graph this time because I thought that it is the right method to express time series data.
+ggplot(aes(x = date, y = count),
+       data = dates_counts) +
+  geom_line() +
+  scale_x_date() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+# Show the counts for each month by line graph.
+ggplot(aes(x = substr(date, 1, 7), y = count, group = 1),
+       data = dates_counts) +
+  geom_line(stat = 'summary',
+           fun.y = sum) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+ When I see the top 6 dates of counts, there were the most contributions in July 11th, and 12th of 2016.
+ And I can see that the overall contribution counts are increased from March, 2015 to March, 2016. And then it decreased and increased 2 times peaking at July, 2016 and October, 2016. It is overall trend and I can see from the line graph for each date that there are really lots of and huge fluctuations.
+ 
 > **Tip**: Make sure that you leave a blank line between the start / end of
 each code block and the end / start of your Markdown text so that it is
 formatted nicely in the knitted text. Note as well that text on consecutive
