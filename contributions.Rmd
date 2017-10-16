@@ -201,15 +201,15 @@ ggplot(aes(x = contb_receipt_amt),
 
 ```
  
- The minimun and maximum amount was -16600$ and 15,000$ each. It is weird that there are - values of contributions. I need to find what causes it.
+ The minimum and maximum amount was -16600$ and 15,000$ each. It is weird that there are - values of contributions. I need to find what causes it.
  
  The most common contribution amount is 25$. 50$, 100$ follow it. It is unexpected to see that 25$ is the most common one because I thought that it is convenient to contribute an amount in the tens.
  
  I can see from the table and histogram that most of contributions are in between 20$ and 100$.
  
-```{r echo=FALSE, Univariate_contribution_date}
+```{r echo=FALSE, Univariate_contribution_date_counts}
 
-# I'm going to show the distribution of contribution dates in Texas.
+# I'm going to show the distribution of contributions' dates in Texas.
 
 # Get count of contributions by dates.
 dates_counts <- as.data.frame(table(Data$contb_receipt_dt, dnn = 'date'),
