@@ -260,9 +260,10 @@ cities_counts <- as.data.frame(sort(table(Data$contbr_city, dnn = 'name'),
                                responseName = 'count')
 
 # Show the number of cities.
+print("Number of contributers' cities")
 length(cities_counts$name)
 
-# Show the counts of top10.
+# Show the counts of top 10 results.
 ggplot(aes(x = name, y = count),
        data = cities_counts[1:10, ]) +
   geom_bar(stat = 'identity') +
@@ -279,6 +280,7 @@ ggplot(aes(x = name, y = count),
 # I'm going to show the distribution of contribution amounts in Texas.
 summary(Data$contb_receipt_amt)
 
+print('Top 6 most frequent contribution amounts:')
 head(sort(table(Data$contb_receipt_amt), decreasing = T))
 
 # Show the histogram. I designated binwidth as 100$.
@@ -298,7 +300,7 @@ ggplot(aes(x = contb_receipt_amt),
 
 ```
  
- The minimum and maximum amount was -16600\$ and 15,000$ each. It is weird that there are - values of contributions. I need to find what causes it.
+ The minimum and maximum amount was -16,600\$ and 15,000$ each. It is weird that there are - values of contributions. I need to find what causes it.
  
  The most common contribution amount is 25\$. 50\$, 100\$ follow it. It is unexpected to see that 25$ is the most common one because I thought that it is convenient to contribute an amount in the tens.
  
@@ -315,6 +317,7 @@ dates_counts <- as.data.frame(table(Data$contb_receipt_dt, dnn = 'date'),
 dates_counts$date <- as.Date(dates_counts$date, format = '%Y-%m-%d')
 
 # Show the top 6 dates of counts.
+print('Top 6 most frequent contribution dates:')
 head(dates_counts[order(-dates_counts$count),])
 
 # Show the counts for each date by line graph.
@@ -383,7 +386,7 @@ election_type_vacant <- subset(Data, election_tp == '')
 head(election_type_vacant)
 tail(election_type_vacant)
 
-print('Who is for the contributions?')
+print('For whom are the contributions?')
 unique(election_type_vacant$cand_nm)
 
 print('Since when and till when the nominees received them?')
