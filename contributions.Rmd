@@ -265,7 +265,9 @@ ggplot(aes(x = name, y = count),
 ```
 
  There are 2252 city names in the data that I showed top 10 result.
+ 
  The top 10 cities of Texas by population are Houston, San Antonio, Dallas, Austin, Fort Worth, El paso, Arlington, Corpus Christi, Plano and Laredo ordered by rank. But when I see the counts by top 10 count of contributers' cities, the rank is a little different from the former rank. San Antonio changed the rank with Austin. And Corpus Christi and Laredo didn't appear at top 10 count, while they are inclued in populated top 10.
+ 
  I got counts of contributions by each cities. This makes me wonder whether there are some contributers who contributed more than once. If if is true, it would be worth trying to get the distribution of the cities by unique contributers, not by count. 
  
 ```{r echo=FALSE, Univariate_contribution_amount}
@@ -292,11 +294,11 @@ ggplot(aes(x = contb_receipt_amt),
 
 ```
  
- The minimum and maximum amount was -16600$ and 15,000$ each. It is weird that there are - values of contributions. I need to find what causes it.
+ The minimum and maximum amount was -16600\$ and 15,000$ each. It is weird that there are - values of contributions. I need to find what causes it.
  
- The most common contribution amount is 25$. 50$, 100$ follow it. It is unexpected to see that 25$ is the most common one because I thought that it is convenient to contribute an amount in the tens.
+ The most common contribution amount is 25\$. 50\$, 100\$ follow it. It is unexpected to see that 25$ is the most common one because I thought that it is convenient to contribute an amount in the tens.
  
- I can see from the table and histogram that most of contributions are in between 20$ and 100$.
+ I can see from the table and histogram that most of contributions are in between 20\$ and 100$.
  
 ```{r echo=FALSE, Univariate_contribution_date_counts}
 
@@ -328,8 +330,114 @@ ggplot(aes(x = substr(date, 1, 7), y = count, group = 1),
 ```
 
  When I see the top 6 dates of counts, there were the most contributions in July 11th, and 12th of 2016.
+ 
  And I can see that the overall contribution counts are increased from March, 2015 to March, 2016. And then it decreased and increased 2 times peaking at July, 2016 and October, 2016. It is overall trend and I can see from the line graph for each date that there are really lots of and huge fluctuations.
  
+```{r echo=FALSE, univariate_election_type_counts}
+
+# I'm going to show the distribution of contributions for election types in Texas.
+
+# Get counts of contributions by election types.
+election_types_counts <- as.data.frame(table(Data$election_tp, dnn = 'type'),
+                                       responseName = 'count')
+
+# Show the counts.
+election_types_counts[order(-election_types_counts$count),]
+
+ggplot(aes(x = type, y = count),
+       data = election_types_counts) +
+  geom_bar(stat = 'identity') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+ Most of contributions are for P2016 and G2016. US Presidential elections are divided into 2 stages, primary and general. Therefore I think that it is right because this data is about the financial contributions for presidential eletion. 
+ But there are some contributions whose election types, to my thinking, aren't related with it. I'm going to investigate deeply about them in the following.
+
+```{r echo=FALSE, consider_election_types_other_than_P2016_and_G2016}
+
+# Show the data whose election type is O2016.
+print('Head and tail parts of datas whose election type is O2016')
+O2016 = subset(Data, election_tp == 'O2016')
+head(O2016)
+tail(O2016)
+
+print('Are all O2016 contributions for Jill Stein?')
+all(O2016$cand_nm == 'Stein, Jill')
+
+print('Since When and till when the contributions are received?')
+range(O2016$contb_receipt_dt)
+
+# Show the data whose election type is P2012.
+print('Datas whose election type is P2012')
+subset(Data, election_tp == 'P2012')
+
+# Show the data whose election type is ''. 
+# I'm going to print head and tail of the data because there are more 1500 rows.
+print("Head and tail parts of datas whose election type is ''")
+election_type_vacant <- subset(Data, election_tp == '')
+head(election_type_vacant)
+tail(election_type_vacant)
+
+print('Who is for the contributions?')
+unique(election_type_vacant$cand_nm)
+
+print('Since when and till when the nominees received them?')
+election_type_vacant %>%
+  filter(if_nominee) %>%
+  group_by(cand_nm) %>%
+  summarise(start_date = min(contb_receipt_dt),
+            end_date = max(contb_receipt_dt)) %>%
+  arrange(start_date)
+
+# I chose line graph to show trend as time goes on.
+ggplot(aes(x = contb_receipt_dt, y = ..count..), 
+       data = subset(election_type_vacant, 
+                     if_nominee == T)) + 
+  geom_freqpoly(aes(color = cand_nm)) + 
+  scale_x_date(date_breaks = '1 month') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+print("When candidates who aren't nominees received them?")
+range(subset(election_type_vacant, if_nominee == F)$contb_receipt_dt)
+
+ggplot(aes(x = contb_receipt_dt, y = ..count..), 
+       data = subset(election_type_vacant, 
+                     if_nominee == F)) + 
+  geom_freqpoly() + 
+  scale_x_date(date_breaks = '1 month') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+ First, when I see the head and tail parts about datas whose type is O2016, it looked like they are all for Jill Stein. Thus, I checked whether the contributions are all for her and it was.
+
+ Jill Stein was Green party nominee that I want to know since when and till when the contributions are given. And I found that they are from 2016-11-23 to 2016-11-28. It is after the election. And compared to the all election times it is really short.
+
+ I searched about her and I found that it is related with [presidential election recount fundraising](https://en.wikipedia.org/wiki/Jill_Stein#2016). This is why they were classified as O2016, 'other' type election in 2016. It is not related with primary or general election. Therefore I think that it is better to exclude O2016 when exploring the data.
+ 
+ 
+ Second, I got the datas whose type is P2012. I really wondered why the contributions related with 2012 election are in here. 
+ 
+ There are only 2 contributions and I searched about ['Gunn, George'](https://www.fec.gov/data/receipts/individual-contributions/?two_year_transaction_period=2016&contributor_name=Gunn%2C+george&min_date=01%2F01%2F2015&max_date=12%2F31%2F2016&contributor_employer=HSI) and ['Wylie, Wayne'](https://www.fec.gov/data/receipts/individual-contributions/?two_year_transaction_period=2016&contributor_name=wylie%2C+wayne&min_date=01%2F01%2F2015&max_date=12%2F31%2F2016&contributor_employer=jpmorgan+chase) in FEC site. And I found that they did them to 'Rick Santorum for president, inc.(2012)'. Even though they contributed in 2015 and 2016, it looked like they did them for debt retirement for [Rick Santorum's 2012 US president election](https://en.wikipedia.org/wiki/Republican_Party_presidential_primaries,_2012). Therefore I think that the contributions are not for Santorum's 2016 election and exclude P2012 when exploring the data.
+ 
+ Third, when I see the head and tail parts about datas whose type is '', it looked like they are all for several candidates. Thus, I checked who received the contributions and 11 candidates got them.
+ 
+ In the 11 candidates, there were nominees and those who aren't. Therefore I thought that it is good to investigate the data dividing by if_nominee variable.
+ 
+ When I got the contributions' start date and end date for each nominees, I found that Jill Stein got them even when she didn't begin her campaign. And Trump and McMullin got them when they are running campaigns for general election. I can find about the fact in the line graph, too. It made me think that it is better to assign the type of contributions for Trump and McMullin to G2016 and other the type of the contributions for others including Stein to P2016.
+ 
+ I found that it can be applied to candidates who weren't nominees by drawing the line graph for them. The contributions for them almost stopped from July, 2016. July, 2016 was the month that [Republican](https://en.wikipedia.org/wiki/Republican_Party_presidential_primaries,_2016) and [Democratic](https://en.wikipedia.org/wiki/Democratic_Party_presidential_primaries,_2016) presidential primaries took place.
+ 
+ But to be more confident to my thinking for assigning types, I searched for contributers whose names appear in the head and tail part of election_type_vacant in [FEC site](https://www.fec.gov/data/receipts/individual-contributions/?two_year_transaction_period=2016&min_date=01%2F01%2F2015&max_date=12%2F31%2F2016). 
+ 
+ Refunded contributions didn't appear in the site. Some contributions are recorded as primary(one example in [here](https://www.fec.gov/data/receipts/individual-contributions/?two_year_transaction_period=2016&contributor_name=WAY%2C+RICHARD+A+MR.&min_date=01%2F01%2F2015&max_date=12%2F31%2F2016) 2016-08-26 data) instead of ''. And others are recorded '' as it is in Data. 
+ 
+ I also found [FEC contribution brochure site](https://transition.fec.gov/pages/brochures/contrib.shtml) that there can be presumptive redesignations for 'Is not designated in writing for a particular election;' cases. 
+
+ Therefore I decided to leave the election type '' as it is. And I'll also use the data of the type too distinguishing from P2016 and G2016. I think that it is the case of not designating for a particular election in writing the contribution form.
+
+
 > **Tip**: Make sure that you leave a blank line between the start / end of
 each code block and the end / start of your Markdown text so that it is
 formatted nicely in the knitted text. Note as well that text on consecutive
@@ -394,6 +502,23 @@ you plan on creating any mathematical models, this is the section where you
 will do that.
 
 ```{r echo=FALSE, Multivariate_Plots}
+
+print('How contribution receipt dates for Trump and McMullin are different for P2016 and G2016 each?')
+
+ggplot(aes(x = contb_receipt_dt, y = ..count..),
+       data = subset(Data, 
+                     cand_nm %in% c('Trump, Donald J.', 'McMullin, Evan') & election_tp %in% c('P2016', 'G2016'))) +
+  facet_wrap(~cand_nm, scales = 'free_y', nrow = 2, dir = 'v') +
+  geom_freqpoly(aes(color = election_tp))
+
+print("How contribution receipt dates for those who aren't nominees are different for P2016 and G2016 each?")
+
+ggplot(aes(x = contb_receipt_dt, y = ..count..),
+       data = subset(Data, 
+                     !if_nominee & election_tp %in% c('P2016', 'G2016'))) +
+  geom_freqpoly(aes(color = election_tp)) +
+  scale_x_date(date_breaks = '3 month') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
