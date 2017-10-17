@@ -264,11 +264,9 @@ ggplot(aes(x = name, y = count),
 
 ```
 
- There are 2252 city names in the data that I showed top 10 result.
+ There are 2252 city names in the data that I showed top 10 results.
  
- The top 10 cities of Texas by population are Houston, San Antonio, Dallas, Austin, Fort Worth, El paso, Arlington, Corpus Christi, Plano and Laredo ordered by rank. But when I see the counts by top 10 count of contributers' cities, the rank is a little different from the former rank. San Antonio changed the rank with Austin. And Corpus Christi and Laredo didn't appear at top 10 count, while they are inclued in populated top 10.
- 
- I got counts of contributions by each cities. This makes me wonder whether there are some contributers who contributed more than once. If if is true, it would be worth trying to get the distribution of the cities by unique contributers, not by count. 
+ The top 10 cities of Texas by population ordered by rank are Houston, San Antonio, Dallas, Austin, Fort Worth, El paso, Arlington, Corpus Christi, Plano and Laredo. But when I see the top 10 counts by contributions, the rank is a little different from the rank by population. San Antonio changed the rank with Austin. And while Corpus Christi and Laredo are inclued in populated top 10, they didn't appear at top 10 counts.
  
 ```{r echo=FALSE, Univariate_contribution_amount}
 
