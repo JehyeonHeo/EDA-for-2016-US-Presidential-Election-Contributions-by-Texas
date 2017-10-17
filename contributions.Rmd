@@ -188,7 +188,7 @@ all(unique(Data$cand_nm) == Cand$X)
 
  There are 25 candidates' information in Cand. 17 of them are included in Repulican party and 5 of them are in Democratic party. And only 3 of all candidates are female.
 
- I think that it is good to add new column which notify who became presidential nominee from each party. I'm going to assign TRUE for nominees and FALSE for others. And I'm going to regard Evan McMullin, independent presidential candidate as a nominee.
+ I think that it is good to add new column which notify who became presidential nominee from each party. I'm going to name the column as 'if_nominee' and assign TRUE for nominees and FALSE for others. And I'm going to regard Evan McMullin, independent presidential candidate as a nominee.
 
 ```{r echo=FALSE, make_if_nominee_column}
 
@@ -203,6 +203,8 @@ Cand$if_nominee <- ifelse(Cand$cand_nm %in% nominees, TRUE, FALSE)
 summary(Cand$if_nominee)
 ```
 
+ 5 candidates became nominees and others couldn't(or didn't).
+
  When I explored the candidates' data, I found that the values of the candidates' names are same for Data and Cand that I can merge Data and Cand by outer join using 'cand_nm' column. I'm going to use only 'cand_nm', 'cand_party' and 'if_nominee' columns to join.
 
 ```{r echo=FALSE, outer_join_Data_and_Cand}
@@ -215,6 +217,8 @@ Data <- merge(x = Data,
 
 str(Data)
 ```
+
+ I can see that 'cand_party' and 'if_nominee' columns are added to Data.
 
  Now I'm going to get univariate plots.
  
