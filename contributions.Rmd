@@ -32,9 +32,11 @@ library(memisc)
 library(reshape2)
 ```
 
-```{r echo=FALSE, Load_the_Data}
+ Now I'm going to load the financial contributions by Texas data and candidates data.
 
-# Load the main data.
+```{r echo=FALSE, Load_the_datas}
+
+# Load the financial data.
 Data <- read.csv('ctrbsTX.csv',
                   row.names = NULL,
                   header = TRUE)
@@ -48,15 +50,9 @@ Data <- Data[,-19]
 # Give the data right header names for each columns.
 colnames(Data) <- data_headers
 
-# Load the data about candidates.
-cand <- read.csv('candidates.csv')
+# Load the candidates data.
+Cand <- read.csv('candidates.csv')
 
-# Merge the 'Data' and 'cand' by left join.
-Data <- merge(x = Data, 
-              y = cand,
-              by.x = 'cand_nm',
-              by.y = 'X',
-              all.x = TRUE)
 ```
 
 > **Tip**: Before you create any plots, it is a good idea to provide a short
@@ -86,7 +82,9 @@ forget to add a comment after each plot or closely-related group of plots!
 There should be multiple code chunks and text sections; the first one below is
 just to help you get started.
 
-```{r echo=FALSE, Basic_Exploration}
+ Fisrt, I'm going to explore financial data.
+ 
+```{r echo=FALSE, Basic_Exploration_for_Data}
 
 # Get the number of observations and columns.
 dim(Data)
@@ -98,32 +96,125 @@ str(Data)
 summary(Data)
 
 # Get the number of candidates and columns.
+print('Number of candidates in Data:')
 length(unique(Data$cand_nm))
 
-# Show whether the unique values of the candidates' names are all equal to the cand's X values.
-print("If the unique values of the candidates' names in Data are all equal to the values in cand:")
-
-all(unique(Data$cand_nm) == cand$X)
-
-# Show the distributions of the candidates information by summary.
-summary(cand)
+# Show some contributers' names.
+print("Show top 5 most common contributers' names")
+summary(Data$contbr_nm)[1:5]
 ```
 
- Merged data has about 550,000 observations and 22 variables. And there are 25 candidates' information in the data. The values of the candidates' names are same for Data and cand that that I could show the information about the candidates in Data by using the summary function to cand.
- When I see the structure of the data, I found that the type of contb_receipt_dt should be date, not string. I'm going to change the type.
+ The Data has about 550,000 observations and 18 variables. And there are 25 candidates' information in it.
+ 
+ And I can see from the structure and the summary of the Data that it would be difficult to identify unique contributers. If I try to sort out distinctive contributers by using names, there can be lots of different people with same name. Even if I try to use city or occupation variables too, I cannot know whether the contributions are made by diffrent people who live in the same city or by same person who moved to other city and changed his or her job. 
+ 
+ I'm going to show the example below.
+ 
+```{r echo=FALSE, same_name_different_people_example}
+
+# Show the states of 'ROBINSON, ROBBIE'.
+bonnie <- subset(Data, contbr_nm == 'RUDOLPH, BONNIE')
+
+print("Show the states of 'RUDOLPH, BONNIE'.")
+
+print('How many unique city names are registered for him?')
+length(unique(bonnie$contbr_city))
+
+print('What is the city names?')
+unique(bonnie$contbr_city)
+
+print('How many unique zip codes are registered for him?')
+length(unique(bonnie$contbr_zip))
+
+print('What is the zip codes?')
+unique(bonnie$contbr_zip)
+
+print('How many of people are registered as his employer?')
+length(unique(bonnie$contbr_employer))
+
+print('Who is his employer?')
+unique(bonnie$contbr_employer)
+
+print('How many occupations are registered for him?')
+length(unique(bonnie$contbr_occupation))
+
+print('What is his occupation?')
+unique(bonnie$contbr_occupation)
+```
+
+ For example, in the data, it is written that RUDOLPH, BONNIE contributed 463 times. And it looked like he lives in Laredo, Texas. When I see the city name with zip codes and search about it using google, I think that Laredo is wrongly written to 'Latedo'.
+ But when I see the employer and occupation of him, I cannot but have a question about the name's uniqueness. Is he retired? Or is he working at a university? Or did he work at a university and retired? I cannot know about it using only this data.
+ Therefore I cannot answer the questions related with 'unique' contributers using this data.
+ 
+ When I see the structure of Data, I found that the type of contb_receipt_dt should be date, not string. I'm going to change the type.
  
 ```{r echo=FALSE, from_string_to_date}
 
+# Set locale of R.
+print("Set locale as 'C'")
 Sys.setlocale("LC_TIME", "C")
 
+# Change the type to Date.
 Data$contb_receipt_dt <- as.Date(
   Data$contb_receipt_dt, '%d-%b-%y'
 )
 
+# Check the result using str function.
 str(Data$contb_receipt_dt)
+
 ```
 
  contb_receipt_dt types of values are changed to date.
+ 
+ Now I'm going to explore candidates data, too.
+
+```{r echo=FALSE, Basic_exploration_for_Cand}
+
+# Get the number of observations and columns.
+dim(Cand)
+
+# Show the structure of the data.
+str(Cand)
+
+# Show the distributions of the data by summary.
+summary(Cand)
+
+# Show whether the unique values of the candidates' names are all equal to the cand's X values.
+print("If the unique values of the candidates' names in Data are all equal to the values in cand:")
+
+all(unique(Data$cand_nm) == Cand$X)
+
+```
+
+ There are 25 candidates' information in Cand. 17 of them are included in Repulican party and 5 of them are in Democratic party. And only 3 of all candidates are female.
+
+ I think that it is good to add new column which notify who became presidential nominee from each party. I'm going to assign TRUE for nominees and FALSE for others. And I'm going to regard Evan McMullin, independent presidential candidate as a nominee.
+
+```{r echo=FALSE, make_if_nominee_column}
+
+nominees = c('Clinton, Hillary Rodham', 
+             'Trump, Donald J.',
+             'Johnson, Gary',
+             'McMullin, Evan',
+             'Stein, Jill')
+
+Cand$if_nominee <- ifelse(Cand$cand_nm %in% nominees, TRUE, FALSE)
+
+summary(Cand$if_nominee)
+```
+
+ When I explored the candidates' data, I found that the values of the candidates' names are same for Data and Cand that I can merge Data and Cand by outer join using 'cand_nm' column. I'm going to use only 'cand_nm', 'cand_party' and 'if_nominee' columns to join.
+
+```{r echo=FALSE, outer_join_Data_and_Cand}
+
+# Merge the 'Data' and 'Cand' by outer join.
+Data <- merge(x = Data, 
+              y = Cand[,c('cand_nm', 'cand_party', 'if_nominee')],
+              by = 'cand_nm',
+              all.x = TRUE)
+
+str(Data)
+```
 
  Now I'm going to get univariate plots.
  
