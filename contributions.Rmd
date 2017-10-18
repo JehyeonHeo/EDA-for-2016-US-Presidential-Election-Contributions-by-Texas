@@ -601,6 +601,33 @@ gather your observations and add your own if you have other thoughts!
 
 # Bivariate Plots Section
 
+ Before I start drawing bivariate plots, using what I learned from univariate analysis, I'm going to make a new dataframe by subsetting Data to get only concise and essential parts.
+ I'm going to select contb_receipt_amt, cand_nm, cand_party, if_nominee, election_tp, contbr_city, contb_receipt_dt and receipt_desc columns. And I'm going to exclude election type P2012 and O2016.
+ 
+```{r echo=FALSE, make_new_concise_dataframe}
+
+# Select essential columns.
+chosenColumns = c('contb_receipt_amt', 
+                  'cand_nm', 
+                  'cand_party', 
+                  'if_nominee', 
+                  'election_tp',
+                  'contbr_city', 
+                  'contb_receipt_dt', 
+                  'receipt_desc')
+
+# Make new dataframe.
+new.Data <- Data[, chosenColumns]
+
+# Exclude election type P2012 and O2016.
+new.Data <- subset(new.Data, !election_tp %in% c('P2012', 'O2016'))
+
+# Show the structure of new.Data.
+str(new.Data)
+```
+
+ There are 548326 contribution datas and 8 features in new dataframe.
+
 > **Tip**: Based on what you saw in the univariate plots, what relationships
 between variables might be interesting to look at in this section? Don't limit
 yourself to relationships between a main output feature and one of the
