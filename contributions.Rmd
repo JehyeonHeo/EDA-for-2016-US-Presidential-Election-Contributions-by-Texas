@@ -10,7 +10,7 @@ good formatting techniques, including limiting your lines to 80 characters or
 less. If you're using RStudio, go into Preferences \> Code \> Display to set up
 a margin line to help you keep track of this guideline!
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Packages}
 # Load all of the packages that you end up using in your analysis in this code
 # chunk.
 
@@ -110,7 +110,7 @@ summary(Data$contbr_nm)[1:5]
  
  I'm going to show the example below.
  
-```{r echo=FALSE, same_name_different_people_example}
+```{r echo=FALSE, Same_name_different_people_example}
 
 # Show the states of 'ROBINSON, ROBBIE'.
 bonnie <- subset(Data, contbr_nm == 'RUDOLPH, BONNIE')
@@ -148,7 +148,7 @@ unique(bonnie$contbr_occupation)
  
  When I see the structure of Data, I found that the type of contb_receipt_dt should be date, not string. I'm going to change the type. And I also think that it is better to make types of file_num and tran_id string, not num or factor because there are too many different cases.
  
-```{r echo=FALSE, change_types}
+```{r echo=FALSE, Change_types}
 
 # Set locale of R.
 print("Set locale as 'C'")
@@ -195,7 +195,7 @@ all(unique(Data$cand_nm) == Cand$X)
 
  I think that it is good to add new column which notify who became presidential nominee from each party. I'm going to name the column as 'if_nominee' and assign TRUE for nominees and FALSE for others. And I'm going to regard Evan McMullin, independent presidential candidate as a nominee.
 
-```{r echo=FALSE, make_if_nominee_column}
+```{r echo=FALSE, Make_if_nominee_column}
 
 nominees = c('Clinton, Hillary Rodham', 
              'Trump, Donald J.',
@@ -212,7 +212,7 @@ summary(Cand$if_nominee)
 
  When I explored the candidates' data, I found that the values of the candidates' names are same for Data and Cand that I can merge Data and Cand by outer join using 'cand_nm' column. I'm going to use only 'cand_nm', 'cand_party' and 'if_nominee' columns to join.
 
-```{r echo=FALSE, outer_join_Data_and_Cand}
+```{r echo=FALSE, Outer_join_Data_and_Cand}
 
 # Merge the 'Data' and 'Cand' by outer join.
 Data <- merge(x = Data, 
@@ -409,7 +409,7 @@ ggplot(aes(x = substr(date, 1, 7), y = count, group = 1),
  
  And I can see that the overall contribution counts are increased from March, 2015 to March, 2016. And then it decreased and increased 2 times peaking at July, 2016 and October, 2016. It is overall trend and I can see from the line graph for each date that there are really lots of and huge fluctuations.
  
-```{r echo=FALSE, univariate_election_type_counts}
+```{r echo=FALSE, Univariate_election_type_counts}
 
 # I'm going to show the distribution of contributions for election types in Texas.
 
@@ -430,7 +430,7 @@ ggplot(aes(x = type, y = count),
  Most of contributions are for P2016 and G2016. US Presidential elections are divided into 2 stages, primary and general. Therefore I think that it is right because this data is about the financial contributions for presidential eletion. 
  But there are some contributions whose election types, to my thinking, aren't related with it. I'm going to investigate deeply about them in the following.
 
-```{r echo=FALSE, consider_election_types_other_than_P2016_and_G2016}
+```{r echo=FALSE, Consider_election_types_other_than_P2016_and_G2016}
 
 # Show the data whose election type is O2016.
 print('Head and tail parts of datas whose election type is O2016')
@@ -604,7 +604,7 @@ gather your observations and add your own if you have other thoughts!
  Before I start drawing bivariate plots, using what I learned from univariate analysis, I'm going to make a new dataframe by subsetting Data to get only concise and essential parts.
  I'm going to select contb_receipt_amt, cand_nm, cand_party, if_nominee, election_tp, contbr_city, contb_receipt_dt and receipt_desc columns. And I'm going to exclude election type P2012 and O2016.
  
-```{r echo=FALSE, make_new_concise_dataframe}
+```{r echo=FALSE, Make_new_concise_dataframe}
 
 # Select essential columns.
 chosenColumns = c('contb_receipt_amt', 
