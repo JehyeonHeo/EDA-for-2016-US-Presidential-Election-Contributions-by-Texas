@@ -306,11 +306,11 @@ ggplot(aes(x = contb_receipt_amt),
 
 ```
  
- The minimum and maximum amount was -16,600\$ and 15,000$ each. It is weird that there are - values of contributions. I need to find what causes it.
+ The minimum and maximum amount was -\$16,600 and \$15,000 each. It is weird that there are - values of contributions. I need to find what causes it.
  
- The most common contribution amount is 25\$. 50\$, 100\$ follow it. It is unexpected to see that 25$ is the most common one because I thought that it is convenient to contribute an amount in the tens.
+ The most common contribution amount is \$25. \$50, \$100 follow it. It is unexpected to see that 25$ is the most common one because I thought that it is convenient to contribute an amount in the tens.
  
- I can see from the table and histogram that most of contributions are in between 20\$ and 100$.
+ I can see from the table and histogram that most of contributions are in between \$20 and \$100.
  
 ```{r echo = FALSE, Univariate_more_about_amounts}
 
@@ -323,7 +323,7 @@ summary(minus_amounts$contb_receipt_amt)
 print('Top 6 negative amounts:')
 head(sort(minus_amounts$contb_receipt_amt))
 
-print('Datas whose contribution amounts are less than -10,000$:')
+print('Datas whose contribution amounts are less than -$10,000:')
 subset(minus_amounts, contb_receipt_amt < -10000)
 
 print('Datas about DURHAM, JOE and CLARK, ELLOINE M.')
@@ -345,7 +345,7 @@ ggplot(aes(x = description, y = count),
   geom_bar(stat = 'identity') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
-# I also want to know why there are amounts whose values are above 5400.
+# I also want to know why there are amounts whose values are above $5,400.
 more_than_5400_amounts <- subset(Data, contb_receipt_amt > 5400)
 
 # Get the descriptions about them to know the causes.
@@ -355,18 +355,18 @@ more_than_5400_amounts.description <-  as.data.frame(sort(
   responseName = 'count'
   )
 
-print('Show the counts of contribution amounts whose values are above 5,400$.')
+print('Show the counts of contribution amounts whose values are above $5,400.')
 sort(table(more_than_5400_amounts$contb_receipt_amt),
      decreasing = T)
 
-# Show the top 6 descriptions for amounts whose values are above 5400.
-print('Top 6 descriptions for amounts whose values are above 5,400$:')
+# Show the top 6 descriptions for amounts whose values are above $5,400.
+print('Top 6 descriptions for amounts whose values are above $5,400:')
 head(more_than_abs_5400_amounts.description)
 ```
 
- I want to know why there are negative values for amounts. First I got the summary of the negative amounts to know the distribution of the values. And I found that the difference of mean and median are more than -700\$. I could guess that it happened because of the existence of outliers like -16,600\$. The result gave me one more question. Why there are outliers of amounts?
+ I want to know why there are negative values for amounts. First I got the summary of the negative amounts to know the distribution of the values. And I found that the difference of mean and median are more than -\$700. I could guess that it happened because of the existence of outliers like -\$16,600. The result gave me one more question. Why there are outliers of amounts?
  
- And then, I got the top 6 negative amounts to investigate outliers. The 2 most negative amounts were huge compared to the others. Therefore I printed all columns of the values from the data. And I found that they were refunds. How there can be refunds which are more than 10,000\$? When I got datas about the contributers from Data, their record were all refunds. 
+ And then, I got the top 6 negative amounts to investigate outliers. The 2 most negative amounts were huge compared to the others. Therefore I printed all columns of the values from the data. And I found that they were refunds. How there can be refunds which are more than \$10,000? When I got datas about the contributers from Data, their record were all refunds. 
  
  Therefore I searched their names in FEC site. For 'Durham, Joe' there were some records that aren't in Data. For 'Clark, Elloine M.' there were lots of records but there were some variety of similar names. But I can't find the refund records. I really wonder why they don't exit in there.
  
