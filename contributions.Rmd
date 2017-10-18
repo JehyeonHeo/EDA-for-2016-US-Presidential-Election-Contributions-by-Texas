@@ -146,9 +146,9 @@ unique(bonnie$contbr_occupation)
  But when I see the employer and occupation of him, I cannot but have a question about the name's uniqueness. Is he retired? Or is he working at a university? Or did he work at a university and retired? I cannot know about it using only this data.
  Therefore I cannot answer the questions related with 'unique' contributers using this data.
  
- When I see the structure of Data, I found that the type of contb_receipt_dt should be date, not string. I'm going to change the type.
+ When I see the structure of Data, I found that the type of contb_receipt_dt should be date, not string. I'm going to change the type. And I also think that it is better to make types of file_num and tran_id string, not num or factor because there are too many different cases.
  
-```{r echo=FALSE, from_string_to_date}
+```{r echo=FALSE, change_types}
 
 # Set locale of R.
 print("Set locale as 'C'")
@@ -159,12 +159,17 @@ Data$contb_receipt_dt <- as.Date(
   Data$contb_receipt_dt, '%d-%b-%y'
 )
 
+# Change the types of file_num and tran_id.
+Data$file_num <- as.character(Data$file_num)
+Data$tran_id <- as.character(Data$tran_id)
+
 # Check the result using str function.
 str(Data$contb_receipt_dt)
-
+str(Data$file_num)
+str(Data$tran_id)
 ```
 
- contb_receipt_dt types of values are changed to date.
+ The type of contb_receipt_dt values are changed to date. And the types of file_num and tran_id values are changed to string.
  
  Now I'm going to explore candidates data, too.
 
