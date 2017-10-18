@@ -634,7 +634,197 @@ yourself to relationships between a main output feature and one of the
 supporting variables. Try to look at relationships between supporting variables
 as well.
 
-```{r echo=FALSE, Bivariate_Plots}
+```{r echo=FALSE, Bivariate_for_amount_and_date}
+
+# I want to know how the contribution amounts changed as time goes on.
+# Therefore I'm going to use contb_receipt_amt and contb_receipt_dt columns.
+# And I'll use line graph to show the trend of contribution amounts.
+
+ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_line(stat = 'summary', fun.y = sum) +
+  scale_x_date(date_breaks = '3 month') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_line(stat = 'summary', fun.y = mean,
+            color = 'blue') +
+  geom_line(stat = 'summary', fun.y = median,
+            color = 'green') +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.1),
+            color = 'orange') +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.9),
+            color = 'purple') +
+  scale_x_date(date_breaks = '3 month') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+# This time, I'll use scatter plot to show the distributions of amounts by date.
+
+ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_jitter(alpha = 0.1) +
+  scale_x_date(date_breaks = '3 month') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Bivariate_for_amount_and_nominees}
+
+# I want to know how the contribution amounts are differed for nominees group and other candidates group.
+# Therefore I'm going to use contb_receipt_amt and if_nominee columns.
+# And I'll use boxplot and barplot to show the differences.
+
+ggplot(aes(x = if_nominee, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_boxplot(alpha = 0.2) +
+  scale_x_discrete()
+
+ggplot(aes(x = if_nominee, y = contb_receipt_amt),
+       data = subset(new.Data,
+                     contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
+                       contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+  geom_boxplot(alpha = 0.2) +
+  geom_point(stat = 'summary', fun.y = mean, size = 3, shape = 8) +
+  scale_x_discrete()
+
+ggplot(aes(x = if_nominee, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_bar(stat = 'summary', fun.y = sum) +
+  scale_x_discrete()
+
+```
+
+```{r echo=FALSE, Bivariate_for_amount_and_party}
+
+# I want to know how the contribution amounts are differed by parties.
+# Therefore I'm going to use contb_receipt_amt and cand_party columns.
+# And I'll use boxplot and barplot to show the differences.
+
+ggplot(aes(x = cand_party, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_boxplot(alpha = 0.1) +
+  scale_x_discrete()
+
+ggplot(aes(x = cand_party, y = contb_receipt_amt),
+       data = subset(new.Data,
+                     contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
+                       contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+  geom_boxplot(alpha = 0.2) +
+  geom_point(stat = 'summary', fun.y = mean, size = 3, shape = 8) +
+  scale_x_discrete()
+
+ggplot(aes(x = cand_party, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_bar(stat = 'summary', fun.y = sum) +
+  scale_x_discrete()
+
+```
+
+```{r echo=FALSE, Bivariate_for_amount_and_candidates}
+
+# I want to know how the contribution amounts are differed by candidates.
+# Therefore I'm going to use contb_receipt_amt and cand_nm columns.
+# And I'll use boxplot and barplot to show the differences.
+
+ggplot(aes(x = cand_nm, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_boxplot(alpha = 0.2) +
+  scale_x_discrete() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+ggplot(aes(x = cand_nm, y = contb_receipt_amt),
+       data = subset(new.Data,
+                     contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
+                       contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+  geom_boxplot(alpha = 0.2) +
+  geom_point(stat = 'summary', fun.y = mean, size = 1, shape = 8) +
+  scale_x_discrete() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+ggplot(aes(x = cand_nm, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_bar(stat = 'summary', fun.y = sum) +
+  scale_x_discrete() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Bivariate_for_amount_and_election_type}
+
+# I want to know how the contribution amounts are differed by election types.
+# Therefore I'm going to use contb_receipt_amt and election_tp columns.
+# And I'll use boxplot and barplot to show the differences.
+
+ggplot(aes(x = election_tp, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_boxplot(alpha = 0.2) +
+  scale_x_discrete()
+
+ggplot(aes(x = election_tp, y = contb_receipt_amt),
+       data = subset(new.Data,
+                     contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
+                       contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+  geom_boxplot(alpha = 0.2) +
+  geom_point(stat = 'summary', fun.y = mean, size = 1, shape = 8) +
+  scale_x_discrete()
+
+ggplot(aes(x = election_tp, y = contb_receipt_amt),
+       data = new.Data) +
+  geom_bar(stat = 'summary', fun.y = sum) +
+  scale_x_discrete() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Bivariate_for_amount_and_city}
+
+# I want to know how the contribution amounts are differed by cities.
+# Therefore I'm going to use contb_receipt_amt and contbr_city columns.
+# And I'll use boxplot and barplot to show the differences.
+
+sum_amounts_by_city <- new.Data %>%
+  group_by(contbr_city) %>%
+  summarise(sum_amount = sum(contb_receipt_amt),
+            mean_amount = mean(contb_receipt_amt),
+            median_amount = median(contb_receipt_amt),
+            n = n()) %>%
+  arrange(desc(sum_amount)) %>%
+  head(10)
+
+top10_sum_amounts_city <- subset(new.Data,
+                                 contbr_city %in% 
+                                   sum_amounts_by_city$contbr_city)
+
+ggplot(aes(x = contbr_city, y = contb_receipt_amt),
+       data = top10_sum_amounts_city) +
+  geom_boxplot(alpha = 0.1) +
+  scale_x_discrete() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+ggplot(aes(x = contbr_city, y = contb_receipt_amt),
+       data = subset(top10_sum_amounts_city,
+                     contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
+                       contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+  geom_boxplot(alpha = 0.2) +
+  geom_point(stat = 'summary', fun.y = mean, size = 1, shape = 8) +
+  scale_x_discrete() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
+       data = top10_sum_amounts_city) +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.9)) +
+  geom_line(stat = 'summary', fun.y = mean) +
+  geom_line(stat = 'summary', fun.y = median) +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.1)) +
+  scale_x_discrete() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
+       data = top10_sum_amounts_city) +
+  geom_line(stat = 'summary', fun.y = length) +
+  scale_x_discrete() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
