@@ -537,6 +537,25 @@ ggplot(aes(x = party, y = count),
  
  But related with contributions, the sum of amounts can be more important than the sum of counts. Therefore I'm going to explore how the sum of amounts were different by parties, candidates, election types, etc. in the bivariate sections.
 
+```{r echo=FALSE, Univariate_if_nominee_counts}
+
+# I'm going to show the distribution of contributions for nominees and those who aren't in Texas. 
+
+# Get counts of contributions by if_nominee.
+nominees_counts <- as.data.frame(table(Data$if_nominee, dnn = 'if_nominee'),
+                                      responseName = 'count')
+
+# Show the counts.
+nominees_counts[order(-nominees_counts$count),]
+
+ggplot(aes(x = if_nominee, y = count),
+       data = nominees_counts) +
+  geom_bar(stat = 'identity') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+ I wanted to compare the counts of the contributions for nominees and those who aren't. The number of contributions for nominees was about 20,000 more than the number of contributions for the others. But compared to the size of the numbers, the difference wasn't much big. I think that it means that there was at least one candidate who was likely to be a nominee and got lots of support. And the sum of contribution counts by candidate name that I explored already show that the candidates were Cruz, US Senator from Texas, and Sanders, US Senator from Vermont.
+
 > **Tip**: Make sure that you leave a blank line between the start / end of
 each code block and the end / start of your Markdown text so that it is
 formatted nicely in the knitted text. Note as well that text on consecutive
