@@ -513,6 +513,29 @@ ggplot(aes(x = contb_receipt_dt, y = ..count..),
 
  Therefore I decided to leave the election type '' as it is. And I'll also use the data of the type too distinguishing from P2016 and G2016. I think that it is the case of not designating for a particular election in writing the contribution form.
 
+```{r echo=FALSE, Univarite_party_counts}
+
+# I'm going to show the distribution of contributions for each parties in Texas.
+
+# Get counts of contributions by parties.
+parties_counts <- as.data.frame(table(Data$cand_party, dnn = 'party'),
+                                      responseName = 'count')
+
+# Show the counts.
+parties_counts[order(-parties_counts$count),]
+
+ggplot(aes(x = party, y = count),
+       data = parties_counts) +
+  geom_bar(stat = 'identity') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+ The most number of contributions were for Democratic party candidates. And they got about 20,000 more contributions than Republican party candidates. And rest of the parties and independent candidate got few contributions compared to the above 2 parties.
+ 
+ It is a lot amazing that even though the candidates who were included in democratic party were just 5, the sum of contribution counts for them were more than the sum of counts for Republican party in which there were 17 candidates. I think that it means that in Democratic party there was at least one candidate who was famous in Texas and got support a lot. And the sum of contribution counts by candidate name that I explored already shows that the candidate was Hillary Clinton, Democratic party nominee.
+ 
+ But related with contributions, the sum of amounts can be more important than the sum of counts. Therefore I'm going to explore how the sum of amounts were different by parties, candidates, election types, etc. in the bivariate sections.
 
 > **Tip**: Make sure that you leave a blank line between the start / end of
 each code block and the end / start of your Markdown text so that it is
