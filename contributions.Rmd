@@ -552,17 +552,33 @@ gather your observations and add your own if you have other thoughts!
 
 ### What is the structure of your dataset?
 
-### What is/are the main feature(s) of interest in your dataset?
+ There are 548396 contributions in the dataset with 20 features after merging. In these 20 features, 14 got factor type, 3 got string type and the rest 3 splited into Date, num, and logical types.
+ 
+ Other observations by summary: 
+ 1. There were 25 unique candidates.
+ 2. Hillary Clinton got the most number of contributions.
+ 3. The mean of contribution amounts was \$138. And the median was \$38.
+ 4. There some amounts which are negatives.
+ 5. IQR range of the contribution dates were from 2016-02-06 to 2016-08-12.
+ 6. The counts of contributions for Democratic party were bigger than the counts of contributions for Republican party.
 
-### What other features in the dataset do you think will help support your \
-investigation into your feature(s) of interest?
+### What is/are the main feature(s) of interest in your dataset?
+ 
+ The main feature is contb_receipt_amt, the contribution amount. And I want to know how contribution counts, sums, quantiles, and averages became different by other variables.
+ 
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+
+ I think that cand_nm, cand_party, if_nominee, election_tp, contbr_city and contb_receipt_dt columns can help me to understand the political characteristics in Texas related with 2016 US presidential election. And I expect that receipt_desc column can sometimes give me information about the cause of some situations.
 
 ### Did you create any new variables from existing variables in the dataset?
 
-### Of the features you investigated, were there any unusual distributions? \
-Did you perform any operations on the data to tidy, adjust, or change the form \
-of the data? If so, why did you do this?
+ I created the variable 'if_nominee' from cand_nm. If cand_nm is one of 'Clinton, Hillary Rodham', 'Johnson, Gary', 'McMullin, Evan', 'Stein, Jill' and 'Trump, Donald J.', the value is TRUE. And if cand_nm is not in above 5 names, the value is FALSE.
+ 
+### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
 
+ I drew the histogram of the contb_receipt_amt to IQR range and got the top 6 most common contributin amounts as a table. And I found that the most common  amount was \$25. It is not the number of tens that I thought that it was unusual. And when I drew the bar plot of contribution counts by parties, I thought that it was also unusual that a party in which had 5 candidates got more contributions by count than a party in which had 17 candidates.
+
+ I changed the type of contb_receipt_dt column from character to Date. I did it to express the character typed values as time series. And then the variable can be used to express the trends of other variables and their values.
 
 # Bivariate Plots Section
 
