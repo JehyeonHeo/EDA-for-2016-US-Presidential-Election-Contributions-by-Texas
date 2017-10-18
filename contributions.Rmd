@@ -306,6 +306,68 @@ ggplot(aes(x = contb_receipt_amt),
  
  I can see from the table and histogram that most of contributions are in between 20\$ and 100$.
  
+```{r echo = FALSE, Univariate_more_about_amounts}
+
+# I want to know why negative values appear in amounts.
+# Subset data whose amount values are below 0.
+minus_amounts <- subset(Data, contb_receipt_amt < 0)
+
+summary(minus_amounts$contb_receipt_amt)
+
+print('Top 6 negative amounts:')
+head(sort(minus_amounts$contb_receipt_amt))
+
+print('Datas whose contribution amounts are less than -10,000$:')
+subset(minus_amounts, contb_receipt_amt < -10000)
+
+print('Datas about DURHAM, JOE and CLARK, ELLOINE M.')
+subset(Data, contbr_nm %in% c('DURHAM, JOE', 'CLARK, ELLOINE M.'))
+
+# Get the descriptions about them to know the causes.
+minus_amounts.description <- as.data.frame(sort(
+  table(minus_amounts$receipt_desc, dnn = 'description'),
+  decreasing = T),
+  responseName = 'count'
+  )
+
+# Show the top 6 descriptions for negative values.
+print('Top 6 descriptions for negative values:')
+head(minus_amounts.description)
+
+ggplot(aes(x = description, y = count),
+       data = head(minus_amounts.description)) +
+  geom_bar(stat = 'identity') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+# I also want to know why there are amounts whose values are above 5400.
+more_than_5400_amounts <- subset(Data, contb_receipt_amt > 5400)
+
+# Get the descriptions about them to know the causes.
+more_than_5400_amounts.description <-  as.data.frame(sort(
+  table(more_than_5400_amounts$receipt_desc, dnn = 'description'),
+  decreasing = T),
+  responseName = 'count'
+  )
+
+print('Show the counts of contribution amounts whose values are above 5,400$.')
+sort(table(more_than_5400_amounts$contb_receipt_amt),
+     decreasing = T)
+
+# Show the top 6 descriptions for amounts whose values are above 5400.
+print('Top 6 descriptions for amounts whose values are above 5,400$:')
+head(more_than_abs_5400_amounts.description)
+```
+
+ I want to know why there are negative values for amounts. First I got the summary of the negative amounts to know the distribution of the values. And I found that the difference of mean and median are more than -700\$. I could guess that it happened because of the existence of outliers like -16,600\$. The result gave me one more question. Why there are outliers of amounts?
+ 
+ And then, I got the top 6 negative amounts to investigate outliers. The 2 most negative amounts were huge compared to the others. Therefore I printed all columns of the values from the data. And I found that they were refunds. How there can be refunds which are more than 10,000\$? When I got datas about the contributers from Data, their record were all refunds. 
+ 
+ Therefore I searched their names in FEC site. For 'Durham, Joe' there were some records that aren't in Data. For 'Clark, Elloine M.' there were lots of records but there were some variety of similar names. But I can't find the refund records. I really wonder why they don't exit in there.
+ 
+ Let's come back to the original question. To know why there are negative values, in this time, I got the top 6 most common receipt descriptions and showed using graph, too. The most common reasons were refund, redesignation and reattribution. When I found about them using the internet, there were [contribution limits](https://www.opensecrets.org/overview/limits.php) and [remedying excessive contributions methods](https://www.fec.gov/help-candidates-and-committees/candidate-taking-receipts/remedying-excessive-contribution/). Therefore negative values of contribution amounts aren't wrong datas.
+ 
+ And I got one more question when I saw the contribution limits. an indivisual can contribute maximum \$5,400 for primary and general elections. I want to know why there are some contributions which are more than \$5,400. Therefore I got the counts of them. And I found that most of them are \$10,800. The values weren't dispersed equally. And when I got the counts of receipt descriptions of the contributions, I found that most of them are for reattribution and redesignation. When I saw the result, I guessed that it can be possible that \$10,800 are made for 2 people requesting reattribution. But I cannot know the exact reason using this data.
+ 
 ```{r echo=FALSE, Univariate_contribution_date_counts}
 
 # I'm going to show the distribution of contributions' dates in Texas.
