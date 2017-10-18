@@ -220,7 +220,8 @@ Data <- merge(x = Data,
               by = 'cand_nm',
               all.x = TRUE)
 
-str(Data)
+print('Show the names of the columns after merged')
+names(Data)
 ```
 
  I can see that 'cand_party' and 'if_nominee' columns are added to Data.
