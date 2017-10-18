@@ -240,6 +240,7 @@ name_counts <- as.data.frame(sort(table(Data$cand_nm, dnn = 'name'),
 name_counts
 
 # Show the counts.
+# I'm going to often use theme function in ggplot. It is for rotating x labels  90 degrees when the label names are long. And I designated hjust = 1 to align the texts to the left of the plot and vjust = 0.5 to align them to each ticks.
 ggplot(aes(x = name, y = count),
        data = name_counts) +
   geom_bar(stat = 'identity') +
