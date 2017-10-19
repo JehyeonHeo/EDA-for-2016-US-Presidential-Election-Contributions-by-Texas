@@ -905,12 +905,11 @@ ggplot(aes(x = contbr_city, color = cand_party, group = cand_party),
  
 ```{r echo=FALSE, Bivariate_for_date_and_nominees}
 
-ggplot(aes(x = contb_receipt_dt, y = if_nominee, color = if_nominee),
+ggplot(aes(x = contb_receipt_dt, color = if_nominee),
        data = new_Data) +
-  geom_line(stat = 'summary', fun.y = sum) +
+  geom_line(stat = 'count') +
   scale_x_date(date_breaks = '3 month') +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-        axis.text.y = element_blank())
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
@@ -918,12 +917,11 @@ ggplot(aes(x = contb_receipt_dt, y = if_nominee, color = if_nominee),
 
 ```{r echo=FALSE, Bivariate_for_date_and_party}
 
-ggplot(aes(x = contb_receipt_dt, y = cand_party, color = cand_party),
+ggplot(aes(x = contb_receipt_dt, color = cand_party),
        data = new_Data) +
-  geom_line(stat = 'summary', fun.y = sum) +
+  geom_line(stat = 'count') +
   scale_x_date(date_breaks = '3 month') +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-        axis.text.y = element_blank())
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
@@ -932,13 +930,12 @@ ggplot(aes(x = contb_receipt_dt, y = cand_party, color = cand_party),
 ```{r echo=FALSE, Bivariate_for_date_and_main_nominees}
 
 date_vs_main_nominees <- 
-  ggplot(aes(x = contb_receipt_dt, y = cand_nm, color = cand_nm),
+  ggplot(aes(x = contb_receipt_dt, color = cand_nm),
              data = subset(new_Data,
                            cand_nm %in% c('Trump, Donald J.', 
                                           'Clinton, Hillary Rodham'))) +
-         geom_line(stat = 'summary', fun.y = sum) +
-         theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-               axis.text.y = element_blank())
+         geom_line(stat = 'count') +
+         theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 date_vs_main_nominees + scale_x_date(date_breaks = '3 month')
 
@@ -978,12 +975,11 @@ ggplot(aes(x = contb_receipt_dt, color = cand_nm),
 
 ```{r echo=FALSE, Bivariate_date_and_election_type}
 
-ggplot(aes(x = contb_receipt_dt, y = election_tp, color = election_tp),
+ggplot(aes(x = contb_receipt_dt, color = election_tp),
        data = new_Data) +
-  geom_line(stat = 'summary', fun.y = sum) +
+  geom_line(stat = 'count') +
   scale_x_date(date_breaks = '3 month') +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-        axis.text.y = element_blank())
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
