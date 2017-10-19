@@ -437,15 +437,15 @@ ggplot(aes(x = type, y = count),
 
 # I'm going to print head and tail of the O2016 data because there are 68 rows.
 print('Head and tail parts of datas whose election type is O2016')
-O2016 = subset(Data, election_tp == 'O2016')
-head(O2016)
-tail(O2016)
+o2016 = subset(Data, election_tp == 'O2016')
+head(o2016)
+tail(o2016)
 
 print('Are all O2016 contributions for Jill Stein?')
-all(O2016$cand_nm == 'Stein, Jill')
+all(o2016$cand_nm == 'Stein, Jill')
 
 print('Since When and till when the contributions are received?')
-range(O2016$contb_receipt_dt)
+range(o2016$contb_receipt_dt)
 
 print('Datas whose election type is P2012')
 subset(Data, election_tp == 'P2012')
@@ -616,11 +616,11 @@ chosenColumns = c('contb_receipt_amt',
                   'contb_receipt_dt', 
                   'receipt_desc')
 
-new.Data <- Data[, chosenColumns]
+new_Data <- Data[, chosenColumns]
 
-new.Data <- subset(new.Data, !election_tp %in% c('P2012', 'O2016'))
+new_Data <- subset(new_Data, !election_tp %in% c('P2012', 'O2016'))
 
-str(new.Data)
+str(new_Data)
 
 ```
 
@@ -637,13 +637,13 @@ as well.
 ```{r echo=FALSE, Bivariate_for_amount_and_date}
 
 ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
-       data = new.Data) +
+       data = new_Data) +
   geom_line(stat = 'summary', fun.y = sum) +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
-       data = new.Data) +
+       data = new_Data) +
   geom_line(stat = 'summary', fun.y = mean,
             color = 'blue') +
   geom_line(stat = 'summary', fun.y = median,
@@ -656,7 +656,7 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
-       data = new.Data) +
+       data = new_Data) +
   geom_jitter(alpha = 0.1) +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
@@ -668,13 +668,13 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
 ```{r echo=FALSE, Bivariate_for_amount_and_nominees}
 
 ggplot(aes(x = if_nominee, y = contb_receipt_amt),
-       data = new.Data) +
+       data = new_Data) +
   geom_boxplot(alpha = 0.2) +
   scale_x_discrete()
 
 ggplot(aes(x = if_nominee, y = contb_receipt_amt),
        data = 
-         subset(new.Data,
+         subset(new_Data,
                 contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
                   contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
   geom_boxplot(alpha = 0.2) +
@@ -682,7 +682,7 @@ ggplot(aes(x = if_nominee, y = contb_receipt_amt),
   scale_x_discrete()
 
 ggplot(aes(x = if_nominee, y = contb_receipt_amt, group = 1),
-       data = new.Data) +
+       data = new_Data) +
   geom_bar(stat = 'summary', fun.y = sum) +
   scale_x_discrete()
 
@@ -693,12 +693,12 @@ ggplot(aes(x = if_nominee, y = contb_receipt_amt, group = 1),
 ```{r echo=FALSE, Bivariate_for_amount_and_party}
 
 ggplot(aes(x = cand_party, y = contb_receipt_amt),
-       data = new.Data) +
+       data = new_Data) +
   geom_boxplot(alpha = 0.1) +
   scale_x_discrete()
 
 ggplot(aes(x = cand_party, y = contb_receipt_amt),
-       data = subset(new.Data,
+       data = subset(new_Data,
                      contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
                        contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
   geom_boxplot(alpha = 0.2) +
@@ -706,7 +706,7 @@ ggplot(aes(x = cand_party, y = contb_receipt_amt),
   scale_x_discrete()
 
 ggplot(aes(x = cand_party, y = contb_receipt_amt),
-       data = new.Data) +
+       data = new_Data) +
   geom_bar(stat = 'summary', fun.y = sum) +
   scale_x_discrete()
 
@@ -717,13 +717,13 @@ ggplot(aes(x = cand_party, y = contb_receipt_amt),
 ```{r echo=FALSE, Bivariate_for_amount_and_candidates}
 
 ggplot(aes(x = cand_nm, y = contb_receipt_amt),
-       data = new.Data) +
+       data = new_Data) +
   geom_boxplot(alpha = 0.2) +
   scale_x_discrete() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ggplot(aes(x = cand_nm, y = contb_receipt_amt),
-       data = subset(new.Data,
+       data = subset(new_Data,
                      contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
                        contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
   geom_boxplot(alpha = 0.2) +
@@ -732,7 +732,7 @@ ggplot(aes(x = cand_nm, y = contb_receipt_amt),
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ggplot(aes(x = cand_nm, y = contb_receipt_amt),
-       data = new.Data) +
+       data = new_Data) +
   geom_bar(stat = 'summary', fun.y = sum) +
   scale_x_discrete() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
@@ -744,12 +744,12 @@ ggplot(aes(x = cand_nm, y = contb_receipt_amt),
 ```{r echo=FALSE, Bivariate_for_amount_and_election_type}
 
 ggplot(aes(x = election_tp, y = contb_receipt_amt),
-       data = new.Data) +
+       data = new_Data) +
   geom_boxplot(alpha = 0.2) +
   scale_x_discrete()
 
 ggplot(aes(x = election_tp, y = contb_receipt_amt),
-       data = subset(new.Data,
+       data = subset(new_Data,
                      contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
                        contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
   geom_boxplot(alpha = 0.2) +
@@ -757,7 +757,7 @@ ggplot(aes(x = election_tp, y = contb_receipt_amt),
   scale_x_discrete()
 
 ggplot(aes(x = election_tp, y = contb_receipt_amt),
-       data = new.Data) +
+       data = new_Data) +
   geom_bar(stat = 'summary', fun.y = sum) +
   scale_x_discrete() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
@@ -770,7 +770,7 @@ ggplot(aes(x = election_tp, y = contb_receipt_amt),
 
 ```{r echo=FALSE, Bivariate_for_amount_and_city}
 
-sum_amounts_by_city <- new.Data %>%
+sum_amounts_by_city <- new_Data %>%
   group_by(contbr_city) %>%
   summarise(sum_amount = sum(contb_receipt_amt),
             mean_amount = mean(contb_receipt_amt),
@@ -779,7 +779,7 @@ sum_amounts_by_city <- new.Data %>%
   arrange(desc(n)) %>%
   head(10)
 
-top10_sum_amounts_city <- subset(new.Data,
+top10_sum_amounts_city <- subset(new_Data,
                                  contbr_city %in% 
                                    sum_amounts_by_city$contbr_city)
 
@@ -820,7 +820,7 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
 ```{r echo=FALSE, Bivariate_for_date_and_nominees}
 
 ggplot(aes(x = contb_receipt_dt, y = if_nominee, color = if_nominee),
-       data = new.Data) +
+       data = new_Data) +
   geom_line(stat = 'summary', fun.y = sum) +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
@@ -833,7 +833,7 @@ ggplot(aes(x = contb_receipt_dt, y = if_nominee, color = if_nominee),
 ```{r echo=FALSE, Bivariate_for_date_and_party}
 
 ggplot(aes(x = contb_receipt_dt, y = cand_party, color = cand_party),
-       data = new.Data) +
+       data = new_Data) +
   geom_line(stat = 'summary', fun.y = sum) +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
@@ -843,24 +843,23 @@ ggplot(aes(x = contb_receipt_dt, y = cand_party, color = cand_party),
 
  I want to know how the contribution counts changed as time goes on. And I especially want to compare between Trump and Clinton. Therefore I'm going to use contb_receipt_dt and cand_nm columns. And I'll use line graph again.
 
-```{r echo=FALSE, Bivariate_for_date_and_main_candidates}
+```{r echo=FALSE, Bivariate_for_date_and_main_nominees}
 
-p1 <- ggplot(aes(x = contb_receipt_dt, y = cand_nm, color = cand_nm),
-             data = subset(new.Data,
+date_vs_main_nominees <- 
+  ggplot(aes(x = contb_receipt_dt, y = cand_nm, color = cand_nm),
+             data = subset(new_Data,
                            cand_nm %in% c('Trump, Donald J.', 
                                           'Clinton, Hillary Rodham'))) +
-        geom_line(stat = 'summary', fun.y = sum) +
-        scale_x_date(date_breaks = '3 month') +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-              axis.text.y = element_blank())
+         geom_line(stat = 'summary', fun.y = sum) +
+         theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+               axis.text.y = element_blank())
 
-p2 <- p1 + 
-  scale_x_date(limits = c(as.Date('2016-06-01'), as.Date('2016-11-30')),
-               date_breaks = '1 month')
+date_vs_main_nominees + scale_x_date(date_breaks = '3 month')
 
-p1
+date_vs_main_nominees + scale_x_date(limits = c(as.Date('2016-06-01'),
+                                                as.Date('2016-11-30')),
+                                     date_breaks = '1 month')
 
-p2
 ```
 
  I want to know how the contribution counts changed as time goes on. And I especially want to compare by election types. Therefore I'm going to use contb_receipt_dt and election_tp columns. And I'll again use line graph.
@@ -868,7 +867,7 @@ p2
 ```{r echo=FALSE, Bivariate_date_and_election_type}
 
 ggplot(aes(x = contb_receipt_dt, y = election_tp, color = election_tp),
-       data = new.Data) +
+       data = new_Data) +
   geom_line(stat = 'summary', fun.y = sum) +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
