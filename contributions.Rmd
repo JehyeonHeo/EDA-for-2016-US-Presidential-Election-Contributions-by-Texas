@@ -631,7 +631,7 @@ as well.
 
  I now start to draw bivariate plots. I want to investigate about how the contribution amounts are differed by different values in other variables first.
  
- In this time, to be more specific, I want to know how the contribution amounts changed as time goes on. Therefore I'm going to use contb_receipt_amt and contb_receipt_dt columns. And I'll draw 3 plots. First one is line graph to show the trend of sum of the contribution amounts. Second one is line graph to show the trend of mean, median, 0.1 quantile, and 0.9 quantile amounts. The other is scatter plot to see how the distribution of contribution amounts are changed.
+ In this time, to be more specific, I want to know how the contribution amounts changed as time goes on. Therefore I'm going to use contb_receipt_amt and contb_receipt_dt columns. And I'll draw 3 plots. First one is line graph to show the trend of sum of the contribution amounts. Second one is line graph to show the trend of mean, median, 0.05 quantile, and 0.95 quantile amounts. The other is scatter plot to see how the distribution of contribution amounts are changed.
 
 ```{r echo=FALSE, Bivariate_for_amount_and_date}
 
@@ -647,9 +647,9 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
             color = 'blue') +
   geom_line(stat = 'summary', fun.y = median,
             color = 'green') +
-  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.1),
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.05),
             color = 'orange') +
-  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.9),
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.95),
             color = 'purple') +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
@@ -671,11 +671,14 @@ ggplot(aes(x = if_nominee, y = contb_receipt_amt),
   geom_boxplot(alpha = 0.2) +
   scale_x_discrete()
 
+subset_amounts_within_middle_90_percent <- subset(
+  new_Data,
+  contb_receipt_amt > quantile(contb_receipt_amt, 0.05) &
+    contb_receipt_amt < quantile(contb_receipt_amt, 0.95)
+  )
+
 ggplot(aes(x = if_nominee, y = contb_receipt_amt),
-       data = 
-         subset(new_Data,
-                contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
-                  contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+       data = subset_amounts_within_middle_90_percent) +
   geom_boxplot(alpha = 0.2) +
   geom_point(stat = 'summary', fun.y = mean, size = 3, shape = 8) +
   scale_x_discrete()
@@ -697,9 +700,7 @@ ggplot(aes(x = cand_party, y = contb_receipt_amt),
   scale_x_discrete()
 
 ggplot(aes(x = cand_party, y = contb_receipt_amt),
-       data = subset(new_Data,
-                     contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
-                       contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+       data = subset_amounts_within_middle_90_percent) +
   geom_boxplot(alpha = 0.2) +
   geom_point(stat = 'summary', fun.y = mean, size = 3, shape = 8) +
   scale_x_discrete()
@@ -722,9 +723,7 @@ ggplot(aes(x = cand_nm, y = contb_receipt_amt),
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ggplot(aes(x = cand_nm, y = contb_receipt_amt),
-       data = subset(new_Data,
-                     contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
-                       contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+       data = subset_amounts_within_middle_90_percent) +
   geom_boxplot(alpha = 0.2) +
   geom_point(stat = 'summary', fun.y = mean, size = 1, shape = 8) +
   scale_x_discrete() +
@@ -748,9 +747,7 @@ ggplot(aes(x = election_tp, y = contb_receipt_amt),
   scale_x_discrete()
 
 ggplot(aes(x = election_tp, y = contb_receipt_amt),
-       data = subset(new_Data,
-                     contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
-                       contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+       data = subset_amounts_within_middle_90_percent) +
   geom_boxplot(alpha = 0.2) +
   geom_point(stat = 'summary', fun.y = mean, size = 1, shape = 8) +
   scale_x_discrete()
@@ -765,7 +762,7 @@ ggplot(aes(x = election_tp, y = contb_receipt_amt),
 
  In this time, I want to know how the contribution amounts are differed by cities. Therefore I'm going to use contb_receipt_amt and contbr_city columns. But I found in the univariate analysis that there are 2252 different city names in the Data. Therefore I'm going to show only the result of the top 10 cities by contribution counts. 
  
- I drew 4 plots. First one is boxplot to show the distribution of amounts in each city. Second one is also boxplot but only within middle 80% of amounts. Third one is line graph to show the 0.1 quantile, median, mean and 0.9 quantile amounts by each city. Fourth one is barplot to compare the sum of amounts of each city.
+ I drew 4 plots. First one is boxplot to show the distribution of amounts in each city. Second one is also boxplot but only within middle 90% of amounts. Third one is line graph to show the 0.05 quantile, median, mean and 0.95 quantile amounts by each city. Fourth one is barplot to compare the sum of amounts of each city.
 
 ```{r echo=FALSE, Bivariate_for_amount_and_city}
 
@@ -790,8 +787,8 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt),
 
 ggplot(aes(x = contbr_city, y = contb_receipt_amt),
        data = subset(top10_sum_amounts_city,
-                     contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
-                       contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+                     contb_receipt_amt > quantile(contb_receipt_amt, 0.05) &
+                       contb_receipt_amt < quantile(contb_receipt_amt, 0.95)))+
   geom_boxplot(alpha = 0.2) +
   geom_point(stat = 'summary', fun.y = mean, size = 1, shape = 8) +
   scale_x_discrete() +
@@ -799,10 +796,14 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt),
 
 ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
        data = top10_sum_amounts_city) +
-  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.9)) +
-  geom_line(stat = 'summary', fun.y = mean) +
-  geom_line(stat = 'summary', fun.y = median) +
-  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.1)) +
+  geom_line(stat = 'summary', 
+            fun.y = quantile, fun.args = list(probs = 0.95)) +
+  geom_line(stat = 'summary', 
+            fun.y = mean) +
+  geom_line(stat = 'summary', 
+            fun.y = median) +
+  geom_line(stat = 'summary', 
+            fun.y = quantile, fun.args = list(probs = 0.05)) +
   scale_x_discrete() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
