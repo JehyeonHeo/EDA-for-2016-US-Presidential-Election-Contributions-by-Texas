@@ -642,7 +642,10 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 # I designated aes(color = 'method_name') in each geom_line to make legend. 'method_name's become the name of line in legend. And I used scale_color_brewer to assign each line colors automatically. I specified size in override.aes argument to make legend lines look thicker.
-ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
+# And I aggregated daily data to monthly to see the overall trend of the statistical results without severe fluctuations.
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'), 
+           y = contb_receipt_amt),
        data = new_Data) +
   geom_line(stat = 'summary', fun.y = mean,
             aes(color = 'mean')) +
