@@ -231,23 +231,30 @@ names(Data)
 
  Now I'm going to get univariate plots.
  
+ First, I'm going to show the distribution of the count of contributions for each candidates. And I'll also show what is the percentages of total for each count.
+ 
+ I decided to use bar plot because the x variable is names, categorical values and the y variable is counts. I think that I will use bar plot lots of times because most of variables in Data are categorical values.
+ 
 ```{r echo=FALSE, Univariate_cand_nm_counts}
 
-# First, I'm going to show the distribution of the count of contributions for each candidates.
+#From now on, I'll make some variables to pass through table, sort and as.data.frame function. I do them to draw ggplot graph in order by counts. And I can filter the values by counts easily.
+
+# I designated dnn in table function to give the name to the dimensions in the result. If I don't designate it, the default name is 'Var1'.
+# I also designated responseName in as.data.frame function to give the name to the responses in the result. If I don't designate it, the default name is 'Freq'.
+# I designated decreasing equal T in sort function to make names with more counts appear at head.
 name_counts <- as.data.frame(sort(table(Data$cand_nm, dnn = 'name'),
                                   decreasing = T),
                              responseName = 'count')
 
 name_counts
 
-# Show the counts.
 # I'm going to often use theme function in ggplot. It is for rotating x labels  90 degrees when the label names are long. And I designated hjust = 1 to align the texts to the left of the plot and vjust = 0.5 to align them to each ticks.
 ggplot(aes(x = name, y = count),
        data = name_counts) +
   geom_bar(stat = 'identity') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
-# Show the percentages.
+# I chose count/sum(count) as y variable to express percentage.
 ggplot(aes(x = name, y = count/sum(count)),
        data = name_counts) +
   geom_bar(stat = 'identity') +
@@ -258,20 +265,17 @@ ggplot(aes(x = name, y = count/sum(count)),
 
   Clinton got the most number of contributions. After her, Cruz, Sanders, Trump, Carson, etc. follow. When change the counts to percentages, Clinton got about 38% and Cruz, Sanders, Trump and Carson followed by about 25%, 15%, 14%, 5% each.
 
+ In this time, I'm going to show the distribution of the count of contributions in each cities in Texas.
+ 
 ```{r echo=FALSE, Univariate_city_counts}
 
-# I'm going to show the distribution of the count of contributers in each cities in Texas.
-
-# Get count of contributions by cities.
 cities_counts <- as.data.frame(sort(table(Data$contbr_city, dnn = 'name'),
                                     decreasing = T),
                                responseName = 'count')
 
-# Show the number of cities.
 print("Number of contributers' cities")
 length(cities_counts$name)
 
-# Show the counts of top 10 results.
 ggplot(aes(x = name, y = count),
        data = cities_counts[1:10, ]) +
   geom_bar(stat = 'identity') +
@@ -283,22 +287,23 @@ ggplot(aes(x = name, y = count),
  
  The top 10 cities of Texas by population ordered by rank are Houston, San Antonio, Dallas, Austin, Fort Worth, El paso, Arlington, Corpus Christi, Plano and Laredo. But when I see the top 10 counts by contributions, the rank is a little different from the rank by population. San Antonio changed the rank with Austin. And while Corpus Christi and Laredo are inclued in populated top 10, they didn't appear at top 10 counts.
  
+ In this time, I'm going to show the histogram of contribution amounts in Texas. I can use histogram this time, because I can consider contribution amounts as continuous variable.
+
 ```{r echo=FALSE, Univariate_contribution_amount}
 
-# I'm going to show the distribution of contribution amounts in Texas.
 summary(Data$contb_receipt_amt)
 
 print('Top 6 most frequent contribution amounts:')
 head(sort(table(Data$contb_receipt_amt), decreasing = T))
 
-# Show the histogram. I designated binwidth as 100$.
+# I designated binwidth as 100$, because the range of amounts is about $30,000.
 ggplot(aes(x = contb_receipt_amt),
        data = Data) +
   geom_histogram(binwidth = 100) +
   scale_x_continuous(breaks = seq(-15000, 15000, 5000))
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
-# Show the histogram for center 50% of amounts. I designated binwidth as 1$.
+# Show the histogram for center 50% of amounts. I designated binwidth as 1$, because the range of IQR range is $80.
 ggplot(aes(x = contb_receipt_amt),
        data = subset(Data,
                      contb_receipt_amt >= quantile(Data$contb_receipt_amt, 0.25) & contb_receipt_amt <= quantile(Data$contb_receipt_amt, 0.75))) +
@@ -308,16 +313,16 @@ ggplot(aes(x = contb_receipt_amt),
 
 ```
  
- The minimum and maximum amount was -\$16,600 and \$15,000 each. It is weird that there are - values of contributions. I need to find what causes it.
+ The minimum and maximum amount was -\$16,600 and \$15,000 each. It is weird that there are - values of contributions. I wonder what causes it.
  
  The most common contribution amount is \$25. \$50, \$100 follow it. It is unexpected to see that 25$ is the most common one because I thought that it is convenient to contribute an amount in the tens.
  
  I can see from the table and histogram that most of contributions are in between \$20 and \$100.
- 
+
+ From now on, I'm going to investigate about negative values in contribution amounts.
+
 ```{r echo = FALSE, Univariate_more_about_amounts}
 
-# I want to know why negative values appear in amounts.
-# Subset data whose amount values are below 0.
 minus_amounts <- subset(Data, contb_receipt_amt < 0)
 
 summary(minus_amounts$contb_receipt_amt)
@@ -338,7 +343,6 @@ minus_amounts.description <- as.data.frame(sort(
   responseName = 'count'
   )
 
-# Show the top 6 descriptions for negative values.
 print('Top 6 descriptions for negative values:')
 head(minus_amounts.description)
 
@@ -361,7 +365,6 @@ print('Show the counts of contribution amounts whose values are above $5,400.')
 sort(table(more_than_5400_amounts$contb_receipt_amt),
      decreasing = T)
 
-# Show the top 6 descriptions for amounts whose values are above $5,400.
 print('Top 6 descriptions for amounts whose values are above $5,400:')
 head(more_than_5400_amounts.description)
 ```
@@ -372,53 +375,49 @@ head(more_than_5400_amounts.description)
  
  Therefore I searched their names in FEC site. For 'Durham, Joe' there were some records that aren't in Data. For 'Clark, Elloine M.' there were lots of records but there were some variety of similar names. But I can't find the refund records. I really wonder why they don't exit in there.
  
- Let's come back to the original question. To know why there are negative values, in this time, I got the top 6 most common receipt descriptions and showed using graph, too. The most common reasons were refund, redesignation and reattribution. When I found about them using the internet, there were [contribution limits](https://www.opensecrets.org/overview/limits.php) and [remedying excessive contributions methods](https://www.fec.gov/help-candidates-and-committees/candidate-taking-receipts/remedying-excessive-contribution/). Therefore negative values of contribution amounts aren't wrong datas.
+ Let's come back to the original question. To know why there are negative values, in this time, I got the top 6 most common receipt descriptions and showed using graph, too. The most common reasons were refund, redesignation and reattribution. When I found about them using the internet, there were [contribution limits](https://www.opensecrets.org/overview/limits.php) and [remedying excessive contributions methods](https://www.fec.gov/help-candidates-and-committees/candidate-taking-receipts/remedying-excessive-contribution/). Therefore negative values of contribution amounts aren't wrong datas even though -\$16,600 refund is still weird.
  
  And I got one more question when I saw the contribution limits. an indivisual can contribute maximum \$5,400 for primary and general elections. I want to know why there are some contributions which are more than \$5,400. Therefore I got the counts of them. And I found that most of them are \$10,800. The values weren't dispersed equally. And when I got the counts of receipt descriptions of the contributions, I found that most of them are for reattribution and redesignation. When I saw the result, I guessed that it can be possible that \$10,800 are made for 2 people requesting reattribution. But I cannot know the exact reason using this data.
  
+ In this time, I'm going to show the distribution of contribution dates in Texas. I can use line graph this time because I thought that it is the right method to express time series data. I'll show the counts for each day and each month.
+ 
 ```{r echo=FALSE, Univariate_contribution_date_counts}
 
-# I'm going to show the distribution of contributions' dates in Texas.
-
-# Get count of contributions by dates.
 dates_counts <- as.data.frame(table(Data$contb_receipt_dt, dnn = 'date'),
                               responseName = 'count')
 
+# Make the type of date variable in date_counts as Date. I needed to do it because as I made new data.frame, the type of the variable changed to factor.
 dates_counts$date <- as.Date(dates_counts$date, format = '%Y-%m-%d')
 
-# Show the top 6 dates of counts.
 print('Top 6 most frequent contribution dates:')
 head(dates_counts[order(-dates_counts$count),])
 
-# Show the counts for each date by line graph.
-# I chose line graph this time because I thought that it is the right method to express time series data.
 ggplot(aes(x = date, y = count),
        data = dates_counts) +
   geom_line() +
   scale_x_date() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
-# Show the counts for each month by line graph.
+# In this time, I needed to designate stat and fun.y in geom_line to aggregate daily data to each month.
 ggplot(aes(x = substr(date, 1, 7), y = count, group = 1),
        data = dates_counts) +
   geom_line(stat = 'summary',
            fun.y = sum) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
 ```
 
  When I see the top 6 dates of counts, there were the most contributions in July 11th, and 12th of 2016.
  
  And I can see that the overall contribution counts are increased from March, 2015 to March, 2016. And then it decreased and increased 2 times peaking at July, 2016 and October, 2016. It is overall trend and I can see from the line graph for each date that there are really lots of and huge fluctuations.
  
+ In this time, I'm going to show the counts of contributions for each election type in Texas. I'll use bar plot again.
+ 
 ```{r echo=FALSE, Univariate_election_type_counts}
 
-# I'm going to show the distribution of contributions for election types in Texas.
-
-# Get counts of contributions by election types.
 election_types_counts <- as.data.frame(table(Data$election_tp, dnn = 'type'),
                                        responseName = 'count')
 
-# Show the counts.
 election_types_counts[order(-election_types_counts$count),]
 
 ggplot(aes(x = type, y = count),
@@ -429,11 +428,12 @@ ggplot(aes(x = type, y = count),
 ```
 
  Most of contributions are for P2016 and G2016. US Presidential elections are divided into 2 stages, primary and general. Therefore I think that it is right because this data is about the financial contributions for presidential eletion. 
+ 
  But there are some contributions whose election types, to my thinking, aren't related with it. I'm going to investigate deeply about them in the following.
 
 ```{r echo=FALSE, Consider_election_types_other_than_P2016_and_G2016}
 
-# Show the data whose election type is O2016.
+# I'm going to print head and tail of the O2016 data because there are 68 rows.
 print('Head and tail parts of datas whose election type is O2016')
 O2016 = subset(Data, election_tp == 'O2016')
 head(O2016)
@@ -445,12 +445,10 @@ all(O2016$cand_nm == 'Stein, Jill')
 print('Since When and till when the contributions are received?')
 range(O2016$contb_receipt_dt)
 
-# Show the data whose election type is P2012.
 print('Datas whose election type is P2012')
 subset(Data, election_tp == 'P2012')
 
-# Show the data whose election type is ''. 
-# I'm going to print head and tail of the data because there are more 1500 rows.
+# I'm going to print head and tail of the data whose election type is '' because there are more 1500 rows.
 print("Head and tail parts of datas whose election type is ''")
 election_type_vacant <- subset(Data, election_tp == '')
 head(election_type_vacant)
@@ -514,15 +512,13 @@ ggplot(aes(x = contb_receipt_dt, y = ..count..),
 
  Therefore I decided to leave the election type '' as it is. And I'll also use the data of the type too distinguishing from P2016 and G2016. I think that it is the case of not designating for a particular election in writing the contribution form.
 
+ In this time, I'm going to show the distribution of contributions for each parties in Texas. I'll use bar plot again.
+
 ```{r echo=FALSE, Univarite_party_counts}
 
-# I'm going to show the distribution of contributions for each parties in Texas.
-
-# Get counts of contributions by parties.
 parties_counts <- as.data.frame(table(Data$cand_party, dnn = 'party'),
                                       responseName = 'count')
 
-# Show the counts.
 parties_counts[order(-parties_counts$count),]
 
 ggplot(aes(x = party, y = count),
@@ -538,15 +534,13 @@ ggplot(aes(x = party, y = count),
  
  But related with contributions, the sum of amounts can be more important than the sum of counts. Therefore I'm going to explore how the sum of amounts were different by parties, candidates, election types, etc. in the bivariate sections.
 
+ I'm going to show the distribution of contributions for nominees and those who aren't in Texas. I want to compare the 2 groups. Therefore I need to use if_nominee column which I made.
+
 ```{r echo=FALSE, Univariate_if_nominee_counts}
 
-# I'm going to show the distribution of contributions for nominees and those who aren't in Texas. 
-
-# Get counts of contributions by if_nominee.
 nominees_counts <- as.data.frame(table(Data$if_nominee, dnn = 'if_nominee'),
                                       responseName = 'count')
 
-# Show the counts.
 nominees_counts[order(-nominees_counts$count),]
 
 ggplot(aes(x = if_nominee, y = count),
