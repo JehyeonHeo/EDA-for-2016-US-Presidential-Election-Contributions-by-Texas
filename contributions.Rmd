@@ -415,10 +415,12 @@ ggplot(aes(x = substr(date, 1, 7), y = count, group = 1),
  
 ```{r echo=FALSE, Univariate_election_type_counts}
 
-election_types_counts <- as.data.frame(table(Data$election_tp, dnn = 'type'),
-                                       responseName = 'count')
+election_types_counts <- as.data.frame(
+  sort(table(Data$election_tp, dnn = 'type'),
+       decreasing = T), 
+  responseName = 'count')
 
-election_types_counts[order(-election_types_counts$count),]
+election_types_counts
 
 ggplot(aes(x = type, y = count),
        data = election_types_counts) +
@@ -427,7 +429,7 @@ ggplot(aes(x = type, y = count),
 
 ```
 
- Most of contributions are for P2016 and G2016. US Presidential elections are divided into 2 stages, primary and general. Therefore I think that it is right because this data is about the financial contributions for presidential eletion. 
+ Most of contributions are for P2016 and G2016 and the contributions for P2016 are more than 2 times of the contributions for G2016. US Presidential elections are divided into 2 stages, primary and general. Therefore I think that it is right that the most of  financial contributions are for presidential eletion in 2016. 
  
  But there are some contributions whose election types, to my thinking, aren't related with it. I'm going to investigate deeply about them in the following.
 
@@ -458,6 +460,7 @@ print('For whom are the contributions?')
 unique(election_type_vacant$cand_nm)
 
 print('Since when and till when the nominees received them?')
+# To answer the question, I needed to group datas by each nominees and summarise the date for each group of datas. Therefore I used functions in dplyr package.
 election_type_vacant %>%
   filter(if_nominee) %>%
   group_by(cand_nm) %>%
@@ -516,10 +519,11 @@ ggplot(aes(x = contb_receipt_dt, y = ..count..),
 
 ```{r echo=FALSE, Univarite_party_counts}
 
-parties_counts <- as.data.frame(table(Data$cand_party, dnn = 'party'),
-                                      responseName = 'count')
+parties_counts <- as.data.frame(sort(table(Data$cand_party, dnn = 'party'),
+                                     decreasing = T),
+                                responseName = 'count')
 
-parties_counts[order(-parties_counts$count),]
+parties_counts
 
 ggplot(aes(x = party, y = count),
        data = parties_counts) +
@@ -538,10 +542,12 @@ ggplot(aes(x = party, y = count),
 
 ```{r echo=FALSE, Univariate_if_nominee_counts}
 
-nominees_counts <- as.data.frame(table(Data$if_nominee, dnn = 'if_nominee'),
-                                      responseName = 'count')
+nominees_counts <- as.data.frame(sort(table(Data$if_nominee, 
+                                            dnn = 'if_nominee'),
+                                      decreasing = T),
+                                 responseName = 'count')
 
-nominees_counts[order(-nominees_counts$count),]
+nominees_counts
 
 ggplot(aes(x = if_nominee, y = count),
        data = nominees_counts) +
