@@ -607,7 +607,6 @@ gather your observations and add your own if you have other thoughts!
  
 ```{r echo=FALSE, Make_new_concise_dataframe}
 
-# Select essential columns.
 chosenColumns = c('contb_receipt_amt', 
                   'cand_nm', 
                   'cand_party', 
@@ -617,14 +616,12 @@ chosenColumns = c('contb_receipt_amt',
                   'contb_receipt_dt', 
                   'receipt_desc')
 
-# Make new dataframe.
 new.Data <- Data[, chosenColumns]
 
-# Exclude election type P2012 and O2016.
 new.Data <- subset(new.Data, !election_tp %in% c('P2012', 'O2016'))
 
-# Show the structure of new.Data.
 str(new.Data)
+
 ```
 
  There are 548326 contribution datas and 8 features in new dataframe.
@@ -635,11 +632,9 @@ yourself to relationships between a main output feature and one of the
 supporting variables. Try to look at relationships between supporting variables
 as well.
 
-```{r echo=FALSE, Bivariate_for_amount_and_date}
+ I want to know how the contribution amounts changed as time goes on. Therefore I'm going to use contb_receipt_amt and contb_receipt_dt columns. And I'll draw 3 plots. First one is line graph to show the trend of sum of the contribution amounts. Second one is line graph to show the trend of mean, median, 0.1 quantile, and 0.9 quantile amounts. The other is scatter plot to see how the distribution of contribution amounts are changed.
 
-# I want to know how the contribution amounts changed as time goes on.
-# Therefore I'm going to use contb_receipt_amt and contb_receipt_dt columns.
-# And I'll use line graph to show the trend of contribution amounts.
+```{r echo=FALSE, Bivariate_for_amount_and_date}
 
 ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
        data = new.Data) +
@@ -660,8 +655,6 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
-# This time, I'll use scatter plot to show the distributions of amounts by date.
-
 ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
        data = new.Data) +
   geom_jitter(alpha = 0.1) +
@@ -670,11 +663,9 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
 
 ```
 
-```{r echo=FALSE, Bivariate_for_amount_and_nominees}
+ I want to know how the contribution amounts are differed for nominees group and other candidates group. Therefore I'm going to use contb_receipt_amt and if_nominee columns. And I'll use boxplot and barplot to show the differences. Boxplot is for seeing the distribution of amounts for each group. And barplot is for comparing the sum amounts for each group.
 
-# I want to know how the contribution amounts are differed for nominees group and other candidates group.
-# Therefore I'm going to use contb_receipt_amt and if_nominee columns.
-# And I'll use boxplot and barplot to show the differences.
+```{r echo=FALSE, Bivariate_for_amount_and_nominees}
 
 ggplot(aes(x = if_nominee, y = contb_receipt_amt),
        data = new.Data) +
@@ -682,25 +673,24 @@ ggplot(aes(x = if_nominee, y = contb_receipt_amt),
   scale_x_discrete()
 
 ggplot(aes(x = if_nominee, y = contb_receipt_amt),
-       data = subset(new.Data,
-                     contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
-                       contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
+       data = 
+         subset(new.Data,
+                contb_receipt_amt > quantile(contb_receipt_amt, 0.1) &
+                  contb_receipt_amt < quantile(contb_receipt_amt, 0.9))) +
   geom_boxplot(alpha = 0.2) +
   geom_point(stat = 'summary', fun.y = mean, size = 3, shape = 8) +
   scale_x_discrete()
 
-ggplot(aes(x = if_nominee, y = contb_receipt_amt),
+ggplot(aes(x = if_nominee, y = contb_receipt_amt, group = 1),
        data = new.Data) +
   geom_bar(stat = 'summary', fun.y = sum) +
   scale_x_discrete()
 
 ```
 
-```{r echo=FALSE, Bivariate_for_amount_and_party}
+ I want to know how the contribution amounts are differed by parties. Therefore I'm going to use contb_receipt_amt and cand_party columns. And I'll use boxplot and barplot to show the differences as I did for if_nominee.
 
-# I want to know how the contribution amounts are differed by parties.
-# Therefore I'm going to use contb_receipt_amt and cand_party columns.
-# And I'll use boxplot and barplot to show the differences.
+```{r echo=FALSE, Bivariate_for_amount_and_party}
 
 ggplot(aes(x = cand_party, y = contb_receipt_amt),
        data = new.Data) +
@@ -722,11 +712,9 @@ ggplot(aes(x = cand_party, y = contb_receipt_amt),
 
 ```
 
-```{r echo=FALSE, Bivariate_for_amount_and_candidates}
+ I want to know how the contribution amounts are differed by candidates. Therefore I'm going to use contb_receipt_amt and cand_nm columns. And I'll use boxplot and barplot to show the differences as I did for cand_party.
 
-# I want to know how the contribution amounts are differed by candidates.
-# Therefore I'm going to use contb_receipt_amt and cand_nm columns.
-# And I'll use boxplot and barplot to show the differences.
+```{r echo=FALSE, Bivariate_for_amount_and_candidates}
 
 ggplot(aes(x = cand_nm, y = contb_receipt_amt),
        data = new.Data) +
@@ -750,13 +738,11 @@ ggplot(aes(x = cand_nm, y = contb_receipt_amt),
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
+
+ I want to know how the contribution amounts are differed by election types. Therefore I'm going to use contb_receipt_amt and election_tp columns. And I'll use boxplot and barplot to show the differences as I did for cand_nm.
 
 ```{r echo=FALSE, Bivariate_for_amount_and_election_type}
 
-# I want to know how the contribution amounts are differed by election types.
-# Therefore I'm going to use contb_receipt_amt and election_tp columns.
-# And I'll use boxplot and barplot to show the differences.
-
 ggplot(aes(x = election_tp, y = contb_receipt_amt),
        data = new.Data) +
   geom_boxplot(alpha = 0.2) +
@@ -778,11 +764,11 @@ ggplot(aes(x = election_tp, y = contb_receipt_amt),
 
 ```
 
-```{r echo=FALSE, Bivariate_for_amount_and_city}
+ I want to know how the contribution amounts are differed by cities. Therefore I'm going to use contb_receipt_amt and contbr_city columns. But I found in the univariate analysis that there are 2252 different city names in the Data. Therefore I'm going to show only the result of the top 10 cities by contribution counts. 
+ 
+ I drew 4 plots. First one is boxplot to show the distribution of amounts in each city. Second one is also boxplot but only within middle 80% of amounts. Third one is line graph to show the 0.1 quantile, median, mean and 0.9 quantile amounts by each city. Fourth one is barplot to compare the sum of amounts of each city.
 
-# I want to know how the contribution amounts are differed by cities.
-# Therefore I'm going to use contb_receipt_amt and contbr_city columns.
-# And I'll use boxplot and barplot to show the differences.
+```{r echo=FALSE, Bivariate_for_amount_and_city}
 
 sum_amounts_by_city <- new.Data %>%
   group_by(contbr_city) %>%
@@ -790,7 +776,7 @@ sum_amounts_by_city <- new.Data %>%
             mean_amount = mean(contb_receipt_amt),
             median_amount = median(contb_receipt_amt),
             n = n()) %>%
-  arrange(desc(sum_amount)) %>%
+  arrange(desc(n)) %>%
   head(10)
 
 top10_sum_amounts_city <- subset(new.Data,
@@ -823,18 +809,15 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
 
 ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
        data = top10_sum_amounts_city) +
-  geom_line(stat = 'summary', fun.y = length) +
+  geom_bar(stat = 'summary', fun.y = sum) +
   scale_x_discrete() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
-```{r echo=FALSE, Bivariate_for_date_and_nominees}
+ I want to know how the daily contribution counts changed as time goes on. Especially, I want to compare between the candidates who became nominees and those who couldn't. Therefore I'm going to use contb_receipt_dt and if_nominee columns. And I'll use line graph to show the trend of contribution counts.
 
-# I want to know how the contribution counts changed as time goes on.
-# And I especially want to compare between the candidates who became nominees and those who couldn't.
-# Therefore I'm going to use contb_receipt_dt and if_nominee columns.
-# And I'll use line graph to show the trend of contribution counts.
+```{r echo=FALSE, Bivariate_for_date_and_nominees}
 
 ggplot(aes(x = contb_receipt_dt, y = if_nominee, color = if_nominee),
        data = new.Data) +
@@ -845,12 +828,9 @@ ggplot(aes(x = contb_receipt_dt, y = if_nominee, color = if_nominee),
 
 ```
 
-```{r echo=FALSE, Bivariate_for_date_and_party}
+ I want to know how the contribution counts changed as time goes on. And I especially want to compare between the parties. Therefore I'm going to use contb_receipt_dt and cand_party columns. And I'll use line graph this time too to show the trend of contribution counts.
 
-# I want to know how the contribution counts changed as time goes on.
-# And I especially want to compare between the parties.
-# Therefore I'm going to use contb_receipt_dt and cand_party columns.
-# And I'll use line graph to show the trend of contribution counts.
+```{r echo=FALSE, Bivariate_for_date_and_party}
 
 ggplot(aes(x = contb_receipt_dt, y = cand_party, color = cand_party),
        data = new.Data) +
@@ -861,12 +841,9 @@ ggplot(aes(x = contb_receipt_dt, y = cand_party, color = cand_party),
 
 ```
 
-```{r echo=FALSE, Bivariate_for_date_and_main_candidates}
+ I want to know how the contribution counts changed as time goes on. And I especially want to compare between Trump and Clinton. Therefore I'm going to use contb_receipt_dt and cand_nm columns. And I'll use line graph again.
 
-# I want to know how the contribution counts changed as time goes on.
-# And I especially want to compare between Trump and Clinton.
-# Therefore I'm going to use contb_receipt_dt and cand_nm columns.
-# And I'll use line graph to show the trend of contribution counts.
+```{r echo=FALSE, Bivariate_for_date_and_main_candidates}
 
 p1 <- ggplot(aes(x = contb_receipt_dt, y = cand_nm, color = cand_nm),
              data = subset(new.Data,
@@ -882,17 +859,13 @@ p2 <- p1 +
                date_breaks = '1 month')
 
 p1
-p2
 
-grid.arrange(p1, p2)
+p2
 ```
 
-```{r echo=FALSE, Bivariate_date_and_election_type}
+ I want to know how the contribution counts changed as time goes on. And I especially want to compare by election types. Therefore I'm going to use contb_receipt_dt and election_tp columns. And I'll again use line graph.
 
-# I want to know how the contribution counts changed as time goes on.
-# And I especially want to compare by election types.
-# Therefore I'm going to use contb_receipt_dt and election_tp columns.
-# And I'll use line graph to show the trend of contribution counts.
+```{r echo=FALSE, Bivariate_date_and_election_type}
 
 ggplot(aes(x = contb_receipt_dt, y = election_tp, color = election_tp),
        data = new.Data) +
