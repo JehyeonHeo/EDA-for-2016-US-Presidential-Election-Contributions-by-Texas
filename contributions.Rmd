@@ -641,17 +641,21 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
+# I designated aes(color = 'method_name') in each geom_line to make legend. 'method_name's become the name of line in legend. And I used scale_color_brewer to assign each line colors automatically. I specified size in override.aes argument to make legend lines look thicker.
 ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
        data = new_Data) +
   geom_line(stat = 'summary', fun.y = mean,
-            color = 'blue') +
+            aes(color = 'mean')) +
   geom_line(stat = 'summary', fun.y = median,
-            color = 'green') +
+            aes(color = 'median')) +
   geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.05),
-            color = 'orange') +
+            aes(color = '0.05quantile')) +
   geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.95),
-            color = 'purple') +
+            aes(color = '0.95quantile')) +
   scale_x_date(date_breaks = '3 month') +
+  scale_color_brewer(type = 'div',
+                     guide = guide_legend(title = 'Methods',
+                                          override.aes = list(size = 2))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
@@ -794,17 +798,21 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt),
   scale_x_discrete() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
+# To show the legend, I used again aes(color = 'method_name') in geom_line and scale_color_brewer.
 ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
        data = top10_sum_amounts_city) +
-  geom_line(stat = 'summary', 
-            fun.y = quantile, fun.args = list(probs = 0.95)) +
-  geom_line(stat = 'summary', 
-            fun.y = mean) +
-  geom_line(stat = 'summary', 
-            fun.y = median) +
-  geom_line(stat = 'summary', 
-            fun.y = quantile, fun.args = list(probs = 0.05)) +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.95),
+            aes(color = '0.95quantile')) +
+  geom_line(stat = 'summary', fun.y = mean,
+            aes(color = 'mean')) +
+  geom_line(stat = 'summary', fun.y = median,
+            aes(color = 'median')) +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.05),
+            aes(color = '0.05quantile')) +
   scale_x_discrete() +
+  scale_color_brewer(type = 'div',
+                     guide = guide_legend(title = 'Methods',
+                                          override.aes = list(size = 2))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
