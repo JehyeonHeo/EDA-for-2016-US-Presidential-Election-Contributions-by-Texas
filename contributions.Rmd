@@ -399,10 +399,13 @@ ggplot(aes(x = date, y = count),
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 # In this time, I needed to designate stat and fun.y in geom_line to aggregate daily data to each month.
-ggplot(aes(x = substr(date, 1, 7), y = count, group = 1),
+# I made all day parts in date to '01' to aggregate daily counts and get monthly counts. The type of result is character that I used as.Date to change the type to Date.
+ggplot(aes(x = as.Date(format(date, '%Y-%m-01'), format = '%Y-%m-%d'), 
+           y = count),
        data = dates_counts) +
   geom_line(stat = 'summary',
-           fun.y = sum) +
+            fun.y = sum) +
+  scale_x_date() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
@@ -469,20 +472,22 @@ election_type_vacant %>%
   arrange(start_date)
 
 # I chose line graph to show trend as time goes on.
-ggplot(aes(x = contb_receipt_dt, y = ..count..), 
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'),
+           color = cand_nm), 
        data = subset(election_type_vacant, 
                      if_nominee == T)) + 
-  geom_freqpoly(aes(color = cand_nm)) + 
+  geom_line(stat = 'count') + 
   scale_x_date(date_breaks = '1 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 print("When candidates who aren't nominees received them?")
 range(subset(election_type_vacant, if_nominee == F)$contb_receipt_dt)
 
-ggplot(aes(x = contb_receipt_dt, y = ..count..), 
+ggplot(aes(x = contb_receipt_dt), 
        data = subset(election_type_vacant, 
                      if_nominee == F)) + 
-  geom_freqpoly() + 
+  geom_line(stat = 'count') + 
   scale_x_date(date_breaks = '1 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
@@ -903,18 +908,18 @@ will do that.
 
 print('How contribution receipt dates for Trump and McMullin are different for P2016 and G2016 each?')
 
-ggplot(aes(x = contb_receipt_dt, y = ..count..),
+ggplot(aes(x = contb_receipt_dt, color = election_tp),
        data = subset(Data, 
                      cand_nm %in% c('Trump, Donald J.', 'McMullin, Evan') & election_tp %in% c('P2016', 'G2016'))) +
   facet_wrap(~cand_nm, scales = 'free_y', nrow = 2, dir = 'v') +
-  geom_freqpoly(aes(color = election_tp))
+  geom_line(stat = 'count')
 
 print("How contribution receipt dates for those who aren't nominees are different for P2016 and G2016 each?")
 
-ggplot(aes(x = contb_receipt_dt, y = ..count..),
+ggplot(aes(x = contb_receipt_dt, color = election_tp),
        data = subset(Data, 
                      !if_nominee & election_tp %in% c('P2016', 'G2016'))) +
-  geom_freqpoly(aes(color = election_tp)) +
+  geom_line(stat = 'count') +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
