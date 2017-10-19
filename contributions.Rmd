@@ -398,7 +398,7 @@ ggplot(aes(x = date, y = count),
   scale_x_date() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
-# In this time, I needed to designate stat and fun.y in geom_line to aggregate daily data to each month.
+# In this time, I needed to designate stat and fun.y in geom_line to aggregate daily data to each month. And I used sum as fun.y to get monthly counts of contributions.
 # I made all day parts in date to '01' to aggregate daily counts and get monthly counts. The type of result is character that I used as.Date to change the type to Date.
 ggplot(aes(x = as.Date(format(date, '%Y-%m-01'), format = '%Y-%m-%d'), 
            y = count),
@@ -471,7 +471,7 @@ election_type_vacant %>%
             end_date = max(contb_receipt_dt)) %>%
   arrange(start_date)
 
-# I chose line graph to show trend as time goes on.
+# I chose line graph to show trend as time goes on. And I aggregated the daily data to monthly to show just overall trend.
 ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
                        format = '%Y-%m-%d'),
            color = cand_nm), 
@@ -660,7 +660,7 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
 
 ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
        data = new_Data) +
-  geom_jitter(alpha = 0.1) +
+  geom_jitter(alpha = 0.05) +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
@@ -835,10 +835,71 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
 
  Contribution amounts are main feature that I was interested in. And I drew lots of bivariate graphs related with them.
  
+ --------------------------------------------
+ 
  In this time, I'm going to draw bivariate graphs taking support features. And I think that contribution date is one of the important support feature that I'm going to draw graphs related with it in the following.
  
  I want to know how the daily contribution counts changed as time goes on. Especially, I want to compare between the candidates who became nominees and those who couldn't. Therefore I'm going to use contb_receipt_dt and if_nominee columns. And I'll use line graph to show the trend of contribution counts.
+ 
+```{r echo=FALSE, Bivariate_cand_nm_and_party}
 
+ggplot(aes(x = cand_nm, fill = cand_party),
+       data = new_Data) +
+  geom_bar() +
+  scale_fill_brewer(type = 'qual', palette = 3) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        axis.text.y = element_blank())
+
+```
+
+```{r echo=FALSE, Get_main_candidates_by_contribution_counts}
+
+main_cands_counts <- new_Data %>%
+  group_by(cand_nm) %>%
+  summarise(n = n()) %>%
+  arrange(desc(n)) %>%
+  head(7)
+
+```
+
+
+```{r echo=FALSE, Bivariate_cand_nm_and_city}
+
+# I used sum_amounts_by_city which I already made to make top10_sum_amounts_city. In its contbr_city column, there are top 10 city names by contribution counts.
+# I also used main_cands_counts to show only the result of 7 main candidates.
+ggplot(aes(x = contbr_city, color = cand_nm, group = cand_nm),
+       data = subset(new_Data, 
+                     contbr_city %in% sum_amounts_by_city$contbr_city &
+                       cand_nm %in% main_cands_counts$cand_nm)) +
+  geom_line(stat = 'count') +
+  scale_color_brewer(type = 'qual', 
+                     palette = 2,
+                     guide = guide_legend(title = 'Candidates',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Bivariate_party_and_city}
+
+ggplot(aes(x = contbr_city, color = cand_party, group = cand_party),
+       data = subset(new_Data, 
+                     contbr_city %in% sum_amounts_by_city$contbr_city)) +
+  geom_line(stat = 'count') +
+  scale_color_brewer(type = 'qual',
+                     palette = 2,
+                     guide = guide_legend(title = 'Methods',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+-----------------------------------------------
+
+ In this time, I'm going to draw bivariate graphs taking support features. And I think that contribution date is one of the important support feature that I'm going to draw graphs related with it in the following.
+ 
+ I want to know how the daily contribution counts changed as time goes on. Especially, I want to compare between the candidates who became nominees and those who couldn't. Therefore I'm going to use contb_receipt_dt and if_nominee columns. And I'll use line graph to show the trend of contribution counts.
+ 
 ```{r echo=FALSE, Bivariate_for_date_and_nominees}
 
 ggplot(aes(x = contb_receipt_dt, y = if_nominee, color = if_nominee),
@@ -884,6 +945,32 @@ date_vs_main_nominees + scale_x_date(limits = c(as.Date('2016-06-01'),
 
 ```
 
+```{r echo=FALSE, Bivariate_for_date_and_main_republican_candidates}
+
+ggplot(aes(x = contb_receipt_dt, color = cand_nm),
+           data = subset(new_Data,
+                         cand_nm %in% main_cands_counts$cand_nm &
+                           cand_party == 'Republican')) +
+  geom_line(stat = 'count') +
+  scale_color_brewer(type = 'qual',
+                     palette = 2,
+                     guide = guide_legend(title = 'Methods',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Bivariate_for_date_and_main_democratic_candidates}
+
+ggplot(aes(x = contb_receipt_dt, color = cand_nm),
+           data = subset(new_Data,
+                         cand_nm %in% main_cands_counts$cand_nm &
+                           cand_party == 'Democratic')) +
+  geom_line(stat = 'count') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
  In this time, I want to know how the contribution counts changed as time goes on. And I especially want to compare by election types. Therefore I'm going to use contb_receipt_dt and election_tp columns. And I'll again use line graph.
 
 ```{r echo=FALSE, Bivariate_date_and_election_type}
@@ -896,6 +983,7 @@ ggplot(aes(x = contb_receipt_dt, y = election_tp, color = election_tp),
         axis.text.y = element_blank())
 
 ```
+
 
 # Bivariate Analysis
 
