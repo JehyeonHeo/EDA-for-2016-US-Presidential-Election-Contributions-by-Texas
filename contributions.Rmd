@@ -481,7 +481,7 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
   scale_x_date(date_breaks = '1 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
-print("When candidates who aren't nominees received them?")
+print("Since when and till when the candidates who aren't nominees received them?")
 range(subset(election_type_vacant, if_nominee == F)$contb_receipt_dt)
 
 ggplot(aes(x = contb_receipt_dt), 
@@ -494,30 +494,22 @@ ggplot(aes(x = contb_receipt_dt),
 ```
 
  First, when I see the head and tail parts about datas whose type is O2016, it looked like they are all for Jill Stein. Thus, I checked whether the contributions are all for her and it was.
-
  Jill Stein was Green party nominee that I want to know since when and till when the contributions are given. And I found that they are from 2016-11-23 to 2016-11-28. It is after the election. And compared to the all election times it is really short.
-
  I searched about her and I found that it is related with [presidential election recount fundraising](https://en.wikipedia.org/wiki/Jill_Stein#2016). This is why they were classified as O2016, 'other' type election in 2016. It is not related with primary or general election. Therefore I think that it is better to exclude O2016 when exploring the data.
  
  
  Second, I got the datas whose type is P2012. I really wondered why the contributions related with 2012 election are in here. 
- 
  There are only 2 contributions and I searched about ['Gunn, George'](https://www.fec.gov/data/receipts/individual-contributions/?two_year_transaction_period=2016&contributor_name=Gunn%2C+george&min_date=01%2F01%2F2015&max_date=12%2F31%2F2016&contributor_employer=HSI) and ['Wylie, Wayne'](https://www.fec.gov/data/receipts/individual-contributions/?two_year_transaction_period=2016&contributor_name=wylie%2C+wayne&min_date=01%2F01%2F2015&max_date=12%2F31%2F2016&contributor_employer=jpmorgan+chase) in FEC site. And I found that they did them to 'Rick Santorum for president, inc.(2012)'. Even though they contributed in 2015 and 2016, it looked like they did them for debt retirement for [Rick Santorum's 2012 US president election](https://en.wikipedia.org/wiki/Republican_Party_presidential_primaries,_2012). Therefore I think that the contributions are not for Santorum's 2016 election and exclude P2012 when exploring the data.
  
  Third, when I see the head and tail parts about datas whose type is '', it looked like they are all for several candidates. Thus, I checked who received the contributions and 11 candidates got them.
- 
  In the 11 candidates, there were nominees and those who aren't. Therefore I thought that it is good to investigate the data dividing by if_nominee variable.
- 
  When I got the contributions' start date and end date for each nominees, I found that Jill Stein got them even when she didn't begin her campaign. And Trump and McMullin got them when they are running campaigns for general election. I can find about the fact in the line graph, too. It made me think that it is better to assign the type of contributions for Trump and McMullin to G2016 and other the type of the contributions for others including Stein to P2016.
- 
  I found that it can be applied to candidates who weren't nominees by drawing the line graph for them. The contributions for them almost stopped from July, 2016. July, 2016 was the month that [Republican](https://en.wikipedia.org/wiki/Republican_Party_presidential_primaries,_2016) and [Democratic](https://en.wikipedia.org/wiki/Democratic_Party_presidential_primaries,_2016) presidential primaries took place.
  
+ 
  But to be more confident to my thinking for assigning types, I searched for contributers whose names appear in the head and tail part of election_type_vacant in [FEC site](https://www.fec.gov/data/receipts/individual-contributions/?two_year_transaction_period=2016&min_date=01%2F01%2F2015&max_date=12%2F31%2F2016). 
- 
  Refunded contributions didn't appear in the site. Some contributions are recorded as primary(one example in [here](https://www.fec.gov/data/receipts/individual-contributions/?two_year_transaction_period=2016&contributor_name=WAY%2C+RICHARD+A+MR.&min_date=01%2F01%2F2015&max_date=12%2F31%2F2016) 2016-08-26 data) instead of ''. And others are recorded '' as it is in Data. 
- 
  I also found [FEC contribution brochure site](https://transition.fec.gov/pages/brochures/contrib.shtml) that there can be presumptive redesignations for 'Is not designated in writing for a particular election;' cases. 
-
  Therefore I decided to leave the election type '' as it is. And I'll also use the data of the type too distinguishing from P2016 and G2016. I think that it is the case of not designating for a particular election in writing the contribution form.
 
  In this time, I'm going to show the distribution of contributions for each parties in Texas. I'll use bar plot again.
@@ -637,7 +629,9 @@ yourself to relationships between a main output feature and one of the
 supporting variables. Try to look at relationships between supporting variables
 as well.
 
- I want to know how the contribution amounts changed as time goes on. Therefore I'm going to use contb_receipt_amt and contb_receipt_dt columns. And I'll draw 3 plots. First one is line graph to show the trend of sum of the contribution amounts. Second one is line graph to show the trend of mean, median, 0.1 quantile, and 0.9 quantile amounts. The other is scatter plot to see how the distribution of contribution amounts are changed.
+ I now start to draw bivariate plots. I want to investigate about how the contribution amounts are differed by different values in other variables first.
+ 
+ In this time, to be more specific, I want to know how the contribution amounts changed as time goes on. Therefore I'm going to use contb_receipt_amt and contb_receipt_dt columns. And I'll draw 3 plots. First one is line graph to show the trend of sum of the contribution amounts. Second one is line graph to show the trend of mean, median, 0.1 quantile, and 0.9 quantile amounts. The other is scatter plot to see how the distribution of contribution amounts are changed.
 
 ```{r echo=FALSE, Bivariate_for_amount_and_date}
 
@@ -668,7 +662,7 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
 
 ```
 
- I want to know how the contribution amounts are differed for nominees group and other candidates group. Therefore I'm going to use contb_receipt_amt and if_nominee columns. And I'll use boxplot and barplot to show the differences. Boxplot is for seeing the distribution of amounts for each group. And barplot is for comparing the sum amounts for each group.
+ In this time, I want to know how the contribution amounts are differed by nominees group and other candidates group. Therefore I'm going to use contb_receipt_amt and if_nominee columns. And I'll use boxplot and barplot to show the differences. Boxplot is for seeing the distribution of amounts for each group. And barplot is for comparing the sum amounts for each group.
 
 ```{r echo=FALSE, Bivariate_for_amount_and_nominees}
 
@@ -693,7 +687,7 @@ ggplot(aes(x = if_nominee, y = contb_receipt_amt, group = 1),
 
 ```
 
- I want to know how the contribution amounts are differed by parties. Therefore I'm going to use contb_receipt_amt and cand_party columns. And I'll use boxplot and barplot to show the differences as I did for if_nominee.
+ In this time, I want to know how the contribution amounts are differed by parties. Therefore I'm going to use contb_receipt_amt and cand_party columns. And I'll use boxplot and barplot to show the differences as I did for if_nominee.
 
 ```{r echo=FALSE, Bivariate_for_amount_and_party}
 
@@ -717,7 +711,7 @@ ggplot(aes(x = cand_party, y = contb_receipt_amt),
 
 ```
 
- I want to know how the contribution amounts are differed by candidates. Therefore I'm going to use contb_receipt_amt and cand_nm columns. And I'll use boxplot and barplot to show the differences as I did for cand_party.
+ In this time, I want to know how the contribution amounts are differed by candidates. Therefore I'm going to use contb_receipt_amt and cand_nm columns. And I'll use boxplot and barplot to show the differences as I did for cand_party.
 
 ```{r echo=FALSE, Bivariate_for_amount_and_candidates}
 
@@ -744,7 +738,7 @@ ggplot(aes(x = cand_nm, y = contb_receipt_amt),
 
 ```
 
- I want to know how the contribution amounts are differed by election types. Therefore I'm going to use contb_receipt_amt and election_tp columns. And I'll use boxplot and barplot to show the differences as I did for cand_nm.
+ In this time, I want to know how the contribution amounts are differed by election types. Therefore I'm going to use contb_receipt_amt and election_tp columns. And I'll use boxplot and barplot to show the differences as I did for cand_nm.
 
 ```{r echo=FALSE, Bivariate_for_amount_and_election_type}
 
@@ -769,7 +763,7 @@ ggplot(aes(x = election_tp, y = contb_receipt_amt),
 
 ```
 
- I want to know how the contribution amounts are differed by cities. Therefore I'm going to use contb_receipt_amt and contbr_city columns. But I found in the univariate analysis that there are 2252 different city names in the Data. Therefore I'm going to show only the result of the top 10 cities by contribution counts. 
+ In this time, I want to know how the contribution amounts are differed by cities. Therefore I'm going to use contb_receipt_amt and contbr_city columns. But I found in the univariate analysis that there are 2252 different city names in the Data. Therefore I'm going to show only the result of the top 10 cities by contribution counts. 
  
  I drew 4 plots. First one is boxplot to show the distribution of amounts in each city. Second one is also boxplot but only within middle 80% of amounts. Third one is line graph to show the 0.1 quantile, median, mean and 0.9 quantile amounts by each city. Fourth one is barplot to compare the sum of amounts of each city.
 
@@ -820,6 +814,10 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
 
 ```
 
+ Contribution amounts are main feature that I was interested in. And I drew lots of bivariate graphs related with them.
+ 
+ In this time, I'm going to draw bivariate graphs taking support features. And I think that contribution date is one of the important support feature that I'm going to draw graphs related with it in the following.
+ 
  I want to know how the daily contribution counts changed as time goes on. Especially, I want to compare between the candidates who became nominees and those who couldn't. Therefore I'm going to use contb_receipt_dt and if_nominee columns. And I'll use line graph to show the trend of contribution counts.
 
 ```{r echo=FALSE, Bivariate_for_date_and_nominees}
@@ -833,7 +831,7 @@ ggplot(aes(x = contb_receipt_dt, y = if_nominee, color = if_nominee),
 
 ```
 
- I want to know how the contribution counts changed as time goes on. And I especially want to compare between the parties. Therefore I'm going to use contb_receipt_dt and cand_party columns. And I'll use line graph this time too to show the trend of contribution counts.
+ In this time, I want to know how the contribution counts changed as time goes on. And I especially want to compare between the parties. Therefore I'm going to use contb_receipt_dt and cand_party columns. And I'll use line graph this time too to show the trend of contribution counts.
 
 ```{r echo=FALSE, Bivariate_for_date_and_party}
 
@@ -846,7 +844,7 @@ ggplot(aes(x = contb_receipt_dt, y = cand_party, color = cand_party),
 
 ```
 
- I want to know how the contribution counts changed as time goes on. And I especially want to compare between Trump and Clinton. Therefore I'm going to use contb_receipt_dt and cand_nm columns. And I'll use line graph again.
+ In this time, I want to know how the contribution counts changed as time goes on. And I especially want to compare between Trump and Clinton. Therefore I'm going to use contb_receipt_dt and cand_nm columns. And I'll use line graph again.
 
 ```{r echo=FALSE, Bivariate_for_date_and_main_nominees}
 
@@ -867,7 +865,7 @@ date_vs_main_nominees + scale_x_date(limits = c(as.Date('2016-06-01'),
 
 ```
 
- I want to know how the contribution counts changed as time goes on. And I especially want to compare by election types. Therefore I'm going to use contb_receipt_dt and election_tp columns. And I'll again use line graph.
+ In this time, I want to know how the contribution counts changed as time goes on. And I especially want to compare by election types. Therefore I'm going to use contb_receipt_dt and election_tp columns. And I'll again use line graph.
 
 ```{r echo=FALSE, Bivariate_date_and_election_type}
 
