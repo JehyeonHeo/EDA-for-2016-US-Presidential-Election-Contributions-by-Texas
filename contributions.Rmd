@@ -24,6 +24,7 @@ a margin line to help you keep track of this guideline!
 # want it to. This will clean up the flow of your report.
 
 library(ggplot2)
+library(gridExtra)
 library(dplyr)
 library(RColorBrewer)
 library(GGally)
@@ -362,7 +363,7 @@ sort(table(more_than_5400_amounts$contb_receipt_amt),
 
 # Show the top 6 descriptions for amounts whose values are above $5,400.
 print('Top 6 descriptions for amounts whose values are above $5,400:')
-head(more_than_abs_5400_amounts.description)
+head(more_than_5400_amounts.description)
 ```
 
  I want to know why there are negative values for amounts. First I got the summary of the negative amounts to know the distribution of the values. And I found that the difference of mean and median are more than -\$700. I could guess that it happened because of the existence of outliers like -\$16,600. The result gave me one more question. Why there are outliers of amounts?
@@ -825,6 +826,80 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
   geom_line(stat = 'summary', fun.y = length) +
   scale_x_discrete() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Bivariate_for_date_and_nominees}
+
+# I want to know how the contribution counts changed as time goes on.
+# And I especially want to compare between the candidates who became nominees and those who couldn't.
+# Therefore I'm going to use contb_receipt_dt and if_nominee columns.
+# And I'll use line graph to show the trend of contribution counts.
+
+ggplot(aes(x = contb_receipt_dt, y = if_nominee, color = if_nominee),
+       data = new.Data) +
+  geom_line(stat = 'summary', fun.y = sum) +
+  scale_x_date(date_breaks = '3 month') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        axis.text.y = element_blank())
+
+```
+
+```{r echo=FALSE, Bivariate_for_date_and_party}
+
+# I want to know how the contribution counts changed as time goes on.
+# And I especially want to compare between the parties.
+# Therefore I'm going to use contb_receipt_dt and cand_party columns.
+# And I'll use line graph to show the trend of contribution counts.
+
+ggplot(aes(x = contb_receipt_dt, y = cand_party, color = cand_party),
+       data = new.Data) +
+  geom_line(stat = 'summary', fun.y = sum) +
+  scale_x_date(date_breaks = '3 month') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        axis.text.y = element_blank())
+
+```
+
+```{r echo=FALSE, Bivariate_for_date_and_main_candidates}
+
+# I want to know how the contribution counts changed as time goes on.
+# And I especially want to compare between Trump and Clinton.
+# Therefore I'm going to use contb_receipt_dt and cand_nm columns.
+# And I'll use line graph to show the trend of contribution counts.
+
+p1 <- ggplot(aes(x = contb_receipt_dt, y = cand_nm, color = cand_nm),
+             data = subset(new.Data,
+                           cand_nm %in% c('Trump, Donald J.', 
+                                          'Clinton, Hillary Rodham'))) +
+        geom_line(stat = 'summary', fun.y = sum) +
+        scale_x_date(date_breaks = '3 month') +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+              axis.text.y = element_blank())
+
+p2 <- p1 + 
+  scale_x_date(limits = c(as.Date('2016-06-01'), as.Date('2016-11-30')),
+               date_breaks = '1 month')
+
+p1
+p2
+
+grid.arrange(p1, p2)
+```
+
+```{r echo=FALSE, Bivariate_date_and_election_type}
+
+# I want to know how the contribution counts changed as time goes on.
+# And I especially want to compare by election types.
+# Therefore I'm going to use contb_receipt_dt and election_tp columns.
+# And I'll use line graph to show the trend of contribution counts.
+
+ggplot(aes(x = contb_receipt_dt, y = election_tp, color = election_tp),
+       data = new.Data) +
+  geom_line(stat = 'summary', fun.y = sum) +
+  scale_x_date(date_breaks = '3 month') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        axis.text.y = element_blank())
 
 ```
 
