@@ -1025,16 +1025,22 @@ date_vs_main_democratics <-
                            cand_nm %in% main_cands_counts$cand_nm &
                              cand_party == 'Democratic')) +
     geom_line(stat = 'count') +
+    scale_color_brewer(type = 'qual',
+                       palette = 2,
+                       guide = guide_legend(
+                         title = 'Democratic main candidates',
+                         override.aes = list(size = 2))
+                       ) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 date_vs_main_democratics + scale_x_date(date_breaks = '3 month')
 
 date_vs_main_democratics + scale_x_date(limits = c(as.Date('2016-04-01'),
-                                                as.Date('2016-11-30')),
-                                     date_breaks = '1 month')
+                                                  as.Date('2016-11-30')),
+                                       date_breaks = '1 month')
 ```
 
- I can find that there were some time when Sanders got more contributions than Clinton. I wonder why he became a lot more support from Texas than Clinton at the time. Anyway it explains why the contributions for Democratic party catched up the those for Republican party at about March, 2016.
+ The contributions for Sanders decreased as those for Clinton increased from May, 2016. I can find that there were some time when Sanders got more contributions than Clinton. I wonder why he became a lot more support from Texas than Clinton at the time. Anyway it explains why the contributions for Democratic party catched up the those for Republican party at about March, 2016.
  
  In this time, I want to know how the contribution counts for each election type changed as time goes on. Therefore I'm going to use contb_receipt_dt and election_tp columns. And I'll again use line graph. I expect that division between the types are almost flat at about July, 2016 because at that time party primary elections happened.
 
