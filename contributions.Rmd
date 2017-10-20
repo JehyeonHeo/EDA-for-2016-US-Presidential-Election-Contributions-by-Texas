@@ -631,7 +631,7 @@ as well.
 
  I now start to draw bivariate plots. I want to investigate about how the contribution amounts are differed by different values in other variables first.
  
- In this time, to be more specific, I want to know how the contribution amounts changed as time goes on. Therefore I'm going to use contb_receipt_amt and contb_receipt_dt columns. And I'll draw 3 plots. First one is line graph to show the trend of sum of the contribution amounts. Second one is line graph to show the trend of mean, median, 0.05 quantile, and 0.95 quantile amounts. The other is scatter plot to see how the distribution of contribution amounts are changed.
+ In this time, to be more specific, I want to know how the contribution amounts changed as time goes on. Therefore I'm going to use contb_receipt_amt and contb_receipt_dt columns. And I'll draw line graphs to show the trend and scatter plot to see how the distribution of contribution amounts are changed. 
 
 ```{r echo=FALSE, Bivariate_for_amount_and_date}
 
@@ -667,7 +667,17 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
+# I used abs function to make all amounts to positive values. And I plused 1 to make them above 0 when I transformed the scale to log. I think that adding $1 won't affect much to the values especially for amounts whose original absolute values are more than $30.
+ggplot(aes(x = contb_receipt_dt, y = abs(contb_receipt_amt) + 1),
+       data = new_Data) +
+  geom_jitter(alpha = 0.05) +
+  scale_x_date(date_breaks = '3 month') +
+  scale_y_log10(breaks = c(30, 100, 300, 1000, 3000, 10000)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
 ```
+
+ And I'll draw 3 plots. First one is line graph to show the trend of sum of the contribution amounts. Second one is line graph to show the trend of mean, median, 0.05 quantile, and 0.95 quantile amounts. The other is scatter plot to see how the distribution of contribution amounts are changed.
 
  In this time, I want to know how the contribution amounts are differed by nominees group and other candidates group. Therefore I'm going to use contb_receipt_amt and if_nominee columns. And I'll use boxplot and barplot to show the differences. Boxplot is for seeing the distribution of amounts for each group. And barplot is for comparing the sum amounts for each group.
 
