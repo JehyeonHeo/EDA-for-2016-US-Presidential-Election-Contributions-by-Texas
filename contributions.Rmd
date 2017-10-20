@@ -784,21 +784,23 @@ ggplot(aes(x = cand_nm, y = contb_receipt_amt),
 
 ```{r echo=FALSE, Bivariate_for_amount_and_election_type}
 
+# I won't show the result of the datas whose election type '' because I don't know exact type they get.
 ggplot(aes(x = election_tp, y = contb_receipt_amt),
-       data = new_Data) +
+       data = subset(new_Data, election_tp != '')) +
   geom_boxplot(alpha = 0.2) +
   scale_x_discrete()
 
 # I used again aes(shape = 'mean') and scale_shape_manual to show mean of each group.
 ggplot(aes(x = election_tp, y = contb_receipt_amt),
-       data = subset_amounts_within_middle_90_percent) +
+       data = subset(subset_amounts_within_middle_90_percent,
+                     election_tp != '')) +
   geom_boxplot(alpha = 0.2) +
   geom_point(stat = 'summary', fun.y = mean, size = 2, aes(shape = 'mean')) +
   scale_shape_manual('', values = c('mean' = 8)) +
   scale_x_discrete()
 
 ggplot(aes(x = election_tp, y = contb_receipt_amt),
-       data = new_Data) +
+       data = subset(new_Data, election_tp != '')) +
   geom_bar(stat = 'summary', fun.y = sum) +
   scale_x_discrete() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
@@ -1039,7 +1041,7 @@ date_vs_main_democratics + scale_x_date(limits = c(as.Date('2016-04-01'),
 ```{r echo=FALSE, Bivariate_date_and_election_type}
 
 ggplot(aes(x = contb_receipt_dt, color = election_tp),
-       data = new_Data) +
+       data = subset(new_Data, election_tp != '')) +
   geom_line(stat = 'count') +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
