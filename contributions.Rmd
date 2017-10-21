@@ -919,7 +919,40 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
 ```
 
  Second plot is line graph which shows the 0.05 quantile, median, mean and 0.95 quantile amounts by each top 10 city. It shows that 0.95 quantile value of Dallas was really big. The mean of Dallas was biggest too but not much different from Houston.
+ 
+ In the following, I'm going to explore more about top 5% amounts from Dallas.
+ 
+```{r echo=FALSE, Explore_more_about_Dallas_top_0.05}
 
+# I grouped by city and use filter to get top 5% amounts of each city. And I made new column 'if_dallas' using mutate to specify Dallas datas.
+top_5percent_by_city <- new_Data %>%
+  group_by(contbr_city) %>%
+  filter(contb_receipt_amt > quantile(contb_receipt_amt, 0.95)) %>%
+  mutate(if_dallas = ifelse(contbr_city == 'DALLAS', TRUE, FALSE))
+
+# I used freqpoly because I want to draw histogram and compare Dallas datas to other cities' datas at a time.
+ggplot(aes(x = contb_receipt_amt, color = if_dallas), 
+       data = top_5percent_by_city) +
+  geom_freqpoly(binwidth = 100)
+
+# To help know the distribution of amounts more in detail, I printed top 6 common values in top 5% amounts from Dallas.
+head(as.data.frame(sort(table(subset(top_5percent_by_city,
+                                     if_dallas == T)$contb_receipt_amt,
+                              dnn = 'amount'),
+                        decreasing = T),
+                   responseName = 'count'))
+
+# I used geom_jitter instead of geom_point to see the distribution of the amounts more in detail.
+ggplot(aes(x = cand_nm, y = contb_receipt_amt, color = if_dallas),
+       data = top_5percent_by_city) +
+  geom_jitter(alpha = 0.8) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+ I can see that almost all of top 5% contributions from Dallas were \$2,700. And there were really small counts for the amounts less than \$2,700 from Dallas which I could expect a lot more from the other cities. It looked like that is why their 0.95 quantile was biggest.
+ And I can see from the scatter plot that the contributions are distributed to several candidates, not just to 2 or 3.
+ 
 ```{r echo=FALSE, Bivariate_for_amount_and_city3}
 
 ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
