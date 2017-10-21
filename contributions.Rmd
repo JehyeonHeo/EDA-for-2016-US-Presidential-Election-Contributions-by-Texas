@@ -870,17 +870,6 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
  In this time, I'm going to draw bivariate graphs taking support features. I want to know more about the political difference between cities in Texas.
  
  First, I want to know how the contribution counts for each candidates are differed by each city. Therefore I'm going to use cand_nm and cand_party columns. And I'll use line graph because I need to show the differences of several candidates by each city. It is inconvenient to compare when multiple bars are used for each legend.
- 
-```{r echo=FALSE, Bivariate_cand_nm_and_party}
-
-ggplot(aes(x = cand_nm, fill = cand_party),
-       data = new_Data) +
-  geom_bar() +
-  scale_fill_brewer(type = 'qual', palette = 3) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-        axis.text.y = element_blank())
-
-```
 
  But before I'm going to draw the plot, I'm going to make a variable. Its one column contains the names of candidates and the other column contains the counts of contributions. And there will be only 7 names because I chose to select only 7 main candidates by contribution counts.
  
