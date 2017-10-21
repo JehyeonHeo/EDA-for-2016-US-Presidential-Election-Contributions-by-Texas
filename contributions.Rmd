@@ -1196,7 +1196,8 @@ here. Use the questions below to guide your discussion.
  
 ### What was the strongest relationship you found?
 
-
+ I cannot do correlation test because there are only 1 numeric column in data. But as I see relationships between variables by drawing graphs, I found that if_nominee and election_tp are most similar when I used the variables in y axis as count and date in x axis. If a data got if_nominee as TRUE, it is really likely to get election_tp as G2016. If a data got if_nominee as FALSE, it is also really likely to get election_tp as P2016. And I think that it should be because lots of contributions for primary election go to candidates who wouldn't be a nominee, and most of contributions for general election go to nominees.
+ 
 # Multivariate Plots Section
 
 > **Tip**: Now it's time to put everything together. Based on what you found in
