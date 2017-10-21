@@ -957,33 +957,25 @@ ggplot(aes(x = contb_receipt_dt, color = cand_party),
 
 ```{r echo=FALSE, Bivariate_for_date_and_main_nominees}
 
-date_vs_main_nominees <- 
-  ggplot(aes(x = contb_receipt_dt, color = cand_nm),
-             data = subset(new_Data,
-                           cand_nm %in% c('Trump, Donald J.', 
-                                          'Clinton, Hillary Rodham'))) +
-         geom_line(stat = 'count') +
-         theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-
-date_vs_main_nominees + scale_x_date(date_breaks = '3 month')
-
-date_vs_main_nominees + scale_x_date(limits = c(as.Date('2016-04-01'),
-                                                as.Date('2016-11-30')),
-                                     date_breaks = '1 month')
+ggplot(aes(x = contb_receipt_dt, color = cand_nm),
+           data = subset(new_Data,
+                         cand_nm %in% c('Trump, Donald J.', 
+                                        'Clinton, Hillary Rodham'))) +
+  geom_line(stat = 'count') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+  scale_x_date(date_breaks = '3 month')
 
 ```
 
  I can see that the part of from June to Noverber of 2016 is almost same to the above date vs party graph. I think that it should be because Clinton and Trump were elected as nominees at July, 2016. 
  
- I can see more in detail by limiting the term form April to November of 2016. 
-There are lots of huge fluctuations for Trump. I wonder if it is related with the comments and news of Trump. In contrast to Trump, Clinton got more and more contributions generally as time goes on.
+ I can see that there are lots of huge fluctuations for Trump between July to August, 2016. I wonder if it is related with the comments and news of Trump. In contrast to Trump, Clinton got more and more contributions generally as time goes on.
 
  But this graph doesn't explain about the fall of contributions to Republican party in May, 2016. Therefore in this time, I'm going to compare Republican party candidates. And I decided to use main_cands_counts to get only main candidates' names.
  
 ```{r echo=FALSE, Bivariate_for_date_and_main_republican_candidates}
 
-date_vs_main_republicans <- 
-  ggplot(aes(x = contb_receipt_dt, color = cand_nm),
+ggplot(aes(x = contb_receipt_dt, color = cand_nm),
            data = subset(new_Data,
                          cand_nm %in% main_cands_counts$cand_nm &
                            cand_party == 'Republican')) +
@@ -992,41 +984,31 @@ date_vs_main_republicans <-
                      palette = 2,
                      guide = guide_legend(title = 'Republican main candidates',
                                           override.aes = list(size = 2))) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-
-date_vs_main_republicans + scale_x_date(date_breaks = '3 month')
-
-date_vs_main_republicans + scale_x_date(limits = c(as.Date('2016-04-01'),
-                                                as.Date('2016-11-30')),
-                                     date_breaks = '1 month')
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) + 
+  scale_x_date(date_breaks = '3 month')
 
 ```
 
- The result shows that the fall of May, 2016 was because of Cruz. I can see it more closely by limiting the term. I wonder whether Cruz decided to stop his campaign at about May, 2016. And I found from [internet](https://en.wikipedia.org/wiki/Republican_Party_presidential_primaries,_2016#May_3.2C_2016:_Indiana_primary) that it is true. It looked like that lots of people in Texas who support Republican party supported Cruz, the Senator from the state that after his dropping out of the race the contributions for the party collapsed.
+ The result shows that the fall of May, 2016 was because of Cruz. I wonder whether Cruz decided to stop his campaign at about May, 2016. And I found from [internet](https://en.wikipedia.org/wiki/Republican_Party_presidential_primaries,_2016#May_3.2C_2016:_Indiana_primary) that it is true. It looked like that lots of people in Texas who support Republican party supported Cruz, the Senator from the state that after his dropping out of the race the contributions for the party collapsed.
  
  Now I'm also going to compare Democratic party candidates. I expect that it explains more about the contributions for the party.
  
 ```{r echo=FALSE, Bivariate_for_date_and_main_democratic_candidates}
 
-date_vs_main_democratics <-
-  ggplot(aes(x = contb_receipt_dt, color = cand_nm),
-             data = subset(new_Data,
-                           cand_nm %in% main_cands_counts$cand_nm &
-                             cand_party == 'Democratic')) +
-    geom_line(stat = 'count') +
-    scale_color_brewer(type = 'qual',
-                       palette = 2,
-                       guide = guide_legend(
-                         title = 'Democratic main candidates',
-                         override.aes = list(size = 2))
-                       ) +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+ggplot(aes(x = contb_receipt_dt, color = cand_nm),
+           data = subset(new_Data,
+                         cand_nm %in% main_cands_counts$cand_nm &
+                           cand_party == 'Democratic')) +
+  geom_line(stat = 'count') +
+  scale_color_brewer(type = 'qual',
+                     palette = 2,
+                     guide = guide_legend(
+                       title = 'Democratic main candidates',
+                       override.aes = list(size = 2))
+                     ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) + 
+  scale_x_date(date_breaks = '3 month')
 
-date_vs_main_democratics + scale_x_date(date_breaks = '3 month')
-
-date_vs_main_democratics + scale_x_date(limits = c(as.Date('2016-04-01'),
-                                                  as.Date('2016-11-30')),
-                                       date_breaks = '1 month')
 ```
 
  The contributions for Sanders decreased as those for Clinton increased from May, 2016. I can find that there were some time when Sanders got more contributions than Clinton. I wonder why he became a lot more support from Texas than Clinton at the time. Anyway it explains why the contributions for Democratic party catched up the those for Republican party at about March, 2016.
