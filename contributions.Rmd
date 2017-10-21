@@ -694,7 +694,28 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
- Second plot is line graph which shows the trend of mean, median, 0.05 quantile, and 0.95 quantile amounts. And I chose to draw after aggregating daily dates to monthly to see the overall trends with less fluctuations. I can see that mean values were always bigger than median values. And I can also see that the difference from median values to 0.95 quantile values are much bigger than to 0.05 quantile values. I think it is because there are some outlier amounts. I think that I can check it by drawing scatter plot of dates and amounts. And I can see that 0.95 quantile and mean were biggest at March, 2015. I wonder why it happened especially at the time.
+ Second plot is line graph which shows the trend of mean, median, 0.05 quantile, and 0.95 quantile amounts. And I chose to draw after aggregating daily dates to monthly to see the overall trends with less fluctuations. I can see that mean values were always bigger than median values. And I can also see that the difference from median values to 0.95 quantile values are much bigger than to 0.05 quantile values. I think it is because there are some outlier amounts. I think that I can check it by drawing scatter plot of dates and amounts. And I can see that 0.95 quantile and mean were biggest at March, 2015. I wonder why it happened especially at the time. Therefore I'm going to explore more about it in the following.
+ 
+```{r echo=FALSE, Explore_more_about_March2016_top_0.05}
+
+# filter for March, 2016 and top 5% amounts.
+top_5percent_in_march2016 <- new_Data %>%
+  filter(contb_receipt_dt >= as.Date('2015-03-01') &
+           contb_receipt_dt <= as.Date('2015-03-31')) %>%
+  filter(contb_receipt_amt >= quantile(contb_receipt_amt, 0.95))
+
+ggplot(aes(x = cand_nm, y = contb_receipt_amt, color = receipt_desc),
+       data = top_5percent_in_march2016) +
+  geom_jitter()
+
+head(as.data.frame(sort(table(top_5percent_in_march2016$receipt_desc,
+                              dnn = 'amount'),
+                        decreasing = T),
+                   responseName = 'count'),
+     3)
+```
+
+ It is amazing that all top 5% contribution amounts are for Cruz. And more than half of them requested for reattribution or redesignation. I think that lots of high-paying contributions for Cruz means that he started his campaign at the month and it was [true](https://en.wikipedia.org/wiki/Ted_Cruz#2016_presidential_campaign).
  
 ```{r echo=FALSE, Bivariate_for_amount_and_date3}
 
@@ -927,7 +948,7 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
 # I grouped by city and use filter to get top 5% amounts of each city. And I made new column 'if_dallas' using mutate to specify Dallas datas.
 top_5percent_by_city <- new_Data %>%
   group_by(contbr_city) %>%
-  filter(contb_receipt_amt > quantile(contb_receipt_amt, 0.95)) %>%
+  filter(contb_receipt_amt >= quantile(contb_receipt_amt, 0.95)) %>%
   mutate(if_dallas = ifelse(contbr_city == 'DALLAS', TRUE, FALSE))
 
 # I used freqpoly because I want to draw histogram and compare Dallas datas to other cities' datas at a time.
