@@ -633,13 +633,19 @@ as well.
  
  In this time, to be more specific, I want to know how the contribution amounts changed as time goes on. Therefore I'm going to use contb_receipt_amt and contb_receipt_dt columns. And I'll draw line graphs to show the trend and scatter plot to see how the distribution of contribution amounts are changed. 
 
-```{r echo=FALSE, Bivariate_for_amount_and_date}
+```{r echo=FALSE, Bivariate_for_amount_and_date1}
 
 ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
        data = new_Data) +
   geom_line(stat = 'summary', fun.y = sum) +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+ First plot is line graph which shows the trend of sum of the contribution amounts. The sum amounts sky rocketed 5 times and collapsed 2 times. And one collapsion which happened at about June, 2016 was amazingly severe. I wonder why it happened. It looked like lots of refund or redesignation or reattribution happened at the time.
+ 
+```{r echo=FALSE, Bivariate_for_amount_and_date2}
 
 # I designated aes(color = 'method_name') in each geom_line to make legend. 'method_name's become the name of line in legend. And I used scale_color_brewer to assign each line colors automatically. I specified size in override.aes argument to make legend lines look thicker.
 # And I aggregated daily data to monthly to see the overall trend of the statistical results without severe fluctuations.
@@ -661,11 +667,23 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
                                           override.aes = list(size = 2))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
+```
+
+ Second plot is line graph which shows the trend of mean, median, 0.05 quantile, and 0.95 quantile amounts. And I chose to draw after aggregating daily dates to monthly to see the overall trends with less fluctuations. I can see that mean values were always bigger than median values. And I can also see that the difference from median values to 0.95 quantile values are much bigger than to 0.05 quantile values. I think it is because there are some outlier amounts. I think that I can check it by drawing scatter plot of dates and amounts. And I can see that 0.95 quantile and mean were biggest at March, 2015. I wonder why it happened especially at the time.
+ 
+```{r echo=FALSE, Bivariate_for_amount_and_date3}
+
 ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
        data = new_Data) +
   geom_jitter(alpha = 0.05) +
   scale_x_date(date_breaks = '3 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+ 
+ Third plot is scatter plot which shows how the distribution of contribution amounts are changed as time goes on. I can see some oulier amounts which are about \$10,000 and some lines of dots. It makes me wonder how the outlier values are distributed by each party, candidates. I'll find about it later. And I can also see that almost all of contribution amounts are less than about $3,000. It means that there are some common contribution amounts. I think that I can see lines of dots more clearly as I transform the y axis to log scale. I chose log scale because there were less dots as amounts are bigger.
+ 
+```{r echo=FALSE, Bivariate_for_amount_and_date4}
 
 # I used abs function to make all amounts to positive values. And I plused 1 to make them above 0 when I transformed the scale to log. I think that adding $1 won't affect much to the values especially for amounts whose original absolute values are more than $30.
 ggplot(aes(x = contb_receipt_dt, y = abs(contb_receipt_amt) + 1),
@@ -677,12 +695,6 @@ ggplot(aes(x = contb_receipt_dt, y = abs(contb_receipt_amt) + 1),
 
 ```
 
- First plot is line graph which shows the trend of sum of the contribution amounts. The sum amounts sky rocketed 5 times and collapsed 2 times. And one collapsion which happened at about June, 2016 was amazingly severe. I wonder why it happened. It looked like lots of refund or redesignation or reattribution happened at the time.
- 
- Second plot is line graph which shows the trend of mean, median, 0.05 quantile, and 0.95 quantile amounts. And I chose to draw after aggregating daily dates to monthly to see the overall trends with less fluctuations. I can see that mean values were always bigger than median values. And I can also see that the difference from median values to 0.95 quantile values are much bigger than to 0.05 quantile values. I think it is because there are some outlier amounts. I think that I can check it by drawing scatter plot of dates and amounts. And I can see that 0.95 quantile and mean were biggest at March, 2015. I wonder why it happened especially at the time.
- 
- Third plot is scatter plot which shows how the distribution of contribution amounts are changed as time goes on. I can see some oulier amounts which are about \$10,000 and some lines of dots. It makes me wonder how the outlier values are distributed by each party, candidates. I'll find about it later. And I can also see that almost all of contribution amounts are less than about $3,000. It means that there are some common contribution amounts. I think that I can see lines of dots more clearly as I transform the y axis to log scale. I chose log scale because there were less dots as amounts are bigger.
- 
  Fourth plot is scatter plot whose y axis is transformed to log scale. I can see more clearly about lines of dots. And I can also find that from about August, 2015 lots of contributions are done with amounts of \$10 to \$300.
 
  In this time, I want to know how the contribution amounts are differed by nominees group and other candidates group. Therefore I'm going to use contb_receipt_amt and if_nominee columns. And I'll use boxplot and barplot to show the differences. Boxplot is for seeing the distribution of amounts for each group. And barplot is for comparing the sum amounts for each group.
@@ -714,7 +726,7 @@ ggplot(aes(x = if_nominee, y = contb_receipt_amt, group = 1),
  
  In this time, I want to know how the contribution amounts are differed by parties. Therefore I'm going to use contb_receipt_amt and cand_party columns. And I'll use boxplot and barplot to show the differences as I did for if_nominee.
 
-```{r echo=FALSE, Bivariate_for_amount_and_party}
+```{r echo=FALSE, Bivariate_for_amount_and_party1}
 
 amt_vs_party <- ggplot(aes(x = cand_party, y = contb_receipt_amt),
                        data = new_Data) +
@@ -722,6 +734,12 @@ amt_vs_party <- ggplot(aes(x = cand_party, y = contb_receipt_amt),
                   scale_x_discrete()
 
 amt_vs_party
+
+```
+
+ I can see from first boxplot that lots of outlier amounts, especially of which the values are more than \$10,000 are for Republican party candidates. To see more clearly IQR range without outliers, I limited the result from -\$100 to \$600 in second boxplot. And it gave me interesting result. 
+ 
+```{r echo=FALSE, Bivariate_for_amount_and_party2}
 
 # I used again aes(shape = 'mean') and scale_shape_manual to show mean of each group. I also used again coord_cartesian to close up the IQR range.
 amt_vs_party +
@@ -736,6 +754,12 @@ new_Data %>%
   t() %>%
   as.data.frame()
 
+```
+
+ The mean and median amounts for Independent candidate and Libertarian party are bigger than the others. Even their IQR is large. But they almost don't have outliers. Considering the fact that the almost all of the contributions are for Democratic and Republican parties which I found in univariate analysis, it looked like the contributions for independent candidate and Libertarian party are done with larger amounts at a time than for the 2 main parties. The mean and median amounts for Green party are slightly bigger than for Republican party. And Democratic party got smallest mean and median. It is interesting that the mean, median of the party are less than the values of Republican party even though the number of contributions for the party are biggest. 
+
+```{r echo=FALSE, Bivariate_for_amount_and_party3}
+
 ggplot(aes(x = cand_party, y = contb_receipt_amt),
        data = new_Data) +
   geom_bar(stat = 'summary', fun.y = sum) +
@@ -743,15 +767,11 @@ ggplot(aes(x = cand_party, y = contb_receipt_amt),
 
 ```
 
- I can see from first boxplot that lots of outlier amounts, especially of which the values are more than \$10,000 are for Republican party candidates. To see more clearly IQR range without outliers, I limited the result from -\$100 to \$600 in second boxplot. And it gave me interesting result. 
- 
- The mean and median amounts for Independent candidate and Libertarian party are bigger than the others. Even their IQR is large. But they almost don't have outliers. Considering the fact that the almost all of the contributions are for Democratic and Republican parties which I found in univariate analysis, it looked like the contributions for independent candidate and Libertarian party are done with larger amounts at a time than for the 2 main parties. The mean and median amounts for Green party are slightly bigger than for Republican party. And Democratic party got smallest mean and median. It is interesting that the mean, median of the party are less than the values of Republican party even though the number of contributions for the party are biggest. 
- 
  And third plot shows that the sum of contribution amounts for Republican party was bigger than for Democratic party. And compared to the 2 parties, what others got were really few.
  
  In this time, I want to know how the contribution amounts are differed by candidates. Therefore I'm going to use contb_receipt_amt and cand_nm columns. And I'll use boxplot and barplot to show the differences as I did for cand_party.
 
-```{r echo=FALSE, Bivariate_for_amount_and_candidates}
+```{r echo=FALSE, Bivariate_for_amount_and_candidates1}
 
 amt_vs_cands <- ggplot(aes(x = cand_nm, y = contb_receipt_amt),
                        data = new_Data) +
@@ -762,6 +782,12 @@ amt_vs_cands <- ggplot(aes(x = cand_nm, y = contb_receipt_amt),
                                                    vjust = 0.5))
 
 amt_vs_cands
+
+```
+
+ In first boxplot, the outlier amounts for Cruz are outstanding. Except for it, I can see that there are lots of outliers for Carson, Clinton, Paul, Sanders and Trump. And the distribution of the amounts for Jeb Bush is also interesting because IQR is large but there are some outlier amounts.
+ 
+```{r echo=FALSE, Bivariate_for_amount_and_candidates2}
 
 # I used again aes(shape = 'mean') and scale_shape_manual to show mean of each group. I also used again coord_cartesian to close up the IQR range.
 amt_vs_cands +
@@ -775,6 +801,12 @@ new_Data %>%
             median_amount = median(contb_receipt_amt)) %>%
   arrange(mean_amount)
 
+```
+
+ I limited from -\$100 to \$3,000 amounts in second plot. And I also showed the mean and median amounts for all candidates arranged by means. The mean and median for Clinton and Sanders are smallest. But they have lots of outliers. Jeb Bush got second largest IQR. The distribution for Carson, Cruz, Paul, Rubio show that the means and medians are small compared to the others, but there are lots of outliers.
+
+```{r echo=FALSE, Bivariate_for_amount_and_candidates3}
+
 ggplot(aes(x = cand_nm, y = contb_receipt_amt),
        data = new_Data) +
   geom_bar(stat = 'summary', fun.y = sum) +
@@ -783,10 +815,6 @@ ggplot(aes(x = cand_nm, y = contb_receipt_amt),
 
 ```
 
- In first boxplot, the outlier amounts for Cruz are outstanding. Except for it, I can see that there are lots of outliers for Carson, Clinton, Paul, Sanders and Trump. And the distribution of the amounts for Jeb Bush is also interesting because IQR is large but there are some outlier amounts.
- 
- I limited from -\$100 to \$3,000 amounts in second plot. And I also showed the mean and median amounts for all candidates arranged by means. The mean and median for Clinton and Sanders are smallest. But they have lots of outliers. Jeb Bush got second largest IQR. The distribution for Carson, Cruz, Paul, Rubio show that the means and medians are small compared to the others, but there are lots of outliers.
- 
  I drew the barplot of the sum of amounts for each candidates. And it shows really interesting result. I found that the top 5 candidates by contribution counts were Clinton, Cruz, Sanders, Trump and Carson in order. Clinton and Cruz still got first and second places. But Trump went to 3rd place beating Sanders by huge gap. What is most interesting is that Jeb Bush went to 4th place beating Sanders, Rubio and Carson. It looked like his outlier contribution amounts played huge role.
  
  In this time, I want to know how the contribution amounts are differed by election types. Therefore I'm going to use contb_receipt_amt and election_tp columns. And I'll use boxplot and barplot to show the differences as I did for cand_nm.
@@ -819,7 +847,7 @@ ggplot(aes(x = election_tp, y = contb_receipt_amt),
 
  In this time, I want to know how the contribution amounts are differed by cities. Therefore I'm going to use contb_receipt_amt and contbr_city columns. But I found in the univariate analysis that there are 2252 different city names in the Data. Therefore I'm going to show only the result of the top 10 cities by contribution counts. 
 
-```{r echo=FALSE, Bivariate_for_amount_and_city}
+```{r echo=FALSE, Bivariate_for_amount_and_city1}
 
 sum_amounts_by_city <- new_Data %>%
   group_by(contbr_city) %>%
@@ -840,6 +868,12 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt),
   scale_x_discrete() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
+```
+
+ First plot is boxplot which shows the distribution of amounts in each top 10 city. And I think I can see lots of outlier amounts in Houston and Dallas.
+ 
+```{r echo=FALSE, Bivariate_for_amount_and_city2}
+
 # To show the legend, I used again aes(color = 'method_name') in geom_line and scale_color_brewer.
 ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
        data = top10_sum_amounts_city) +
@@ -857,6 +891,12 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
                                           override.aes = list(size = 2))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
+```
+
+ Second plot is line graph which shows the 0.05 quantile, median, mean and 0.95 quantile amounts by each top 10 city. It shows that 0.95 quantile value of Dallas was really big. The mean of Dallas was biggest too but not much different from Houston.
+
+```{r echo=FALSE, Bivariate_for_amount_and_city3}
+
 ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
        data = top10_sum_amounts_city) +
   geom_bar(stat = 'summary', fun.y = sum) +
@@ -865,10 +905,6 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
 
 ```
 
- First plot is boxplot which shows the distribution of amounts in each top 10 city. And I think I can see lots of outlier amounts in Houston and Dallas.
- 
- Second plot is line graph which shows the 0.05 quantile, median, mean and 0.95 quantile amounts by each top 10 city. It shows that 0.95 quantile value of Dallas was really big. The mean of Dallas was biggest too but not much different from Houston.
- 
  Third plot is barplot of the sum of amounts of each top 10 city. It shows that the sum from Houston is bigger than the sum from Dallas. It looked like even if there were some high contributions from Dallas, but the sum from Houston was bigger because of bigger contribution counts.
 
 ==================================================
