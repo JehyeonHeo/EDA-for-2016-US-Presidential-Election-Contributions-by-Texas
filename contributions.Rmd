@@ -643,7 +643,32 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
 
 ```
 
- First plot is line graph which shows the trend of sum of the contribution amounts. The sum amounts sky rocketed 5 times and collapsed 2 times. And one collapsion which happened at about June, 2016 was amazingly severe. I wonder why it happened. It looked like lots of refund or redesignation or reattribution happened at the time.
+ First plot is line graph which shows the trend of sum of the contribution amounts. The sum amounts sky rocketed 5 times and collapsed 2 times. And one collapsion which happened at about June, 2016 was amazingly severe. I wonder why it happened. It looked like lots of refund or redesignation or reattribution happened at the time. I'm going to explore more about it in the following.
+ 
+```{r echo=FALSE, Explore_more_about_worst_collapsion_date}
+
+# I used mutate function to get the sum of amounts of each date. And I used filter to get only contribution datas which occured at the minimum sum date.
+contbs_in_worst_collapsion_date <- new_Data %>%
+  group_by(contb_receipt_dt) %>%
+  mutate(sum_amounts = sum(contb_receipt_amt)) %>%
+  ungroup() %>%
+  filter(sum_amounts == min(sum_amounts))
+
+print('When did the worst collapsion happend?')
+unique(contbs_in_worst_collapsion_date$contb_receipt_dt)
+
+print('How many contributions were done at the date?')
+nrow(contbs_in_worst_collapsion_date)
+
+# I designated x as names of candidates, y as amounts and color as receipt_desc. I did it to know the distribution of the amounts at the date by each candidate and the reasons for it.
+ggplot(aes(x = cand_nm, y = contb_receipt_amt, color = receipt_desc),
+       data = contbs_in_worst_collapsion_date) +
+  geom_jitter(alpha = 0.8) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+  
+```
+
+ The collapsion occured at July 2nd, 2016. And there were 2725 contributions at the date. And I can see from the graph that most of negative amounts are related with Cruz. There were lots of redesignations and some of refunds from the contributions for Cruz. The designations were especially for his senate actions. I think that because Cruz stopped his campaign for the race in May, 2016, lots of his supporters decided to change the object of contributions they had done. Because of this exploration, I can understand about the mysterious collapsion. But I couldn't know why lots of redignations and refunds for him happened especially at the date using the data.
  
 ```{r echo=FALSE, Bivariate_for_amount_and_date2}
 
