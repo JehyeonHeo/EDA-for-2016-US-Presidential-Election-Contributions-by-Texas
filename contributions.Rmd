@@ -1094,7 +1094,30 @@ ggplot(aes(x = contb_receipt_dt, color = cand_nm),
  
  I can see that there are lots of huge fluctuations for Trump between July to August, 2016. I wonder if it is related with the comments and news of Trump. In contrast to Trump, Clinton got more and more contributions generally as time goes on.
 
- But this graph doesn't explain about the fall of contributions to Republican party in May, 2016. Therefore in this time, I'm going to compare Republican party candidates. And I decided to use main_cands_counts to get only main candidates' names.
+ I'm going to explore more about the contributions for Trump from June to October of 2016. I chose longer period to know more about the rise and fall of contributions for him.
+ 
+```{r echo=FALSE, Explore_more_about_fluctuation_contbs_for_Trump}
+
+june_to_september_2016_trump <- new_Data %>%
+  filter(cand_nm == 'Trump, Donald J.') %>%
+  filter(contb_receipt_dt >= as.Date('2016-06-01') &
+           contb_receipt_dt <= as.Date('2016-10-31'))
+
+head(as.data.frame(sort(table(june_to_september_2016_trump$receipt_desc,
+                              dnn = 'reasons'),
+                        decreasing = T),
+                   responseName = 'count'),
+     3)
+
+ggplot(aes(x = contb_receipt_dt),
+       data = june_to_september_2016_trump) +
+  geom_line(stat = 'count')
+
+```
+
+ I can see the fluctuations more in detail. The counts were peak on about July 10th. And the last peak was on about August 10th. But I cannot know the reasons about the fluctuations using receipt_desc column. I think that I need to use other methods to know more about causes.
+ 
+ In the graph of dates vs contribution counts for Trump and Clinton, I cannot get the explanation about the fall of contributions to Republican party in May, 2016. Therefore in this time, I'm going to compare Republican party candidates. And I decided to use main_cands_counts to get only main candidates' names.
  
 ```{r echo=FALSE, Bivariate_for_date_and_main_republican_candidates}
 
