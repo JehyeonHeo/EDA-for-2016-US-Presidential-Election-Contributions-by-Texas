@@ -1207,24 +1207,162 @@ create here are justified by the plots you explored in the previous section. If
 you plan on creating any mathematical models, this is the section where you
 will do that.
 
-```{r echo=FALSE, Multivariate_Plots}
+```{r echo=FALSE, Multivariate}
 
-print('How contribution receipt dates for Trump and McMullin are different for P2016 and G2016 each?')
-
-ggplot(aes(x = contb_receipt_dt, color = election_tp),
-       data = subset(Data, 
-                     cand_nm %in% c('Trump, Donald J.', 'McMullin, Evan') & election_tp %in% c('P2016', 'G2016'))) +
-  facet_wrap(~cand_nm, scales = 'free_y', nrow = 2, dir = 'v') +
-  geom_line(stat = 'count')
-
-print("How contribution receipt dates for those who aren't nominees are different for P2016 and G2016 each?")
-
-ggplot(aes(x = contb_receipt_dt, color = election_tp),
-       data = subset(Data, 
-                     !if_nominee & election_tp %in% c('P2016', 'G2016'))) +
-  geom_line(stat = 'count') +
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'), 
+           color = cand_nm),
+       data = subset(new_Data, 
+                     cand_nm %in% c('Trump, Donald J.', 
+                                    'Clinton, Hillary Rodham'))) +
+  geom_line(stat = 'count', size = 1.2) +
   scale_x_date(date_breaks = '3 month') +
+  scale_color_brewer(type = 'qual',
+                     palette = 2,
+                     guide = guide_legend(title = 'Main nominees',
+                                          override.aes = list(size = 2))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Multivariate}
+
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'), 
+           y = contb_receipt_amt, color = cand_nm),
+       data = subset(new_Data, 
+                     cand_nm %in% c('Trump, Donald J.', 
+                                    'Clinton, Hillary Rodham'))) +
+  geom_line(stat = 'summary', fun.y = sum, size = 1.2) +
+  scale_x_date(date_breaks = '3 month') +
+  scale_color_brewer(type = 'qual',
+                     palette = 2,
+                     guide = guide_legend(title = 'Party',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+
+
+```{r echo=FALSE, Multivariate}
+
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'), 
+           y = contb_receipt_amt, color = cand_nm),
+       data = subset(new_Data, 
+                     cand_nm %in% main_cands_counts$cand_nm &
+                       cand_party == 'Republican')) +
+  geom_line(stat = 'summary', fun.y = sum, size = 1.2) +
+  scale_x_date(date_breaks = '3 month') +
+  scale_color_brewer(type = 'qual',
+                     palette = 2,
+                     guide = guide_legend(title = 'Republican main candidates',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Multivariate}
+
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'), 
+           y = contb_receipt_amt, color = cand_nm),
+       data = subset(new_Data, 
+                     cand_nm %in% main_cands_counts$cand_nm &
+                       cand_party == 'Democratic')) +
+  geom_line(stat = 'summary', fun.y = sum, size = 1.2) +
+  scale_x_date(date_breaks = '3 month') +
+  scale_color_brewer(type = 'qual',
+                     palette = 2,
+                     guide = guide_legend(title = 'Democratic main candidates',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Multivariate}
+
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'), 
+           y = contb_receipt_amt, color = cand_party),
+       data = new_Data) +
+  geom_line(stat = 'summary', fun.y = sum, size = 1.2) +
+  scale_x_date(date_breaks = '3 month') +
+  scale_color_brewer(type = 'qual',
+                     palette = 2,
+                     guide = guide_legend(title = 'Party',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Multivariate_Plot_for_amt_dt_city_party}
+
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'), 
+           y = contb_receipt_amt, color = cand_party),
+       data = subset(new_Data, 
+                     contbr_city %in% c('AUSTIN', 'HOUSTON', 
+                                        'DALLAS', 'SAN ANTONIO'))) +
+  facet_wrap(~contbr_city, scales = 'free_y', ncol = 2, dir = 'v') +
+  geom_line(stat = 'summary', fun.y = sum) +
+  scale_x_date(date_breaks = '6 month') +
+  scale_color_brewer(type = 'qual',
+                     palette = 1,
+                     guide = guide_legend(title = 'Party',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Multivariate_Plot_for_amt_dt_city_party}
+
+ggplot(aes(x = cand_party, 
+           y = contb_receipt_amt, color = cand_party),
+       data = subset(new_Data, 
+                     contbr_city %in% c('AUSTIN', 'HOUSTON', 
+                                        'DALLAS', 'SAN ANTONIO'))) +
+  facet_wrap(~contbr_city, scales = 'free_y', ncol = 2, dir = 'v') +
+  geom_boxplot() +
+  scale_color_brewer(type = 'qual',
+                     palette = 1,
+                     guide = guide_legend(title = 'Party',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Multivariate_Plot_for_amt_dt_city_party}
+
+ggplot(aes(x = cand_party, 
+           y = contb_receipt_amt, color = cand_party),
+       data = subset(new_Data,
+                     election_tp != '')) +
+  facet_wrap(~election_tp, ncol = 2, dir = 'v') +
+  geom_boxplot() +
+  scale_color_brewer(type = 'qual',
+                     palette = 1,
+                     guide = guide_legend(title = 'Party',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Multivariate_Plot_for_amt_dt_city_party}
+
+ggplot(aes(x = contb_receipt_dt, y = abs(contb_receipt_amt) + 1, 
+           color = cand_party),
+       data = new_Data) +
+  geom_jitter(alpha = 0.05) +
+  scale_x_date(date_breaks = '3 month') +
+  scale_color_brewer(type = 'qual',
+                     palette = 1,
+                     guide = guide_legend(title = 'Party',
+                                          override.aes = list(size = 2,
+                                                              alpha = 1))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+  scale_y_log10()
 
 ```
 
