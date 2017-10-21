@@ -689,24 +689,19 @@ ggplot(aes(x = contb_receipt_dt, y = abs(contb_receipt_amt) + 1),
 
 ```{r echo=FALSE, Bivariate_for_amount_and_nominees}
 
-ggplot(aes(x = if_nominee, y = contb_receipt_amt),
-       data = new_Data) +
-  geom_boxplot(alpha = 0.2) +
-  scale_x_discrete()
+amt_vs_if_nominee <- ggplot(aes(x = if_nominee, y = contb_receipt_amt),
+                                data = new_Data) +
+                       geom_boxplot(alpha = 0.2) +
+                       scale_x_discrete()
 
-subset_amounts_within_middle_90_percent <- subset(
-  new_Data,
-  contb_receipt_amt > quantile(contb_receipt_amt, 0.05) &
-    contb_receipt_amt < quantile(contb_receipt_amt, 0.95)
-  )
+amt_vs_if_nominee
 
 # I designated aes(shape = 'mean') in geom_point to show the means in each group of boxplots and show what the symbols mean using legend. To designate shape I used scale_shape_manual.
-ggplot(aes(x = if_nominee, y = contb_receipt_amt),
-       data = subset_amounts_within_middle_90_percent) +
-  geom_boxplot(alpha = 0.2) +
+# And I used coord_cartesian function to see the IQR range in detail. To designate proper ylim, I used trial and error method.
+amt_vs_if_nominee +
   geom_point(stat = 'summary', fun.y = mean, size = 2, aes(shape = 'mean')) +
   scale_shape_manual('', values=c('mean' = 8)) +
-  scale_x_discrete()
+  coord_cartesian(ylim = c(-100, 300))
 
 ggplot(aes(x = if_nominee, y = contb_receipt_amt, group = 1),
        data = new_Data) +
@@ -715,24 +710,31 @@ ggplot(aes(x = if_nominee, y = contb_receipt_amt, group = 1),
 
 ```
 
- When I see the first boxplot, I can find that lots of outlier amounts are for candidates who weren't nominees. To compare the distribution without outliers, I drew second boxplot limiting the amounts to middle 90% values. And I also mark symbol of mean to compare between mean and median. And I can see that IQR is almost similar to each group. But the mean of contribution amounts for nominees are a little bigger than the others and the result of median was in reverse. I can find from barplot that the sum of amounts for nominees are a little bigger than the others.
+ When I see the first boxplot, I can find that lots of outlier amounts are for candidates who weren't nominees. To compare the distribution without outliers, I drew second boxplot limiting the amounts from -\$100 to \$300 values. And I also mark symbol of mean to compare between mean and median. And I can see that the mean and median of contribution amounts for nominees are a little smaller than those for the others. But I can find from barplot that the sum of amounts for nominees are a little bigger than the others.
  
  In this time, I want to know how the contribution amounts are differed by parties. Therefore I'm going to use contb_receipt_amt and cand_party columns. And I'll use boxplot and barplot to show the differences as I did for if_nominee.
 
 ```{r echo=FALSE, Bivariate_for_amount_and_party}
 
-ggplot(aes(x = cand_party, y = contb_receipt_amt),
-       data = new_Data) +
-  geom_boxplot(alpha = 0.1) +
-  scale_x_discrete()
+amt_vs_party <- ggplot(aes(x = cand_party, y = contb_receipt_amt),
+                       data = new_Data) +
+                  geom_boxplot(alpha = 0.1) +
+                  scale_x_discrete()
 
-# I used again aes(shape = 'mean') and scale_shape_manual to show mean of each group.
-ggplot(aes(x = cand_party, y = contb_receipt_amt),
-       data = subset_amounts_within_middle_90_percent) +
-  geom_boxplot(alpha = 0.2) +
+amt_vs_party
+
+# I used again aes(shape = 'mean') and scale_shape_manual to show mean of each group. I also used again coord_cartesian to close up the IQR range.
+amt_vs_party +
   geom_point(stat = 'summary', fun.y = mean, size = 2, aes(shape = 'mean')) +
   scale_shape_manual('', values = c('mean' = 8)) +
-  scale_x_discrete()
+  coord_cartesian(ylim = c(-100, 600))
+
+new_Data %>%
+  group_by(cand_party) %>%
+  summarise(mean_amount = mean(contb_receipt_amt),
+            median_amount = median(contb_receipt_amt)) %>%
+  t() %>%
+  as.data.frame()
 
 ggplot(aes(x = cand_party, y = contb_receipt_amt),
        data = new_Data) +
@@ -741,9 +743,9 @@ ggplot(aes(x = cand_party, y = contb_receipt_amt),
 
 ```
 
- I can see from first boxplot that lots of outlier amounts, especially of which the values are more than \$10,000 are for Republican party candidates. To see more clearly IQR range without outliers, I limited the result to middle 90% amounts in second boxplot. And it gave me interesting result. 
+ I can see from first boxplot that lots of outlier amounts, especially of which the values are more than \$10,000 are for Republican party candidates. To see more clearly IQR range without outliers, I limited the result from -\$100 to \$600 in second boxplot. And it gave me interesting result. 
  
- The mean and median amounts for Independent candidate and Libertarian party are bigger than the others. Even their IQR is large. But they almost don't have outliers. I found that the almost all of the contributions are for Democratic and Republican parties in univariate analysis. Considering it, it looked like the contributions for independent candidate and Green, Libertarian parties are done with larger amounts at a time than for the 2 main parties. Even the mean for Green party are bigger than for Republican party and Democratic party got smallest mean. I also find that the number of contributions for Democratic party are biggest and mean, median of the party are less than the values of Republican party. 
+ The mean and median amounts for Independent candidate and Libertarian party are bigger than the others. Even their IQR is large. But they almost don't have outliers. Considering the fact that the almost all of the contributions are for Democratic and Republican parties which I found in univariate analysis, it looked like the contributions for independent candidate and Libertarian party are done with larger amounts at a time than for the 2 main parties. The mean and median amounts for Green party are slightly bigger than for Republican party. And Democratic party got smallest mean and median. It is interesting that the mean, median of the party are less than the values of Republican party even though the number of contributions for the party are biggest. 
  
  And third plot shows that the sum of contribution amounts for Republican party was bigger than for Democratic party. And compared to the 2 parties, what others got were really few.
  
@@ -751,20 +753,27 @@ ggplot(aes(x = cand_party, y = contb_receipt_amt),
 
 ```{r echo=FALSE, Bivariate_for_amount_and_candidates}
 
-ggplot(aes(x = cand_nm, y = contb_receipt_amt),
-       data = new_Data) +
-  geom_boxplot(alpha = 0.2) +
-  scale_x_discrete() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+amt_vs_cands <- ggplot(aes(x = cand_nm, y = contb_receipt_amt),
+                       data = new_Data) +
+                  geom_boxplot(alpha = 0.2) +
+                  scale_x_discrete() +
+                  theme(axis.text.x = element_text(angle = 90, 
+                                                   hjust = 1, 
+                                                   vjust = 0.5))
 
-# I used again aes(shape = 'mean') and scale_shape_manual to show mean of each group.
-ggplot(aes(x = cand_nm, y = contb_receipt_amt),
-       data = subset_amounts_within_middle_90_percent) +
-  geom_boxplot(alpha = 0.2) +
+amt_vs_cands
+
+# I used again aes(shape = 'mean') and scale_shape_manual to show mean of each group. I also used again coord_cartesian to close up the IQR range.
+amt_vs_cands +
   geom_point(stat = 'summary', fun.y = mean, size = 2, aes(shape = 'mean')) +
   scale_shape_manual('', values = c('mean' = 8)) +
-  scale_x_discrete() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+  coord_cartesian(ylim = c(-100, 3000))
+
+new_Data %>%
+  group_by(cand_nm) %>%
+  summarise(mean_amount = mean(contb_receipt_amt),
+            median_amount = median(contb_receipt_amt)) %>%
+  arrange(mean_amount)
 
 ggplot(aes(x = cand_nm, y = contb_receipt_amt),
        data = new_Data) +
@@ -776,7 +785,7 @@ ggplot(aes(x = cand_nm, y = contb_receipt_amt),
 
  In first boxplot, the outlier amounts for Cruz are outstanding. Except for it, I can see that there are lots of outliers for Carson, Clinton, Paul, Sanders and Trump. And the distribution of the amounts for Jeb Bush is also interesting because IQR is large but there are some outlier amounts.
  
- I limited to middle 90% amounts in second plot. The mean and median for Clinton and Sanders are smallest. But they have lots of outliers. Jeb Bush got second largest IQR. The distribution for Carson, Cruz, Paul, Rubio show that the means and medians are small compared to the others, but there are lots of outliers.
+ I limited from -\$100 to \$3,000 amounts in second plot. And I also showed the mean and median amounts for all candidates arranged by means. The mean and median for Clinton and Sanders are smallest. But they have lots of outliers. Jeb Bush got second largest IQR. The distribution for Carson, Cruz, Paul, Rubio show that the means and medians are small compared to the others, but there are lots of outliers.
  
  I drew the barplot of the sum of amounts for each candidates. And it shows really interesting result. I found that the top 5 candidates by contribution counts were Clinton, Cruz, Sanders, Trump and Carson in order. Clinton and Cruz still got first and second places. But Trump went to 3rd place beating Sanders by huge gap. What is most interesting is that Jeb Bush went to 4th place beating Sanders, Rubio and Carson. It looked like his outlier contribution amounts played huge role.
  
@@ -785,19 +794,18 @@ ggplot(aes(x = cand_nm, y = contb_receipt_amt),
 ```{r echo=FALSE, Bivariate_for_amount_and_election_type}
 
 # I won't show the result of the datas whose election type '' because I don't know exact type they get.
-ggplot(aes(x = election_tp, y = contb_receipt_amt),
-       data = subset(new_Data, election_tp != '')) +
-  geom_boxplot(alpha = 0.2) +
-  scale_x_discrete()
+amt_vs_type <- ggplot(aes(x = election_tp, y = contb_receipt_amt),
+                      data = subset(new_Data, election_tp != '')) +
+                 geom_boxplot(alpha = 0.2) +
+                 scale_x_discrete()
+
+amt_vs_type
 
 # I used again aes(shape = 'mean') and scale_shape_manual to show mean of each group.
-ggplot(aes(x = election_tp, y = contb_receipt_amt),
-       data = subset(subset_amounts_within_middle_90_percent,
-                     election_tp != '')) +
-  geom_boxplot(alpha = 0.2) +
+amt_vs_type +
   geom_point(stat = 'summary', fun.y = mean, size = 2, aes(shape = 'mean')) +
   scale_shape_manual('', values = c('mean' = 8)) +
-  scale_x_discrete()
+  coord_cartesian(ylim = c(-100, 200))
 
 ggplot(aes(x = election_tp, y = contb_receipt_amt),
        data = subset(new_Data, election_tp != '')) +
@@ -807,7 +815,7 @@ ggplot(aes(x = election_tp, y = contb_receipt_amt),
 
 ```
 
- I can see from first boxplot that there are a lot more outliers for P2016 than G2016. But without outliers in second boxplot, I can see that the medians and IQRs are almost same. But the mean of G2016 values is bigger than of P2016s. But in the barplot of the sum of amounts by eletion types I can see that the sum for P2016 is more than 2 times of the sum for G2016.
+ I can see from first boxplot that there are a lot more outliers for P2016 than G2016. Without outliers in second boxplot, I can see that the mean and median of P2016 values is bigger than of G2016. In the barplot of the sum of amounts by eletion types I can see that the sum for P2016 is more than 2 times of the sum for G2016.
 
  In this time, I want to know how the contribution amounts are differed by cities. Therefore I'm going to use contb_receipt_amt and contbr_city columns. But I found in the univariate analysis that there are 2252 different city names in the Data. Therefore I'm going to show only the result of the top 10 cities by contribution counts. 
 
