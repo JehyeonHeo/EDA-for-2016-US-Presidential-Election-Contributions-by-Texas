@@ -1082,7 +1082,7 @@ ggplot(aes(x = contb_receipt_dt, color = cand_nm),
 
  The contributions for Sanders decreased as those for Clinton increased from May, 2016. I can find that there were some time when Sanders got more contributions than Clinton. I wonder why he became a lot more support from Texas than Clinton at the time. Anyway it explains why the contributions for Democratic party catched up the those for Republican party at about March, 2016.
  
- In this time, I want to know how the contribution counts for each election type changed as time goes on. Therefore I'm going to use contb_receipt_dt and election_tp columns. And I'll again use line graph. I expect that division between the types are almost flat at about July, 2016 because at that time party primary elections happened.
+ In this time, I want to know how the contribution counts for each election type changed as time goes on. Therefore I'm going to use contb_receipt_dt and election_tp columns. And I'll again use line graph. I expect that division between the types are almost flat at about July, 2016 because at that time primary elections happened.
 
 ```{r echo=FALSE, Bivariate_date_and_election_type}
 
@@ -1094,20 +1094,29 @@ ggplot(aes(x = contb_receipt_dt, color = election_tp),
 
 ```
 
- As I expected, the division point of the contributions for election types occured at about July, 2016.
+ As I expected, the division point of the contributions for election types occured at about July, 2016. And I can see that this graph is really similar to the graph whose variables were dates and if_nominee except May to August of 2016 term.
 
 # Bivariate Analysis
 
 > **Tip**: As before, summarize what you found in your bivariate explorations
 here. Use the questions below to guide your discussion.
 
-### Talk about some of the relationships you observed in this part of the \
-investigation. How did the feature(s) of interest vary with other features in \
-the dataset?
+### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
 
-### Did you observe any interesting relationships between the other features \
-(not the main feature(s) of interest)?
+ I drew several bivariate plots to know how the contribution amounts are differed by the values in the other variables. 
+ 
+ After I drew the date vs amount graph, I could see that there was a date when really huge collapsion of amounts happened. And I found that it was because of contributions to Cruz by exploring more. I also saw that there were some lines of dots in scatter plot. It means that there are some contribution amounts which were common.
+ 
+ As I drew plots using if_nominee, cand_party, cand_nm, election_tp variables with amount one by one, I could see that lots of outliers are for primary election and for Cruz, Republican candidate who couldn't be elected as a nominee. And I also found that the mean and median amounts for Democratic party were smallest compared to the other parties. But Clinton, Democratic party nominee got the most contribution amounts. Cruz and Trump got second and third most amounts.
+ 
+ As I drew plots using contb_city with amount, I found that the city whose mean of the amounts was biggest was Dallas. 0.95 quantile amount of Dallas was exceptianally big. But when I got the sum of amounts by city, the sum of Dallas was smaller than Houston.
+ 
+### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
 
+ When I drew plots for contb_city vs cand_party and contb_city vs cand_nm, it was really interesting that there were really big difference between Houston and Austin. The sum of contribution amounts for Clinton and Sanders was really huge compared to Cruz and Trump in Austin. And even though the sum of contributions in Houston are bigger for Democratic party than for Republican party, the latter value was higest compared to the other cities. And I could find that it was because of the contributions for Cruz. It was interesting to know that there can be huge political contribution differences between cities in the same state.
+ 
+ And as I drew the plots for date vs candidates, I found that at the time of primary election, about July of 2016, the trends for contributions are changed hugely for both of main 2 parties. For primary election, lots of contributions were for Cruz and Sanders. And they were changed to Clinton and Trump for general election from about July, 2016. But overall contributions for Clinton increased until the general election but those for Trump decreased.
+ 
 ### What was the strongest relationship you found?
 
 
