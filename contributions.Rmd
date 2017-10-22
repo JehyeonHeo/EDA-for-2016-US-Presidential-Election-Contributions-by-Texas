@@ -729,9 +729,9 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
  
 ```{r echo=FALSE, Bivariate_for_amount_and_date4}
 
-# I used abs function to make all amounts to positive values. And I plused 1 to make them above 0 when I transformed the scale to log. I think that adding $1 won't affect much to the values especially for amounts whose original absolute values are more than $30.
-ggplot(aes(x = contb_receipt_dt, y = abs(contb_receipt_amt) + 1),
-       data = new_Data) +
+# I subsetted to use only amounts equal to or above 0 to represent in log scale. And I plused 1 to amounts make them above 0 after I transformed the scale to log. I think that adding $1 won't affect much to the values especially for amounts whose original values are more than $30.
+ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt + 1),
+       data = subset(new_Data, contb_receipt_amt >= 0)) +
   geom_jitter(alpha = 0.05) +
   scale_x_date(date_breaks = '3 month') +
   scale_y_log10(breaks = c(30, 100, 300, 1000, 3000, 10000)) +
@@ -739,7 +739,7 @@ ggplot(aes(x = contb_receipt_dt, y = abs(contb_receipt_amt) + 1),
 
 ```
 
- Fourth plot is scatter plot whose y axis is transformed to log scale. I can see more clearly about lines of dots. And I can also find that from about August, 2015 lots of contributions are done with amounts of \$10 to \$300.
+ Fourth plot is scatter plot whose y axis is transformed to log scale. And to represent in log scale, I used only amounts equal to or above 0. Therefore I showed the distribution of amounts without paying back values. I can see more clearly about lines of dots. And I can also find that from about August, 2015 lots of contributions are done with amounts of \$10 to \$300.
 
  I could see how the contribution amounts are changed as time goes on by drawing above plots.
  
@@ -1348,9 +1348,10 @@ ggplot(aes(x = cand_party,
 
 ```{r echo=FALSE, Multivariate_Plot_for_amt_dt_city_party4}
 
-ggplot(aes(x = contb_receipt_dt, y = abs(contb_receipt_amt) + 1, 
+ggplot(aes(x = contb_receipt_dt, 
+           y = contb_receipt_amt + 1,
            color = cand_party),
-       data = new_Data) +
+       data = subset(new_Data, contb_receipt_amt >= 0)) +
   geom_jitter(alpha = 0.05) +
   scale_x_date(date_breaks = '3 month') +
   scale_color_brewer(type = 'qual',
