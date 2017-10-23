@@ -598,7 +598,8 @@ gather your observations and add your own if you have other thoughts!
 # Bivariate Plots Section
 
  Before I start drawing bivariate plots, using what I learned from univariate analysis, I'm going to make a new dataframe by subsetting Data to get only concise and essential parts.
- I'm going to select contb_receipt_amt, cand_nm, cand_party, if_nominee, election_tp, contbr_city, contb_receipt_dt and receipt_desc columns. And I'm going to exclude election type P2012 and O2016.
+ 
+ I'm going to select contb_receipt_amt, cand_nm, cand_party, if_nominee, election_tp, contbr_city, contb_receipt_dt and receipt_desc columns. And I'm going to exclude election type P2012 and O2016. And one more thing that I'm going to do is to set the order of types to make 'P2016' ahead of 'G2016'.
  
 ```{r echo=FALSE, Make_new_concise_dataframe}
 
@@ -614,6 +615,9 @@ chosenColumns = c('contb_receipt_amt',
 new_Data <- Data[, chosenColumns]
 
 new_Data <- subset(new_Data, !election_tp %in% c('P2012', 'O2016'))
+
+new_Data$election_tp <- factor(new_Data$election_tp,
+                               levels = c('P2016', 'G2016', ''))
 
 str(new_Data)
 
