@@ -1208,7 +1208,7 @@ create here are justified by the plots you explored in the previous section. If
 you plan on creating any mathematical models, this is the section where you
 will do that.
 
-```{r echo=FALSE, Multivariate2}
+```{r echo=FALSE, Multivariate_line_for_amt_dt_main_nominees}
 
 ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
                        format = '%Y-%m-%d'), 
@@ -1228,7 +1228,7 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 
 
-```{r echo=FALSE, Multivariate3}
+```{r echo=FALSE, Multivariate_line_for_amt_dt_Republican_main_cands}
 
 ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
                        format = '%Y-%m-%d'), 
@@ -1246,7 +1246,7 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
-```{r echo=FALSE, Multivariate4}
+```{r echo=FALSE, Multivariate_line_for_amt_dt_Democratic_main_cands}
 
 ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
                        format = '%Y-%m-%d'), 
@@ -1264,7 +1264,7 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
-```{r echo=FALSE, Multivariate5}
+```{r echo=FALSE, Multivariate_line_for_amt_dt_party}
 
 ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
                        format = '%Y-%m-%d'), 
@@ -1280,7 +1280,7 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
-```{r echo=FALSE, Multivariate_Plot_for_amt_dt_city_party}
+```{r echo=FALSE, Multivariate_line_for_amt_dt_party_facet_city}
 
 ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
                        format = '%Y-%m-%d'), 
@@ -1299,7 +1299,7 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
-```{r echo=FALSE, Multivariate_Plot_for_amt_dt_city_party3}
+```{r echo=FALSE, Multivariate_box_for_amt_party_facet_type}
 
 ggplot(aes(x = cand_party, 
            y = contb_receipt_amt, color = cand_party),
@@ -1315,7 +1315,7 @@ ggplot(aes(x = cand_party,
 
 ```
 
-```{r echo=FALSE, Multivariate_Plot_for_amt_dt_city_party4}
+```{r echo=FALSE, Multivariate_scatter_for_amt_dt_party}
 
 ggplot(aes(x = contb_receipt_dt, 
            y = contb_receipt_amt + 1,
@@ -1333,7 +1333,7 @@ ggplot(aes(x = contb_receipt_dt,
 
 ```
 
-```{r echo=FALSE, Multivariate_Plot_for_amt_dt_city_party5}
+```{r echo=FALSE, Multivariate_scatter_for_amt_dt_main_cands}
 
 ggplot(aes(x = contb_receipt_dt, 
            y = contb_receipt_amt + 1,
@@ -1351,7 +1351,7 @@ ggplot(aes(x = contb_receipt_dt,
 
 ```
 
-```{r echo=FALSE, Multivariate_Plot_for_amt_dt_city_party6}
+```{r echo=FALSE, Multivariate_line_for_party_city_facet_city}
 
 ggplot(aes(x = contbr_city, 
            group = cand_party,
