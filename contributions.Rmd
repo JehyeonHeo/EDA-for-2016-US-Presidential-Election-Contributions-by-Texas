@@ -1342,7 +1342,7 @@ ggplot(aes(x = contb_receipt_dt,
   geom_jitter(alpha = 0.05) +
   scale_x_date(date_breaks = '3 month') +
   scale_color_brewer(type = 'qual',
-                     palette = 1,
+                     palette = 2,
                      guide = guide_legend(title = 'Main candidates',
                                           override.aes = list(size = 2,
                                                               alpha = 1))) +
@@ -1396,6 +1396,36 @@ make sure you justify why you chose each plot by describing what it shows.
 ### Plot One
 ```{r echo=FALSE, Plot_One}
 
+cands_sum_amounts <- new_Data %>%
+  group_by(cand_nm, cand_party) %>%
+  summarise(sum_amounts = sum(contb_receipt_amt),
+            n = n()) %>%
+  arrange(desc(sum_amounts))
+
+cands_sum_amounts$cand_nm <- factor(cands_sum_amounts$cand_nm,
+                                    levels = cands_sum_amounts$cand_nm)
+
+ggplot(aes(x = cand_nm),
+       data = cands_sum_amounts) +
+  geom_line(aes(y = sum_amounts, color = 'sum', group = 1), 
+            stat = 'identity') +
+  geom_point(aes(y = sum_amounts, color = 'sum')) +
+  geom_line(aes(y = n*100, color = 'count', group = 1), 
+            stat = 'identity') +
+  geom_point(aes(y = n*100, color = 'count')) +
+  scale_x_discrete() +
+  scale_fill_brewer(type = 'qual',
+                    palette = 1,
+                    guide = guide_legend(title = 'Party',
+                                         override.aes = list(size = 2))) +
+  xlab('Names of Candidates') +
+  ylab('Sum of Contribution Cmounts\nContribution Counts(x100)') +
+  ggtitle(
+    'Contributions to 2016 US Presidential Candidates from Texas'
+    ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5))
+
 ```
 
 ### Description One
@@ -1404,6 +1434,29 @@ make sure you justify why you chose each plot by describing what it shows.
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
 
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'), 
+           y = contb_receipt_amt, color = cand_party),
+       data = subset(new_Data, 
+                     contbr_city %in% c('AUSTIN', 'HOUSTON', 
+                                        'DALLAS', 'SAN ANTONIO'))) +
+  facet_wrap(~contbr_city, scales = 'free_y', ncol = 2, dir = 'v') +
+  geom_line(stat = 'summary', fun.y = sum) +
+  scale_x_date(date_breaks = '6 month') +
+  scale_color_brewer(type = 'qual',
+                     palette = 1,
+                     guide = guide_legend(title = 'Party',
+                                          override.aes = list(size = 2))) +
+  xlab('Contribution Receipt Dates') +
+  ylab('Sum of Contribution Amounts') +
+  ggtitle(
+    'Contributions to Political Parties from Texas\nfor 2016 US Presidential Election',
+    subtitle = '- The Trend of Sum of Amounts by 4 Main Cities -'
+    ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+
 ```
 
 ### Description Two
@@ -1411,6 +1464,28 @@ make sure you justify why you chose each plot by describing what it shows.
 
 ### Plot Three
 ```{r echo=FALSE, Plot_Three}
+
+ggplot(aes(x = contb_receipt_dt, 
+           y = contb_receipt_amt + 1,
+           color = cand_nm),
+       data = subset(new_Data, cand_nm %in% main_cands_counts$cand_nm)) +
+  geom_jitter(alpha = 0.05) +
+  scale_x_date(date_breaks = '3 month') +
+  scale_color_brewer(type = 'qual',
+                     palette = 2,
+                     guide = guide_legend(title = 'Main Candidates',
+                                          override.aes = list(size = 2,
+                                                              alpha = 1))) +
+  xlab('Contribution Receipt Dates') +
+  ylab('Contribution Amounts + 1') +
+  ggtitle(
+    'Contribution Amounts from Texas\nfor 2016 US Presidential Candidates',
+    subtitle = '- Distributed by Time For Main 7 Candidates -'
+    ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)) +
+  scale_y_log10()
 
 ```
 
