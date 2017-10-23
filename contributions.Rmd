@@ -1462,6 +1462,7 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ### OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
 
+
  I cannot create models with my dataset because there were only 1 numeric variable.
 ------
 
@@ -1497,9 +1498,9 @@ ggplot(aes(x = cand_nm),
     'Contributions to 2016 US Presidential Candidates from Texas'
     ) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-        plot.title = element_text(hjust = 0.5, face = 'bold', size = 15),
-        axis.title.x = element_text(face = 'bold'),
-        axis.title.y = element_text(face = 'bold'),
+        plot.title = element_text(hjust = 0.5, face = 'bold', size = 20),
+        axis.title.x = element_text(face = 'bold', size = 15),
+        axis.title.y = element_text(face = 'bold', size = 15),
         legend.position = 'top')
 
 ```
@@ -1530,10 +1531,10 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
     subtitle = '- The Trend of Sum of Amounts by 4 Main Cities -'
     ) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-        plot.title = element_text(hjust = 0.5, face = 'bold', size = 15),
-        plot.subtitle = element_text(hjust = 0.5, face = 'bold', size = 10),
-        axis.title.x = element_text(face = 'bold'),
-        axis.title.y = element_text(face = 'bold'),
+        plot.title = element_text(hjust = 0.5, face = 'bold', size = 20),
+        plot.subtitle = element_text(hjust = 0.5, face = 'bold', size = 15),
+        axis.title.x = element_text(face = 'bold', size = 15),
+        axis.title.y = element_text(face = 'bold', size = 15),
         legend.position = 'top')
 
 ```
@@ -1562,10 +1563,10 @@ ggplot(aes(x = contb_receipt_dt,
     subtitle = '- Distributed by Time For Main 7 Candidates -'
     ) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-        plot.title = element_text(hjust = 0.5, face = 'bold', size = 15),
-        plot.subtitle = element_text(hjust = 0.5, face = 'bold', size = 10),
-        axis.title.x = element_text(face = 'bold'),
-        axis.title.y = element_text(face = 'bold'),
+        plot.title = element_text(hjust = 0.5, face = 'bold', size = 20),
+        plot.subtitle = element_text(hjust = 0.5, face = 'bold', size = 15),
+        axis.title.x = element_text(face = 'bold', size = 15),
+        axis.title.y = element_text(face = 'bold', size = 15),
         legend.position = 'top') +
   scale_y_log10()
 
