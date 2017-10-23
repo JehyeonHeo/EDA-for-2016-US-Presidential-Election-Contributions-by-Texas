@@ -1452,15 +1452,17 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
  
 # Multivariate Analysis
 
-### Talk about some of the relationships you observed in this part of the \
-investigation. Were there features that strengthened each other in terms of \
-looking at your feature(s) of interest?
+### Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+
+ contb_receipt_date and cand_nm variables help me to understand more about the distribution of contribution amounts. And contb_receipt_date and cand_party variables also help me to understand the distribution.
 
 ### Were there any interesting or surprising interactions between features?
+ 
+ When I drew the boxplot which shows the number of contributions by each city and by the facets of each election type, I found that the numbers of contributions for Democratic party from top 10 cities weren't much changed by election types. But the values for Republican party from top 10 cities decreased a lot from P2016 to G2016. The only one exception was Austin. The contributions from Austin were always higher for Democratic party regardless election types. The collapsion for Republican party and the consistency for Democratic party can be also found after changing the y axis from counts to sum of amounts.
 
-### OPTIONAL: Did you create any models with your dataset? Discuss the \
-strengths and limitations of your model.
+### OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
 
+ I cannot create models with my dataset because there were only 1 numeric variable.
 ------
 
 # Final Plots and Summary
