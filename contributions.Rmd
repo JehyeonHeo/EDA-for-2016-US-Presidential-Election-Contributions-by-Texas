@@ -1280,25 +1280,6 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
-```{r echo=FALSE, Multivariate_line_for_amt_dt_party_facet_city}
-
-ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
-                       format = '%Y-%m-%d'), 
-           y = contb_receipt_amt, color = cand_party),
-       data = subset(new_Data, 
-                     contbr_city %in% c('AUSTIN', 'HOUSTON', 
-                                        'DALLAS', 'SAN ANTONIO'))) +
-  facet_wrap(~contbr_city, scales = 'free_y', ncol = 2, dir = 'v') +
-  geom_line(stat = 'summary', fun.y = sum) +
-  scale_x_date(date_breaks = '6 month') +
-  scale_color_brewer(type = 'qual',
-                     palette = 1,
-                     guide = guide_legend(title = 'Party',
-                                          override.aes = list(size = 2))) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-
-```
-
 ```{r echo=FALSE, Multivariate_box_for_amt_party_facet_type}
 
 ggplot(aes(x = cand_party, 
@@ -1351,7 +1332,46 @@ ggplot(aes(x = contb_receipt_dt,
 
 ```
 
-```{r echo=FALSE, Multivariate_line_for_party_city_facet_city}
+```{r echo=FALSE, Multivariate_line_for_amt_dt_party_city}
+
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'), 
+           y = contb_receipt_amt, color = cand_party),
+       data = subset(new_Data, 
+                     contbr_city %in% c('AUSTIN', 'HOUSTON', 
+                                        'DALLAS', 'SAN ANTONIO'))) +
+  facet_wrap(~contbr_city, scales = 'free_y', ncol = 2, dir = 'v') +
+  geom_line(stat = 'summary', fun.y = sum) +
+  scale_x_date(date_breaks = '6 month') +
+  scale_color_brewer(type = 'qual',
+                     palette = 1,
+                     guide = guide_legend(title = 'Party',
+                                          override.aes = list(size = 2))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Multivariate_line_for_amt_city_party_type}
+
+ggplot(aes(x = contbr_city, 
+           y = contb_receipt_amt,
+           group = cand_party,
+           color = cand_party),
+       data = subset(new_Data, 
+                     election_tp != '' & 
+                       contbr_city %in% top10_sum_amounts_city$contbr_city)) +
+  facet_wrap(~election_tp) +
+  geom_line(stat = 'summary', fun.y = sum) +
+  scale_color_brewer(type = 'qual',
+                     palette = 1,
+                     guide = guide_legend(title = 'Party',
+                                          override.aes = list(size = 2,
+                                                              alpha = 1))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+```{r echo=FALSE, Multivariate_line_for_party_city_facet_type}
 
 ggplot(aes(x = contbr_city, 
            group = cand_party,
