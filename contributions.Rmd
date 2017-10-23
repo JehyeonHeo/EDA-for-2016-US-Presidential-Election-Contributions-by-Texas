@@ -1220,6 +1220,12 @@ create here are justified by the plots you explored in the previous section. If
 you plan on creating any mathematical models, this is the section where you
 will do that.
 
+ I now start to draw multivariate plots. In the bivariate plots section, I drew several plots to investigate how the contribution amounts are differed by different values in other variables in the front part. And in the latter part, I drew some plots using contribution receipt date variable to investigate how different values in other variables are changed as time goes on.
+ 
+ In this time, to see more higher dimensional relationships between variables, I want to use both contb_receipt_amt and contb_receipt_dt variables. And then I'm going to add other variables as color or facet. I expect that this would make me possible to compare the changing aspect of contributions by counts and sums. I'll draw line graphs to show the trends. And I'll aggregate daily datas to monthly to see overall trends with less fluctuations.
+ 
+ First, I'm going to draw a line graph which shows how the monthly sums of contributions for Clinton and Trump are changed as time goes on.
+ 
 ```{r echo=FALSE, Multivariate_line_for_amt_dt_main_nominees}
 
 ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
@@ -1238,8 +1244,10 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
+ I can see that the sum of amounts for Trump increased a lot from May, 2016. From April to May, the sum increased dramatically. I saw that the contribution counts for him became far low from September and far lower than those for Clinton. But I can see that what he got at the term was almost same to what Clinton got. It is amazing. I think that average contribution amounts for him at the time were higher than for Clinton.
 
-
+  Because I drew the plot for comparing Trump and Clinton, I think that I also need to compare the trends by each main candidates in each party. Therefore in this time, I'm going to draw a line graph which shows how the monthly sums of contributions for Republican main candidates are changed as time goes on.
+  
 ```{r echo=FALSE, Multivariate_line_for_amt_dt_Republican_main_cands}
 
 ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
@@ -1258,6 +1266,10 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
+ The 2 most outstanding lines are related with Cruz and Trump. The collapsion of the contributions to Cruz on July, 2016 is sticking out. And I can see that there was weaker collapsion of the contributions to Rubio on May, 2016.
+ 
+ Now I'm going to draw a line graph which shows how the monthly sums of contributions for Democratic main candidates are changed as time goes on.
+ 
 ```{r echo=FALSE, Multivariate_line_for_amt_dt_Democratic_main_cands}
 
 ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
@@ -1276,6 +1288,10 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
+ The graph shows interesting result. I already found that there were some time that Sanders got more contributions than Clinton. But when I represented the sum of monthly contribution amounts, I could find that there wasn't any month that what Sanders got in a month was more than what Clinton got. The difference between them was smallest on March, 2016. I think that the average contribution amounts for Sanders was smaller than the value of Clinton.
+ 
+ Because I drew the plot for comparing the trends by each main candidates in each party I think that it is necessary to draw a line graph which shows how the monthly sums of contributions for each party are changed as time goes on. It will show the aggregate result of above plots.
+
 ```{r echo=FALSE, Multivariate_line_for_amt_dt_party}
 
 ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
@@ -1292,21 +1308,9 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
-```{r echo=FALSE, Multivariate_box_for_amt_party_facet_type}
-
-ggplot(aes(x = cand_party, 
-           y = contb_receipt_amt, color = cand_party),
-       data = subset(new_Data,
-                     election_tp != '')) +
-  facet_wrap(~election_tp, ncol = 2, dir = 'v') +
-  geom_boxplot() +
-  scale_color_brewer(type = 'qual',
-                     palette = 1,
-                     guide = guide_legend(title = 'Party',
-                                          override.aes = list(size = 2))) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-
-```
+ I already found that the overall contribution counts were more for Republican party than for Democratic party. But from May to June and August to November of 2016, the contributions for the latter party were more than the former one. When I drew the plots by sum of monthly amounts, I could see that the overall trend is similar. Until May, 2016 the monthly sum of contributions for Republican party was far more than the sum of Democratic party. On May and July of 2016, there were huge collapsions for Republican party. But big difference happened from September to November. Even though the counts for Republican were smaller than those for Democratic party in the term, the sum values are almost same to both parties. It is same as what I saw from the graph of the sum of amounts for Clinton and Trump. It is definitely the aggregated version of above plots.
+ 
+ Until now, I drew line graphs using contb_receipt_amt and contb_receipt_dt as main variables to see the trend of sum of amounts by other variables. From now on, I'm still going to use the 2 main variables, but draw scatter plots instead. I already drew the scatter plot of amounts vs dates in bivariate section. But I want to know more about the distribution of amounts. I'll use cand_party to see the relationship between amounts, dates and parties.
 
 ```{r echo=FALSE, Multivariate_scatter_for_amt_dt_party}
 
@@ -1322,10 +1326,16 @@ ggplot(aes(x = contb_receipt_dt,
                                           override.aes = list(size = 2,
                                                               alpha = 1))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-  scale_y_log10()
+  scale_y_log10(breaks = c(10, 50, 1000))
 
 ```
 
+ Again, I only used the amounts equal to or above 0 to express amounts using log scale. And I plused 1 to make transformed values above 0. The result is interesting. I think that I can divide the graph into 4 parts. The standard is June 2016 from dates, and about 50 from amounts. Until May, 2016 the overall contribution amounts for Republican party were bigger than those for Democratic party. But in the term, the contributions of higher amounts for latter party increased as time goes on. Even though from June to August, most of contributions were for Republican party regardless of amounts, from May to Noverber, most of contributions for Republican party were more than \$50. And most of them for Democratic party were less than \$50. And there were few contributions for independent and Libertarian candidates which were less than \$50.
+ 
+ From this graph, I could know why Republican party got a lot more sum of contribution amounts than Democratic party from Texas even though the contribution counts for the former party were smaller than those of the latter party.
+ 
+ I learned from above line plots and bivariate plots that before May, 2016 lots of contributions were for Cruz and Sanders. And after that time, lots of them were for Trump and Clinton. I think that as I draw the scatter plot using main candidates' names as color variable, I can know more about it.
+ 
 ```{r echo=FALSE, Multivariate_scatter_for_amt_dt_main_cands}
 
 ggplot(aes(x = contb_receipt_dt, 
@@ -1344,17 +1354,22 @@ ggplot(aes(x = contb_receipt_dt,
 
 ```
 
-```{r echo=FALSE, Multivariate_line_for_amt_dt_party_city}
+ Yes, I can see that the distribution of contribution amounts are approximately divided into 4 parts. I can check from this graph that Cruz vs Sander before May, 2016 and Trump vs Clinton after that.
+ 
+===========================================================
 
-ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
-                       format = '%Y-%m-%d'), 
+ Until now, I drew graphs using contb_receipt_amt and contb_receipt_dt as main variables. From now on, I'm going to use other combination of variables as main variables.
+ 
+ First, I'm going to show the distribution of amounts by each party and each election type. I'm going to use boxplot to express the distribution for each party, which is categorical variable. I already knew from the bivariate section that most of outlier amounts are for primary election and Cruz. I expect that I can see lots of outliers for Republican party in P2016 facet graph.
+
+```{r echo=FALSE, Multivariate_box_for_amt_party_facet_type}
+
+ggplot(aes(x = cand_party, 
            y = contb_receipt_amt, color = cand_party),
-       data = subset(new_Data, 
-                     contbr_city %in% c('AUSTIN', 'HOUSTON', 
-                                        'DALLAS', 'SAN ANTONIO'))) +
-  facet_wrap(~contbr_city, scales = 'free_y', ncol = 2, dir = 'v') +
-  geom_line(stat = 'summary', fun.y = sum) +
-  scale_x_date(date_breaks = '6 month') +
+       data = subset(new_Data,
+                     election_tp != '')) +
+  facet_wrap(~election_tp, ncol = 2, dir = 'v') +
+  geom_boxplot() +
   scale_color_brewer(type = 'qual',
                      palette = 1,
                      guide = guide_legend(title = 'Party',
@@ -1362,6 +1377,33 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
+
+ As I expected, there are lots of outlier amounts for Republican party and P2016. I can see that the number outliers decreased from P2016 to G2016 for 2 main parties. But I can see that the number of outliers for other parties increased. I also can see that the all contributions for independent candidate were for G2016.
+ 
+ In this time, I'm going to show the number of contributions by each city and each election type. I'm going to use boxplot again to express the distribution for each city, which is categorical variable. I already knew from the bivariate section that the counts for Democratic party were bigger than those for Republican party in almost all top 10 cities. And I knew that the contribution counts for the latter party were similar to the former party before May, 2016. I expect that I can see that the counts for G2016 are almost for Democratic party, but I wonder how the counts for P2016 look like. And I also wonder about the difference between Houston and Austin.
+
+```{r echo=FALSE, Multivariate_line_for_party_city_facet_type}
+
+ggplot(aes(x = contbr_city, 
+           group = cand_party,
+           color = cand_party),
+       data = subset(new_Data, 
+                     election_tp != '' & 
+                       contbr_city %in% top10_sum_amounts_city$contbr_city)) +
+  facet_wrap(~election_tp) +
+  geom_line(stat = 'count') +
+  scale_color_brewer(type = 'qual',
+                     palette = 1,
+                     guide = guide_legend(title = 'Party',
+                                          override.aes = list(size = 2,
+                                                              alpha = 1))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+ The counts of contributions for primary election show that except Austin, the counts for 2 main parties were almost same in top 10 cities. In Austin, the count for Democratic party were far bigger than the value for Republican party. But the counts for general election show that there isn't any top 10 city in which the number of contributions for the latter party were bigger than the former one. Even the result of Houston shows the collapsion.
+ 
+ I compared by counts. How the result will be if I change counts to the sum of amounts? I'll try this one. I only need to change the y axis.
 
 ```{r echo=FALSE, Multivariate_line_for_amt_city_party_type}
 
@@ -1383,25 +1425,31 @@ ggplot(aes(x = contbr_city,
 
 ```
 
-```{r echo=FALSE, Multivariate_line_for_party_city_facet_type}
+ The sums of contribution amounts for primary election show that without Austin, the values of Republican party were bigger than those of Democratic party. But the sums of contribution amounts for general election show that the values of the latter party were similar to or bigger than those of the former party. Even the values for from Houston follow the trend.
+ 
+ The sum of amounts don't show the trends of contributions. I think that using sum of amounts and contribution receipt date as main variables again to know how the monthly sum of amounts from each city are differed by each party can be interesting, too. Therefore I'm going to use party as color and city as facet to see the contribution trends of each city. And I'll draw for just 4 main cities in Texas. I expect that Houston and Austin show interesting result in this time, too.
+ 
+```{r echo=FALSE, Multivariate_line_for_amt_dt_party_city}
 
-ggplot(aes(x = contbr_city, 
-           group = cand_party,
-           color = cand_party),
+ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
+                       format = '%Y-%m-%d'), 
+           y = contb_receipt_amt, color = cand_party),
        data = subset(new_Data, 
-                     election_tp != '' & 
-                       contbr_city %in% top10_sum_amounts_city$contbr_city)) +
-  facet_wrap(~election_tp) +
-  geom_line(stat = 'count') +
+                     contbr_city %in% c('AUSTIN', 'HOUSTON', 
+                                        'DALLAS', 'SAN ANTONIO'))) +
+  facet_wrap(~contbr_city, scales = 'free_y', ncol = 2, dir = 'v') +
+  geom_line(stat = 'summary', fun.y = sum) +
+  scale_x_date(date_breaks = '6 month') +
   scale_color_brewer(type = 'qual',
                      palette = 1,
                      guide = guide_legend(title = 'Party',
-                                          override.aes = list(size = 2,
-                                                              alpha = 1))) +
+                                          override.aes = list(size = 2))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
+ It is interesting that there were some time that the monthly sums of contributions for Republican party were bigger than those for Democratic party in Austin. But they were in 2015 and in 2016 the difference between them became bigger. Houston and Dallas show similar pattern. Until February, 2016 the sums for the latter party were far less than the sums for the former party. But after that, there were 2 times of collapsion for Republican party. And the sums for the party narrowly catched up the sums for Democratic party in September, 2016. San Antonio shows that there were a lot more dynamic fluctuations for both parties, but generally, the sums for Republican party were bigger than those for Democratic party.
+ 
 # Multivariate Analysis
 
 ### Talk about some of the relationships you observed in this part of the \
