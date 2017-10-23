@@ -1536,7 +1536,7 @@ ggplot(aes(x = contb_receipt_dt,
 
  I used 2 datasets. One was financial contribution datas of Texas. It has about 555,000 contributions across 18 variables. The other one was 2016 US presidential candidates datas which I made. It has 25 candidates' information across 5 variables like party, age, etc.
  
- I first did basic exploration about the datasets. And I made useful variable 'if_nominee'. And then I merged the datasets using names of candidates.
+ I first did basic exploration about the datasets. And I made useful variable 'if_nominee'. And then I merged the datasets using names of candidates. Through merging, I could add the information about the party of each candidate and I could know if a candidate was nominated or not.
  
  With the merged dataset, I did univariate analyses. Representing higher dimension observations on plots, I could answer some questions that I got from the analyses and again got some new questions. Finally, I could especially explore about contribution amounts across many variables.
  
@@ -1544,7 +1544,7 @@ ggplot(aes(x = contb_receipt_dt,
  
  In the process of getting the contribution trend, I could find interesting facts. Most of huge outlier contribution amount were for Cruz. And he got lots of contributions from Houston. But contrary to Houston, lots of contributions to Democratic party were made from Austin. 
  
- As I expressed the amounts by dates, I could see lots of fluctuations. Sometimes, I could answer the reason of fluctuations using only the data, but there were some cases that I needed to use Internet. And there was a case that it was hard to find the cause even I used Internet. It was one of a hard thing to explore the data.
+ As I expressed the amounts by dates, I could see lots of fluctuations. I struggled to understand the causes of them. Sometimes, I could answer the reason of fluctuations using only the data by exploring deeper for the part, but there were some cases that I needed to use Internet. And there was a case that it was hard to find the cause even I used Internet. It was one of a hard thing to explore the data.
  
  There were some limitations of the financial data. First, There was only 1 numeric variable that I cannot make model to predict about candidates. Second, it just shows the contributions of Texas. I wonder if I can predict that Trump would win using all contribution datas of all US states. Third, I couldn't get information about unique contributers. The existing variables were insufficient to detect unique contributers. Fourth, I couldn't match the rise and fall of contributions for specific candidates with the actions of his or her campaigns. I think that I can understand more about the changes if I can do natural language processing for news about each candidate. I expect that NLP can give me information about the changes of the positive and negative words and news keywords about the candidate and I can match the trend with contribution fluctuations.
  
