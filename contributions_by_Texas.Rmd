@@ -35,7 +35,7 @@ Data <- read.csv('ctrbsTX.csv',
 data_headers <- colnames(Data)[-1]
 
 # In the data, remove the last column which is all NAs.
-Data <- Data[,-19]
+Data$election_tp <- NULL
 
 # Give the data right header names for each columns.
 colnames(Data) <- data_headers
