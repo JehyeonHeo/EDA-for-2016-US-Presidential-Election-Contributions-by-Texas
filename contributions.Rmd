@@ -1507,7 +1507,8 @@ ggplot(aes(x = cand_nm),
 
 ### Description One
 
-
+ If a candidate got more numbers of contributions, then there was a higher possibility that the candidate got more sum of contribution amounts. But it didn't apply to Sanders, Trump and Bush. Trump and Bush got more sum of contribution amounts compared to the number of contributions. And Sanders got less sum of contribution amounts compared to the numbers of contributions.
+ 
 ### Plot Two
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Two}
 
@@ -1541,6 +1542,7 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ### Description Two
 
+ From Austin, Democratic party got more and more monthly sum of contribution amounts as time went on. And what the party got became far bigger than what Republican party got from the city. From Houston and Dallas, Republican party got more monthly sum of contribution amounts than Democratic party until April, 2016. But after the month, the sum of contribution amounts for Republican party collapsed 2 times. In this time, Democratic party got bigger sum of contribution amounts. From San Antonio, there were more dynamic changes of the sum of amounts for Democratic and Republican parties than the other cities. Green and Libertarian party candidates and independent candidate got far fewer sum of contribution amounts that it is hard to see their values in the graphs.
 
 ### Plot Three
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Three}
@@ -1573,6 +1575,8 @@ ggplot(aes(x = contb_receipt_dt,
 ```
 
 ### Description Three
+
+ The distribution of contribution amounts can be divided into 4 parts. Before May, 2016 Cruz got lots of higher contribution amounts than Sanders. After May, 2016 Trump got lots of higher contribution amounts than Clinton.
 
 ------
 
