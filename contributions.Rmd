@@ -1547,3 +1547,43 @@ ggplot(aes(x = contb_receipt_dt,
  As I expressed the amounts by dates, I could see lots of fluctuations. Sometimes, I could answer the reason of fluctuations using only the data, but there were some cases that I needed to use Internet. And there was a case that it was hard to find the cause even I used Internet. It was one of a hard thing to explore the data.
  
  There were some limitations of the financial data. First, There was only 1 numeric variable that I cannot make model to predict about candidates. Second, it just shows the contributions of Texas. I wonder if I can predict that Trump would win using all contribution datas of all US states. Third, I couldn't get information about unique contributers. The existing variables were insufficient to detect unique contributers. Fourth, I couldn't match the rise and fall of contributions for specific candidates with the actions of his or her campaigns. I think that I can understand more about the changes if I can do natural language processing for news about each candidate. I expect that NLP can give me information about the changes of the positive and negative words and news keywords about the candidate and I can match the trend with contribution fluctuations.
+ 
+# References
+
+1. The source of the financial data:
+
+http://classic.fec.gov/disclosurep/pnational.do
+
+2. To make Cand data:
+
+https://www.washingtonpost.com/news/the-fix/wp/2015/09/18/people-only-care-about-how-tall-the-2016-candidates-are-so-here/?utm_term=.aeb12816dfe3
+
+http://presidential-candidates.insidegov.com/
+
+3. To understand the variables in Data:
+
+ftp://ftp.fec.gov/FEC/Presidential_Map/2016/DATA_DICTIONARIES/CONTRIBUTOR_FORMAT.txt
+
+4. To know more about redesignations and reattributions:
+
+https://www.fec.gov/help-candidates-and-committees/candidate-taking-receipts/remedying-excessive-contribution/
+
+https://www.youtube.com/watch?v=BdWY_HF2KAM&feature=youtu.be
+
+5. To know about contribution limits:
+
+https://www.opensecrets.org/overview/limits.php
+
+6. To compare and check weird contributions information with other data sources:
+
+https://www.campaignmoney.com/
+
+https://www.fec.gov/data/receipts/individual-contributions/?two_year_transaction_period=2016&min_date=01%2F01%2F2015&max_date=12%2F31%2F2016
+
+7. To know the form of the project and writing:
+
+https://s3.amazonaws.com/content.udacity-data.com/courses/ud651/diamondsExample_2016-05.html
+
+8. Got basic RMD form from Udacity.
+
+https://www.udacity.com/
