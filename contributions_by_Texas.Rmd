@@ -901,26 +901,30 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt),
  
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_for_amount_and_city2}
 
-# To show the legend, I used again aes(color = 'method_name') in geom_line and scale_color_brewer.
+# I designated position_nudge and width in geom_bar to represent 0.95quantiles, means and medians in a graph. Position_nudge moves the x position of each bar and width controls widths of bars.
+# To show the legend, I used again aes(color = 'method_name') in geom_bar and scale_color_brewer.
 ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
        data = top10_sum_amounts_city) +
-  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.95),
-            aes(color = '0.95quantile')) +
-  geom_line(stat = 'summary', fun.y = mean,
-            aes(color = 'mean')) +
-  geom_line(stat = 'summary', fun.y = median,
-            aes(color = 'median')) +
-  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.05),
-            aes(color = '0.05quantile')) +
+  geom_bar(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.95),
+           aes(fill = '0.95quantile'), 
+           position = position_nudge(x = 0.3),
+           width = 0.33) +
+  geom_bar(stat = 'summary', fun.y = mean,
+           aes(fill = 'mean'), 
+           width = 0.33) +
+  geom_bar(stat = 'summary', fun.y = median,
+           aes(fill = 'median'), 
+           position = position_nudge(-0.3),
+           width = 0.33) +
   scale_x_discrete() +
-  scale_color_brewer(type = 'div',
-                     guide = guide_legend(title = 'Methods',
-                                          override.aes = list(size = 2))) +
+  scale_fill_brewer(type = 'qual',
+                    guide = guide_legend(title = 'Methods',
+                                         override.aes = list(size = 2))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
- Second plot is line graph which shows the 0.05 quantile, median, mean and 0.95 quantile amounts by each top 10 city. It shows that 0.95 quantile value of Dallas was really big. The mean of Dallas was biggest too but not much different from Houston.
+ Second plot is bar graph which shows the median, mean and 0.95 quantile amounts by each top 10 city. It shows that 0.95 quantile value of Dallas was really big. The mean of Dallas was biggest too but not much different from Houston.
  
  In the following, I'm going to explore more about top 5% amounts from Dallas.
  
@@ -932,10 +936,10 @@ top_5percent_by_city <- new_Data %>%
   filter(contb_receipt_amt >= quantile(contb_receipt_amt, 0.95)) %>%
   mutate(if_dallas = ifelse(contbr_city == 'DALLAS', TRUE, FALSE))
 
-# I used freqpoly because I want to draw histogram and compare Dallas datas to other cities' datas at a time.
-ggplot(aes(x = contb_receipt_amt, color = if_dallas), 
+# I used histogram because I want to know the distribution of contribution amounts. And I designated fill as if_dallas to compare Dallas datas to other cities' datas at a time.
+ggplot(aes(x = contb_receipt_amt, fill = if_dallas), 
        data = top_5percent_by_city) +
-  geom_freqpoly(binwidth = 100)
+  geom_histogram(binwidth = 100, alpha = 0.7)
 
 # To help know the distribution of amounts more in detail, I printed top 6 common values in top 5% amounts from Dallas.
 head(as.data.frame(sort(table(subset(top_5percent_by_city,
@@ -972,7 +976,7 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
  
  From now on, I'm going to draw bivariate graphs taking support features. I want to know more about the political differences between cities in Texas.
  
- First, I want to know how the contribution counts for each candidate are differed by each city. Therefore I'm going to use cand_nm and cand_party columns. And I'll use line graph because I need to show the differences of several candidates by each city. It is inconvenient to compare when multiple bars are used for each legend.
+ First, I want to know how the contribution counts for each candidate are differed by each city. Therefore I'm going to use cand_nm and cand_party columns. And I'll use barplot because I need to show the differences of several candidates by each city, which are categorical values. And I used stacked bar to compare several candidates by each city at a time.
 
  But before I'm going to draw the plot, I'm going to make a variable named main_cands_counts. Its one column contains the names of candidates and the other column contains the counts of contributions. And there will be only 7 names because I chose to select only 7 main candidates by contribution counts.
  
@@ -991,31 +995,32 @@ main_cands_counts <- new_Data %>%
 
 # I used sum_amounts_by_city which I already made to make top10_sum_amounts_city. In its contbr_city column, there are top 10 city names by contribution counts.
 # I also used main_cands_counts to show only the result of 7 main candidates.
-ggplot(aes(x = contbr_city, color = cand_nm, group = cand_nm),
+ggplot(aes(x = contbr_city, fill = cand_nm, group = cand_nm),
        data = subset(new_Data, 
                      contbr_city %in% sum_amounts_by_city$contbr_city &
                        cand_nm %in% main_cands_counts$cand_nm)) +
-  geom_line(stat = 'count') +
-  scale_color_brewer(type = 'qual', 
-                     palette = 2,
-                     guide = guide_legend(title = 'Candidates',
-                                          override.aes = list(size = 2))) +
+  geom_bar(stat = 'count', position = 'stack') +
+  scale_fill_brewer(type = 'qual', 
+                    palette = 2,
+                    guide = guide_legend(title = 'Candidates',
+                                         override.aes = list(size = 2))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
- It also gave me really funny result. I can see that Clinton got the most number of contributions from all cities except Spring. 4th place for Trump is also same to almost all top 10 cities. And the counts of contributions for Rubio, Bush, Carson are almost same. Their values are really small compared to the other 4's. But second place changed by each city. In Austin Sanders got far more contributions than Cruz. But in Dallas and San Antonio Sanders got almost same to Cruz. And the relation became reversed in Houston. The result makes me wonder how the distribution for each party would be different by each city. I think that I will see a huge gap of Democratic party and Republican party in Austin, and smaller gap in Houston.
+ It also gave me really funny result. I can see that Clinton got the most number of contributions from all cities except Spring. But second places are changed by each city. In Austin Sanders got far more contributions than Cruz. But in Dallas and San Antonio Sanders got almost same to Cruz. And the relation became reversed in Houston. The result makes me wonder how the distribution for 2 main parties would be different by each city. I think that I will see a huge gap of Democratic party and Republican party in Austin, and smaller gap in Houston. I already found from univariate section that almost all contributions from Texas were for Democratic or Republican party candidates. Therefore I decided to compare only 2 main parties. And I'll use barplot to compare between categorical values like city and party.
  
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_party_and_city}
 
-ggplot(aes(x = contbr_city, color = cand_party, group = cand_party),
+ggplot(aes(x = contbr_city, fill = cand_party, group = cand_party),
        data = subset(new_Data, 
-                     contbr_city %in% sum_amounts_by_city$contbr_city)) +
-  geom_line(stat = 'count') +
-  scale_color_brewer(type = 'qual',
-                     palette = 2,
-                     guide = guide_legend(title = 'Party',
-                                          override.aes = list(size = 2))) +
+                     contbr_city %in% sum_amounts_by_city$contbr_city &
+                       cand_party %in% c('Democratic', 'Republican'))) +
+  geom_bar(stat = 'count', position = 'dodge') +
+  scale_fill_brewer(type = 'qual',
+                    palette = 2,
+                    guide = guide_legend(title = 'Party',
+                                         override.aes = list(size = 2))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
@@ -1335,19 +1340,20 @@ ggplot(aes(x = cand_party,
 
  As I expected, there are lots of outlier amounts for Republican party and P2016. I can see that the number outliers decreased from P2016 to G2016 for 2 main parties. But I can see that the number of outliers for other parties increased. I also can see that the all contributions for independent candidate were for G2016.
  
- In this time, I'm going to show the number of contributions by each city and each election type. I'm going to use boxplot again to express the distribution for each city, which is categorical variable. I already knew from the bivariate section that the counts for Democratic party were bigger than those for Republican party in almost all top 10 cities. And I knew that the contribution counts for the latter party were similar to the former party before May, 2016. I expect that I can see that the counts for G2016 are almost for Democratic party, but I wonder how the counts for P2016 look like. And I also wonder about the difference between Houston and Austin.
+ In this time, I'm going to show the number of contributions by each city and each election type. I'm going to use barplot again to express the distribution for each city, which is categorical variable. I already knew from the bivariate section that the counts for Democratic party were bigger than those for Republican party in almost all top 10 cities. And I knew that the contribution counts for the latter party were similar to the former party before May, 2016. I expect that I can see that the counts for G2016 are almost for Democratic party, but I wonder how the counts for P2016 look like. And I also wonder about the difference between Houston and Austin.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_line_for_party_city_facet_type}
 
 ggplot(aes(x = contbr_city, 
            group = cand_party,
-           color = cand_party),
+           fill = cand_party),
        data = subset(new_Data, 
                      election_tp != '' & 
-                       contbr_city %in% top10_sum_amounts_city$contbr_city)) +
+                       contbr_city %in% top10_sum_amounts_city$contbr_city &
+                       cand_party %in% c('Democratic', 'Republican'))) +
   facet_wrap(~election_tp) +
-  geom_line(stat = 'count') +
-  scale_color_brewer(type = 'qual',
+  geom_bar(stat = 'count', position = 'dodge') +
+  scale_fill_brewer(type = 'qual',
                      palette = 1,
                      guide = guide_legend(title = 'Party',
                                           override.aes = list(size = 2,
@@ -1365,24 +1371,25 @@ ggplot(aes(x = contbr_city,
 ggplot(aes(x = contbr_city, 
            y = contb_receipt_amt,
            group = cand_party,
-           color = cand_party),
+           fill = cand_party),
        data = subset(new_Data, 
                      election_tp != '' & 
-                       contbr_city %in% top10_sum_amounts_city$contbr_city)) +
+                       contbr_city %in% top10_sum_amounts_city$contbr_city &
+                       cand_party %in% c('Democratic', 'Republican'))) +
   facet_wrap(~election_tp) +
-  geom_line(stat = 'summary', fun.y = sum) +
-  scale_color_brewer(type = 'qual',
-                     palette = 1,
-                     guide = guide_legend(title = 'Party',
-                                          override.aes = list(size = 2,
-                                                              alpha = 1))) +
+  geom_bar(stat = 'summary', fun.y = sum, position = 'dodge') +
+  scale_fill_brewer(type = 'qual',
+                    palette = 1,
+                    guide = guide_legend(title = 'Party',
+                                         override.aes = list(size = 2,
+                                                             alpha = 1))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
- The sums of contribution amounts for primary election show that without Austin, the values of Republican party were bigger than those of Democratic party. But the sums of contribution amounts for general election show that the values of the latter party were similar to or bigger than those of the former party. Even the values for from Houston follow the trend.
+ The sums of contribution amounts for primary election show that without Austin, the values of Republican party were bigger than those of Democratic party. But the sums of contribution amounts for general election show that the values of the latter party were similar to or bigger than those of the former party. Even the values of Houston follow the trend.
  
- The sum of amounts don't show the trends of contributions. I think that using sum of amounts and contribution receipt date as main variables again to know how the monthly sum of amounts from each city are differed by each party can be interesting, too. Therefore I'm going to use party as color and city as facet to see the contribution trends of each city. And I'll draw for just 4 main cities in Texas. I expect that Houston and Austin show interesting result in this time, too.
+ The sum of amounts don't show the trends of contributions. I think that using sum of amounts and contribution receipt date as main variables again to know how the monthly sum of amounts from each city are differed by each party can be interesting, too. Therefore I'm going to use line graph, designate party as color and city as facet to see the contribution trends of each city. And I'll draw for just 4 main cities in Texas. I expect that Houston and Austin show interesting result in this time, too.
  
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_line_for_amt_dt_party_city}
 
@@ -1431,11 +1438,11 @@ ggplot(aes(x = cand_nm),
        data = cands_sum_amounts) +
   geom_bar(aes(y = n*100, fill = 'count'),
            stat = 'identity', 
-           position = position_nudge(x = -0.25),
+           position = position_nudge(x = -0.2),
            width = 0.4) +
   geom_bar(aes(y = sum_amounts, fill = 'sum'),
            stat = 'identity', 
-           position = position_nudge(x = 0.25),
+           position = position_nudge(x = 0.2),
            width = 0.4) +
   scale_x_discrete() +
   scale_y_continuous(labels = comma) +
@@ -1460,7 +1467,7 @@ ggplot(aes(x = cand_nm),
 
  If a candidate got more numbers of contributions, then there was a higher possibility that the candidate got more sum of contribution amounts. But it didn't apply to Sanders, Trump and Bush. Trump and Bush got more sum of contribution amounts compared to the number of contributions. And Sanders got less sum of contribution amounts compared to the numbers of contributions.
  
- I changed the graph type from barplot to line graph to show the counts and sums at once in the graph.
+ It is combined version of barplot of 2 barplots that I made already.
  
 ### Plot Two
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Two}
