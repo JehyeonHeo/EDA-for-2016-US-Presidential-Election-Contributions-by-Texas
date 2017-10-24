@@ -851,14 +851,14 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
        data = top10_sum_amounts_city) +
   geom_bar(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.95),
            aes(fill = '0.95quantile'), 
-           position = position_nudge(x = 0.3),
+           position = position_nudge(x = 0.33),
            width = 0.33) +
   geom_bar(stat = 'summary', fun.y = mean,
            aes(fill = 'mean'), 
            width = 0.33) +
   geom_bar(stat = 'summary', fun.y = median,
            aes(fill = 'median'), 
-           position = position_nudge(-0.3),
+           position = position_nudge(-0.33),
            width = 0.33) +
   scale_x_discrete() +
   scale_fill_brewer(type = 'qual',
@@ -944,7 +944,7 @@ ggplot(aes(x = contbr_city, fill = cand_nm, group = cand_nm),
 
 ```
 
- It also gave me really funny result. I can see that Clinton got the most number of contributions from all cities except Spring. But second places are changed by each city. In Austin Sanders got far more contributions than Cruz. But in Dallas and San Antonio Sanders got almost same to Cruz. And the relation became reversed in Houston. The result makes me wonder how the distribution for 2 main parties would be different by each city. I think that I will see a huge gap of Democratic party and Republican party in Austin, and smaller gap in Houston. I already found from univariate section that almost all contributions from Texas were for Democratic or Republican party candidates. Therefore I decided to compare only 2 main parties. And I'll use barplot to compare between categorical values like city and party.
+ It also gave me really funny result. I can see that Clinton got the most number of contributions from all cities except Spring. But second places are changed by each city. In Austin Sanders got far more contributions than Cruz. But in Dallas and San Antonio Sanders got almost same to Cruz. And the relation became reversed in Houston. The result makes me wonder how the distribution for 2 main parties would be different by each city. I think that I will see a huge gap of Democratic party and Republican party in Austin. And I expect that there will be smaller gap in Houston. I already found from univariate section that almost all contributions from Texas were for Democratic or Republican party candidates. Therefore I decided to compare only 2 main parties. And I'll use barplot to compare between categorical values like city and party.
  
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_party_and_city}
 
@@ -1146,7 +1146,7 @@ head(as.data.frame(sort(table(top_5percent_in_march2016$receipt_desc,
  It is amazing that all top 5% contribution amounts are for Cruz. And more than half of them requested for reattribution or redesignation. I think that lots of high-paying contributions for Cruz means that he started his campaign in the month and it was [true](https://en.wikipedia.org/wiki/Ted_Cruz#2016_presidential_campaign).
  
  Through using multivariate plots, I could answer the questions that I got in bivariate parts and got to know about the causes of the events.
-
+ 
  From now on, I'm going to draw multivariate plots to explore more about the data, make new questions and answer them. In the bivariate plots section, I drew several plots to investigate how the contribution amounts are differed by different values in other variables in the front part. And in the latter part, I drew some plots using contribution receipt date variable to investigate how different values in other variables were changed as time went on.
  
  In this time, to see more higher dimensional relationships between variables, I want to use both contb_receipt_amt and contb_receipt_dt variables. And then I'm going to add other variables as color or facet. I expect that this would make me possible to compare the changing aspect of contributions by counts and sums. I'll draw line graphs to show the trends. And I'll aggregate daily datas to monthly to see overall trends with less fluctuations.
@@ -1307,7 +1307,7 @@ ggplot(aes(x = cand_party,
 
  As I expected, there are lots of outlier amounts for Republican party and P2016. I can see that the number outliers decreased from P2016 to G2016 for 2 main parties. But I can see that the number of outliers for other parties increased. I also can see that the all contributions for independent candidate were for G2016.
  
- In this time, I'm going to show the number of contributions by each city and each election type. I'm going to use barplot again to express the distribution for each city, which is categorical variable. I already knew from the bivariate section that the counts for Democratic party were bigger than those for Republican party in almost all top 10 cities. And I knew that the contribution counts for the latter party were similar to the former party before May, 2016. I expect that I can see that the counts for G2016 are almost for Democratic party, but I wonder how the counts for P2016 look like. And I also wonder about the difference between Houston and Austin.
+ In this time, I'm going to show the number of contributions by each city and each election type. I'm going to use barplot again to express the distribution for each city, which is categorical variable. I already knew from the bivariate section that the counts for Democratic party were bigger than those for Republican party in almost all top 10 cities. And I knew that the contribution counts for the latter party were similar to the former party before May, 2016. I expect that I can see that most of counts for G2016 are for Democratic party, but I wonder how the counts for P2016 look like. And I also wonder about the difference between Houston and Austin.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_line_for_party_city_facet_type}
 
@@ -1391,9 +1391,8 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ### OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
 
-
- I cannot create models with my dataset because there were only 1 numeric variable.
-------
+ 
+I cannot create models with my dataset because there were only 1 numeric variable.
 
 # Final Plots and Summary
 
