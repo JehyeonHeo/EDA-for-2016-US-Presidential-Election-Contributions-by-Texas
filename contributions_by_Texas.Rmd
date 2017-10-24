@@ -97,7 +97,7 @@ bonnie <- subset(Data, contbr_nm == 'RUDOLPH, BONNIE')
 print(paste('<B>How many unique city names are registered for him?</B>'))
 length(unique(bonnie$contbr_city))
 
-print(paste('<B>What are the city names?<\B>'))
+print(paste('<B>What are the city names?</B>'))
 unique(bonnie$contbr_city)
 
 print(paste('<B>How many unique zip codes are registered for him?</B>'))
@@ -440,23 +440,13 @@ tail(election_type_vacant)
 print(paste('<B>For whom are the contributions?</B>'))
 unique(election_type_vacant$cand_nm)
 
-print(paste('<B>Since when and till when the nominees received them?</B>'))
+print(paste('<B>When the nominees received them?</B>'))
 
-# To answer the question, I needed to group datas by each nominees and summarise the date for each group of datas. Therefore I used functions in dplyr package.
-election_type_vacant %>%
-  filter(if_nominee) %>%
-  group_by(cand_nm) %>%
-  summarise(start_date = min(contb_receipt_dt),
-            end_date = max(contb_receipt_dt)) %>%
-  arrange(start_date)
-
-# I chose line graph to show trend as time goes on. And I aggregated the daily data to monthly to show just overall trend.
-ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'), 
-                       format = '%Y-%m-%d'),
-           color = cand_nm), 
+# I chose barplot to show the daily counts of type '' contributions.
+ggplot(aes(x = contb_receipt_dt), 
        data = subset(election_type_vacant, 
                      if_nominee == T)) + 
-  geom_line(stat = 'count') + 
+  geom_bar(stat = 'count') + 
   scale_x_date(date_breaks = '1 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
@@ -466,7 +456,7 @@ range(subset(election_type_vacant, if_nominee == F)$contb_receipt_dt)
 ggplot(aes(x = contb_receipt_dt), 
        data = subset(election_type_vacant, 
                      if_nominee == F)) + 
-  geom_line(stat = 'count') + 
+  geom_bar(stat = 'count') + 
   scale_x_date(date_breaks = '1 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
@@ -482,8 +472,8 @@ ggplot(aes(x = contb_receipt_dt),
  
  Third, when I see the head and tail parts about datas whose type is '', it looked like they are all for several candidates. Thus, I checked who received the contributions and 11 candidates got them.
  In the 11 candidates, there were nominees and those who aren't. Therefore I thought that it is good to investigate the data dividing by if_nominee variable.
- When I got the contributions' start date and end date for each nominees, I found that Jill Stein got them even when she didn't begin her campaign. And Trump and McMullin got them when they are running campaigns for general election. I can find about the fact in the line graph, too. It made me think that it is better to assign the type of contributions for Trump and McMullin to G2016 and for other candidates including Stein to P2016.
- I checked that it can be applied to candidates who weren't nominees by drawing the line graph for them. The contributions for them almost stopped from July, 2016. July, 2016 was the month that [Republican](https://en.wikipedia.org/wiki/Republican_Party_presidential_primaries,_2016) and [Democratic](https://en.wikipedia.org/wiki/Democratic_Party_presidential_primaries,_2016) presidential primaries took place.
+ When I got the distribution of daily counts of contributions, I found that most of them were contributed when the nominees were running campaigns for general election. It made me think that it is better to assign the type of contributions for nominees to G2016 and for other candidates to P2016.
+ I checked that it can be applied to candidates who weren't nominees by drawing the barplot of daily contribution counts for them. The contributions for them almost stopped from July, 2016. July, 2016 was the month that [Republican](https://en.wikipedia.org/wiki/Republican_Party_presidential_primaries,_2016) and [Democratic](https://en.wikipedia.org/wiki/Democratic_Party_presidential_primaries,_2016) presidential primaries took place.
  
  
  But to be more confident to my thinking for assigning types, I searched for contributers whose names appear in the head and tail part of election_type_vacant using [FEC site](https://www.fec.gov/data/receipts/individual-contributions/?two_year_transaction_period=2016&min_date=01%2F01%2F2015&max_date=12%2F31%2F2016). 
@@ -610,32 +600,7 @@ ggplot(aes(x = contb_receipt_dt, y = contb_receipt_amt),
 
 ```
 
- First plot is line graph which shows the trend of sum of the contribution amounts. The sum amounts sky rocketed 5 times and collapsed 2 times. And one collapsion which happened at about June, 2016 was amazingly severe. I wonder why it happened. It looked like lots of refund or redesignation or reattribution happened at the time. I'm going to explore more about it in the following.
- 
-```{r echo=FALSE, message=FALSE, warning=FALSE, Explore_more_about_worst_collapsion_date}
-
-# I used mutate function to get the sum of amounts of each date. And I used filter to get only contribution datas which occured at the minimum sum date.
-contbs_in_worst_collapsion_date <- new_Data %>%
-  group_by(contb_receipt_dt) %>%
-  mutate(sum_amounts = sum(contb_receipt_amt)) %>%
-  ungroup() %>%
-  filter(sum_amounts == min(sum_amounts))
-
-print(paste('<B>When did the worst collapsion happened?</B>'))
-unique(contbs_in_worst_collapsion_date$contb_receipt_dt)
-
-print(paste('<B>How many contributions were done at the date?</B>'))
-nrow(contbs_in_worst_collapsion_date)
-
-# I designated x as names of candidates, y as amounts and color as receipt_desc. I did it to know the distribution of the amounts at the date by each candidate and the reasons for them.
-ggplot(aes(x = cand_nm, y = contb_receipt_amt, color = receipt_desc),
-       data = contbs_in_worst_collapsion_date) +
-  geom_jitter(alpha = 0.8) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-  
-```
-
- The collapsion occured on July 2nd, 2016. And there were 2725 contributions at the date. And I can see from the graph that most of negative amounts are related with Cruz. There were lots of redesignations and some of refunds from the contributions for Cruz. The designations were especially for his senate actions. I think that because Cruz stopped his campaign for the race in May, 2016, lots of his supporters decided to change the object of contributions they had done. Because of this exploration, I can understand about the mysterious collapsion. But I couldn't know why lots of redignations and refunds for him happened especially at the date using the data.
+ First plot is line graph which shows the trend of sum of the contribution amounts. The sum amounts sky rocketed 5 times and collapsed 2 times. And one collapsion which happened at about June, 2016 was amazingly severe. I wonder why it happened. It looked like lots of refund or redesignation or reattribution happened at the time. But I'm going to explore more about it in the multivariate section because I want to use receipt_desc variable too with candidates' names and contribution amounts.
  
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_for_amount_and_date2}
 
@@ -661,28 +626,7 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 
 ```
 
- Second plot is line graph which shows the trend of mean, median, 0.05 quantile, and 0.95 quantile amounts. And I chose to draw after aggregating daily dates to monthly to see the overall trends with less fluctuations. I can see that mean values were always bigger than median values. And I can also see that the difference from median values to 0.95 quantile values are much bigger than to 0.05 quantile values. I think it is because there are some outlier amounts. I think that I can check it by drawing scatter plot of dates and amounts. And I can see that 0.95 quantile and mean were biggest at March, 2015. I wonder why it happened especially at the time. Therefore I'm going to explore more about it in the following.
- 
-```{r echo=FALSE, message=FALSE, warning=FALSE, Explore_more_about_March2016_top_0.05}
-
-# filter for March, 2016 and top 5% amounts.
-top_5percent_in_march2016 <- new_Data %>%
-  filter(contb_receipt_dt >= as.Date('2015-03-01') &
-           contb_receipt_dt <= as.Date('2015-03-31')) %>%
-  filter(contb_receipt_amt >= quantile(contb_receipt_amt, 0.95))
-
-ggplot(aes(x = cand_nm, y = contb_receipt_amt, color = receipt_desc),
-       data = top_5percent_in_march2016) +
-  geom_jitter()
-
-head(as.data.frame(sort(table(top_5percent_in_march2016$receipt_desc,
-                              dnn = 'amount'),
-                        decreasing = T),
-                   responseName = 'count'),
-     3)
-```
-
- It is amazing that all top 5% contribution amounts are for Cruz. And more than half of them requested for reattribution or redesignation. I think that lots of high-paying contributions for Cruz means that he started his campaign in the month and it was [true](https://en.wikipedia.org/wiki/Ted_Cruz#2016_presidential_campaign).
+ Second plot is line graph which shows the trend of mean, median, 0.05 quantile, and 0.95 quantile amounts. And I chose to draw after aggregating daily dates to monthly to see the overall trends with less fluctuations. I can see that mean values were always bigger than median values. And I can also see that the difference from median values to 0.95 quantile values are much bigger than to 0.05 quantile values. I think it is because there are some outlier amounts. I think that I can check it by drawing scatter plot of dates and amounts. And I can see that 0.95 quantile and mean were biggest at March, 2015. I wonder why it happened especially at the time. But I'm going to explore more about it in the multivariate section because I want to use receipt_desc variable too with candidates' names and contribution amounts.
  
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_for_amount_and_date3}
 
@@ -924,9 +868,7 @@ ggplot(aes(x = contbr_city, y = contb_receipt_amt, group = 1),
 
 ```
 
- Second plot is bar graph which shows the median, mean and 0.95 quantile amounts by each top 10 city. It shows that 0.95 quantile value of Dallas was really big. The mean of Dallas was biggest too but not much different from Houston.
- 
- In the following, I'm going to explore more about top 5% amounts from Dallas.
+ Second plot is bar graph which shows the median, mean and 0.95 quantile amounts by each top 10 city. It shows that 0.95 quantile value of Dallas was really big. The mean of Dallas was biggest too but not much different from Houston. In the following, I'm going to explore more about top 5% amounts from Dallas.
  
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Explore_more_about_Dallas_top_0.05}
 
@@ -948,15 +890,9 @@ head(as.data.frame(sort(table(subset(top_5percent_by_city,
                         decreasing = T),
                    responseName = 'count'))
 
-# I used geom_jitter instead of geom_point to see the distribution of the amounts more in detail.
-ggplot(aes(x = cand_nm, y = contb_receipt_amt, color = if_dallas),
-       data = top_5percent_by_city) +
-  geom_jitter(alpha = 0.8) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-
 ```
 
- I can see that almost all of top 5% contributions from Dallas were \$2,700. And there were really small counts for the amounts less than \$2,700 which I could expect a lot more from the other cities. It looked like that is why their 0.95 quantile was biggest. And I can see from the scatter plot that the contributions are distributed to several candidates, not just to 2 or 3.
+ I can see that almost all of top 5% contributions from Dallas were \$2,700. And there were really small counts for the amounts less than \$2,700 which I could expect a lot more from the other cities. It looked like that is why their 0.95 quantile was biggest.
  
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_for_amount_and_city3}
 
@@ -1076,29 +1012,6 @@ ggplot(aes(x = contb_receipt_dt, color = cand_nm),
  I can see that the part of from June to Noverber of 2016 is almost same to the date vs party graph. I think that it should be because Clinton and Trump were elected as nominees on July, 2016. 
  
  I can see that there are lots of huge fluctuations for Trump between July to August, 2016. I wonder if it is related with the comments and news of Trump. In contrast to Trump, Clinton got more and more contributions generally as time went on.
-
- I'm going to explore more about the contributions for Trump from June to October of 2016. I chose longer period to know more about the rise and fall of contributions for him.
- 
-```{r echo=FALSE, message=FALSE, warning=FALSE, Explore_more_about_fluctuation_contbs_for_Trump}
-
-june_to_september_2016_trump <- new_Data %>%
-  filter(cand_nm == 'Trump, Donald J.') %>%
-  filter(contb_receipt_dt >= as.Date('2016-06-01') &
-           contb_receipt_dt <= as.Date('2016-10-31'))
-
-head(as.data.frame(sort(table(june_to_september_2016_trump$receipt_desc,
-                              dnn = 'reasons'),
-                        decreasing = T),
-                   responseName = 'count'),
-     3)
-
-ggplot(aes(x = contb_receipt_dt),
-       data = june_to_september_2016_trump) +
-  geom_line(stat = 'count')
-
-```
-
- I can see the fluctuations more in detail. The counts were peak on about July 10th. And the last peak was on about August 10th. But I cannot know the reasons about the fluctuations using receipt_desc column. I think that I need to use other methods to know more about causes.
  
  In the graph of dates vs contribution counts for Trump and Clinton, I cannot get the explanation about the fall of contributions for Republican party in May, 2016. Therefore in this time, I'm going to compare Republican party candidates. And I decided to use main_cands_counts to get only main candidates' names.
  
@@ -1180,7 +1093,61 @@ ggplot(aes(x = contb_receipt_dt, color = election_tp),
  
 # Multivariate Plots Section
 
- I now start to draw multivariate plots. In the bivariate plots section, I drew several plots to investigate how the contribution amounts are differed by different values in other variables in the front part. And in the latter part, I drew some plots using contribution receipt date variable to investigate how different values in other variables were changed as time went on.
+ I now start to draw multivariate plots. I left 2 questions that I couldn't answer in bivariate section. The first one was the collapsion of the sum of contribution amounts on about June, 2016. The second one was the outstanding 0.95 quantile value on March, 2015. I wanted to know the causes of them. Therefore I'm going to answer the questions first using multivariate plots.
+ 
+ I'll explore about the collapsion on about June, 2016 in the following. As I said before, I want to use receipt_desc variable too to know the causes of the situation. I'm going to use scatter plot to know the distribution of amounts by each candidate. But I'll designate color as receipt_desc to know the explanations written in the data.
+ 
+```{r echo=FALSE, message=FALSE, warning=FALSE, Explore_more_about_worst_collapsion_date}
+
+# I used mutate function to get the sum of amounts of each date. And I used filter to get only contribution datas which occured at the minimum sum date.
+contbs_in_worst_collapsion_date <- new_Data %>%
+  group_by(contb_receipt_dt) %>%
+  mutate(sum_amounts = sum(contb_receipt_amt)) %>%
+  ungroup() %>%
+  filter(sum_amounts == min(sum_amounts))
+
+print(paste('<B>When did the worst collapsion happened?</B>'))
+unique(contbs_in_worst_collapsion_date$contb_receipt_dt)
+
+print(paste('<B>How many contributions were done at the date?</B>'))
+nrow(contbs_in_worst_collapsion_date)
+
+# I designated x as names of candidates, y as amounts and color as receipt_desc. I did it to know the distribution of the amounts at the date by each candidate and the reasons for them.
+ggplot(aes(x = cand_nm, y = contb_receipt_amt, color = receipt_desc),
+       data = contbs_in_worst_collapsion_date) +
+  geom_jitter(alpha = 0.8) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+  
+```
+
+ The collapsion occured on July 2nd, 2016. And there were 2725 contributions at the date. And I can see from the graph that most of negative amounts are related with Cruz. There were lots of redesignations and some of refunds from the contributions for Cruz. The designations were especially for his senate actions. I think that because Cruz stopped his campaign for the race in May, 2016, lots of his supporters decided to change the object of contributions they had done. Because of this exploration, I can understand about the mysterious collapsion. But I couldn't know why lots of redignations and refunds for him happened especially at the date using the data.
+ 
+ Now I'm goint to explore about top 5% contribution amounts on March, 2015 in the following. In this case again, I'm going to use scatter plot to know the distribution of amounts by each candidate and the causes of them. 
+ 
+```{r echo=FALSE, message=FALSE, warning=FALSE, Explore_more_about_March2016_top_0.05}
+
+# filter for March, 2016 and top 5% amounts.
+top_5percent_in_march2016 <- new_Data %>%
+  filter(contb_receipt_dt >= as.Date('2015-03-01') &
+           contb_receipt_dt <= as.Date('2015-03-31')) %>%
+  filter(contb_receipt_amt >= quantile(contb_receipt_amt, 0.95))
+
+ggplot(aes(x = cand_nm, y = contb_receipt_amt, color = receipt_desc),
+       data = top_5percent_in_march2016) +
+  geom_jitter()
+
+head(as.data.frame(sort(table(top_5percent_in_march2016$receipt_desc,
+                              dnn = 'amount'),
+                        decreasing = T),
+                   responseName = 'count'))
+     
+```
+
+ It is amazing that all top 5% contribution amounts are for Cruz. And more than half of them requested for reattribution or redesignation. I think that lots of high-paying contributions for Cruz means that he started his campaign in the month and it was [true](https://en.wikipedia.org/wiki/Ted_Cruz#2016_presidential_campaign).
+ 
+ Through using multivariate plots, I could answer the questions that I got in bivariate parts and got to know about the causes of the events.
+
+ From now on, I'm going to draw multivariate plots to explore more about the data, make new questions and answer them. In the bivariate plots section, I drew several plots to investigate how the contribution amounts are differed by different values in other variables in the front part. And in the latter part, I drew some plots using contribution receipt date variable to investigate how different values in other variables were changed as time went on.
  
  In this time, to see more higher dimensional relationships between variables, I want to use both contb_receipt_amt and contb_receipt_dt variables. And then I'm going to add other variables as color or facet. I expect that this would make me possible to compare the changing aspect of contributions by counts and sums. I'll draw line graphs to show the trends. And I'll aggregate daily datas to monthly to see overall trends with less fluctuations.
  
