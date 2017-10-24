@@ -1428,16 +1428,20 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
 ### Plot One
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_One}
 
+# I designated position_nudge and width in geom_bar to represent n and sum in a graph without melting cands_sum_amounts. position_nudge moves the x position of each bar and width controls widths of bars.
 ggplot(aes(x = cand_nm),
        data = cands_sum_amounts) +
-  geom_line(aes(y = n*100, color = 'count', group = 1), 
-            stat = 'identity') +
-  geom_point(aes(y = n*100, color = 'count')) +
-  geom_line(aes(y = sum_amounts, color = 'sum', group = 1), 
-            stat = 'identity') +
-  geom_point(aes(y = sum_amounts, color = 'sum')) +
+  geom_bar(aes(y = n*100, fill = 'count'),
+           stat = 'identity', 
+           position = position_nudge(x = -0.25),
+           width = 0.4) +
+  geom_bar(aes(y = sum_amounts, fill = 'sum'),
+           stat = 'identity', 
+           position = position_nudge(x = 0.25),
+           width = 0.4) +
   scale_x_discrete() +
-  scale_color_brewer(type = 'qual',
+  scale_y_continuous(labels = comma) +
+  scale_fill_brewer(type = 'qual',
                     palette = 2,
                     guide = guide_legend(title = 'Statistics',
                                          override.aes = list(size = 2))) +
@@ -1472,12 +1476,13 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
   facet_wrap(~contbr_city, scales = 'free_y', ncol = 2, dir = 'v') +
   geom_line(stat = 'summary', fun.y = sum) +
   scale_x_date(date_breaks = '6 month') +
+  scale_y_continuous(labels = comma) +
   scale_color_brewer(type = 'qual',
                      palette = 1,
                      guide = guide_legend(title = 'Party',
                                           override.aes = list(size = 2))) +
   xlab('Contribution Receipt Dates') +
-  ylab('Sum of Contribution Amounts') +
+  ylab('Sum of Contribution Amounts($)') +
   ggtitle(
     'Contributions to Political Parties from Texas\nfor 2016 US Presidential Election',
     subtitle = '- The Trend of Sum of Amounts by 4 Main Cities -'
@@ -1505,13 +1510,14 @@ ggplot(aes(x = contb_receipt_dt,
        data = subset(new_Data, cand_nm %in% main_cands_counts$cand_nm)) +
   geom_jitter(alpha = 0.05) +
   scale_x_date(date_breaks = '3 month') +
+  scale_y_log10(labels = comma) +
   scale_color_brewer(type = 'qual',
                      palette = 2,
                      guide = guide_legend(title = 'Main Candidates',
                                           override.aes = list(size = 2,
                                                               alpha = 1))) +
   xlab('Contribution Receipt Dates') +
-  ylab('Contribution Amounts + 1') +
+  ylab('Contribution Amounts+1($)') +
   ggtitle(
     'Contribution Amounts from Texas\nfor 2016 US Presidential Candidates',
     subtitle = '- Distributed by Time For Main 7 Candidates -'
@@ -1521,8 +1527,7 @@ ggplot(aes(x = contb_receipt_dt,
         plot.subtitle = element_text(hjust = 0.5, face = 'bold', size = 15),
         axis.title.x = element_text(face = 'bold', size = 15),
         axis.title.y = element_text(face = 'bold', size = 15),
-        legend.position = 'top') +
-  scale_y_log10()
+        legend.position = 'top') 
 
 ```
 
