@@ -75,11 +75,11 @@ str(Data)
 summary(Data)
 
 # Get the number of candidates and columns.
-print('Number of candidates in Data:')
+print(paste('<B>Number of candidates in Data:</B>'))
 length(unique(Data$cand_nm))
 
 # Show some contributers' names.
-print("Show top 5 most common contributers' names")
+print(paste("<B>Show top 5 most common contributers' names</B>"))
 summary(Data$contbr_nm)[1:5]
 ```
 
@@ -87,37 +87,35 @@ summary(Data$contbr_nm)[1:5]
  
  And I can see from the structure and the summary of the Data that it would be difficult to identify unique contributers. If I try to sort out distinctive contributers by using names, there can be lots of different people with same name. Even if I try to use city or occupation variables too, I cannot know whether the contributions are made by diffrent people who live in the same city or by same person who moved to other city and changed his or her job. 
  
- I'm going to show the example below.
+ I'm going to show an example using one of most common contributer name 'RUDOLPH, BONNIE' in the following.
  
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Same_name_different_people_example}
 
 # Show the states of 'ROBINSON, ROBBIE'.
 bonnie <- subset(Data, contbr_nm == 'RUDOLPH, BONNIE')
 
-print("Show the states of 'RUDOLPH, BONNIE'.")
-
-print('How many unique city names are registered for him?')
+print(paste('<B>How many unique city names are registered for him?</B>'))
 length(unique(bonnie$contbr_city))
 
-print('What are the city names?')
+print(paste('<B>What are the city names?<\B>'))
 unique(bonnie$contbr_city)
 
-print('How many unique zip codes are registered for him?')
+print(paste('<B>How many unique zip codes are registered for him?</B>'))
 length(unique(bonnie$contbr_zip))
 
-print('What are the zip codes?')
+print(paste('<B>What are the zip codes?</B>'))
 unique(bonnie$contbr_zip)
 
-print('How many of people are registered as his employer?')
+print(paste('<B>How many of people are registered as his employer?</B>'))
 length(unique(bonnie$contbr_employer))
 
-print('Who are his employers?')
+print(paste('<B>Who are his employers?</B>'))
 unique(bonnie$contbr_employer)
 
-print('How many occupations are registered for him?')
+print(paste('<B>How many occupations are registered for him?</B>'))
 length(unique(bonnie$contbr_occupation))
 
-print('What are his occupations?')
+print(paste('<B>What are his occupations?</B>'))
 unique(bonnie$contbr_occupation)
 ```
 
@@ -130,7 +128,7 @@ unique(bonnie$contbr_occupation)
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Change_types}
 
 # Set locale of R.
-print("Set locale as 'C'")
+print(paste("<B>Set locale as 'C'</B>"))
 Sys.setlocale("LC_TIME", "C")
 
 # Change the type to Date.
@@ -164,7 +162,7 @@ str(Cand)
 summary(Cand)
 
 # Show whether the unique values of the candidates' names are all equal to the cand's X values.
-print("If the unique values of the candidates' names in Data are all equal to the values in cand:")
+print(paste("<B>If the unique values of the candidates' names in Data are all equal to the values in cand:</B>"))
 
 all(unique(Data$cand_nm) == Cand$X)
 
@@ -199,7 +197,7 @@ Data <- merge(x = Data,
               by = 'cand_nm',
               all.x = TRUE)
 
-print('Show the names of the columns after merged')
+print(paste('<B>Show the names of the columns after merged</B>'))
 names(Data)
 ```
 
@@ -252,7 +250,7 @@ cities_counts <- as.data.frame(sort(table(Data$contbr_city, dnn = 'name'),
                                     decreasing = T),
                                responseName = 'count')
 
-print("Number of contributers' cities")
+print(paste("<B>Number of contributers' cities</B>"))
 length(cities_counts$name)
 
 ggplot(aes(x = name, y = count),
@@ -272,7 +270,7 @@ ggplot(aes(x = name, y = count),
 
 summary(Data$contb_receipt_amt)
 
-print('Top 6 most frequent contribution amounts:')
+print(paste('<B>Top 6 most frequent contribution amounts:</B>'))
 head(sort(table(Data$contb_receipt_amt), decreasing = T))
 
 # I designated binwidth as $100, because the range of amounts is about $30,000.
@@ -307,13 +305,13 @@ minus_amounts <- subset(Data, contb_receipt_amt < 0)
 
 summary(minus_amounts$contb_receipt_amt)
 
-print('Top 6 negative amounts:')
+print(paste('<B>Top 6 negative amounts:</B>'))
 head(sort(minus_amounts$contb_receipt_amt))
 
-print('Datas whose contribution amounts are less than -$10,000:')
+print(paste('<B>Datas whose contribution amounts are less than -$10,000:</B>'))
 subset(minus_amounts, contb_receipt_amt < -10000)
 
-print('Datas about DURHAM, JOE and CLARK, ELLOINE M.')
+print(paste('<B>Datas about DURHAM, JOE and CLARK, ELLOINE M.</B>'))
 subset(Data, contbr_nm %in% c('DURHAM, JOE', 'CLARK, ELLOINE M.'))
 
 # Get the descriptions about them to know the causes.
@@ -323,7 +321,7 @@ minus_amounts.description <- as.data.frame(sort(
   responseName = 'count'
   )
 
-print('Top 6 most common descriptions for negative values:')
+print(paste('<B>Top 6 most common descriptions for negative values:</B>'))
 head(minus_amounts.description)
 
 ggplot(aes(x = description, y = count),
@@ -341,11 +339,11 @@ more_than_5400_amounts.description <-  as.data.frame(sort(
   responseName = 'count'
   )
 
-print('Show the counts of contribution amounts whose values are above $5,400.')
+print(paste('<B>Show the counts of contribution amounts whose values are above $5,400.</B>'))
 sort(table(more_than_5400_amounts$contb_receipt_amt),
      decreasing = T)
 
-print('Top 6 descriptions for amounts whose values are above $5,400:')
+print(paste('<B>Top 6 descriptions for amounts whose values are above $5,400:</B>'))
 head(more_than_5400_amounts.description)
 ```
 
@@ -369,7 +367,7 @@ dates_counts <- as.data.frame(table(Data$contb_receipt_dt, dnn = 'date'),
 # Make the type of date variable in date_counts as Date. I needed to do it because as I made new data.frame, the type of the variable changed to factor.
 dates_counts$date <- as.Date(dates_counts$date, format = '%Y-%m-%d')
 
-print('Top 6 most frequent contribution dates:')
+print(paste('<B>Top 6 most frequent contribution dates:</B>'))
 head(dates_counts[order(-dates_counts$count),])
 
 ggplot(aes(x = date, y = count),
@@ -419,30 +417,30 @@ ggplot(aes(x = type, y = count),
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Consider_election_types_other_than_P2016_and_G2016}
 
 # I'm going to print head and tail of the o2016 data because there are 68 rows.
-print('Head and tail parts of datas whose election type is O2016')
+print(paste('<B>Head and tail parts of datas whose election type is O2016</B>'))
 o2016 = subset(Data, election_tp == 'O2016')
 head(o2016)
 tail(o2016)
 
-print('Are all O2016 contributions for Jill Stein?')
+print(paste('<B>Are all O2016 contributions for Jill Stein?</B>'))
 all(o2016$cand_nm == 'Stein, Jill')
 
-print('Since When and till when the contributions are received?')
+print(paste('<B>Since When and till when the contributions are received?</B>'))
 range(o2016$contb_receipt_dt)
 
-print('Datas whose election type is P2012')
+print(paste('<B>Datas whose election type is P2012</B>'))
 subset(Data, election_tp == 'P2012')
 
 # I'm going to print head and tail of the data whose election type is '' because there are more than 1500 rows.
-print("Head and tail parts of datas whose election type is ''")
+print(paste("<B>Head and tail parts of datas whose election type is ''</B>"))
 election_type_vacant <- subset(Data, election_tp == '')
 head(election_type_vacant)
 tail(election_type_vacant)
 
-print('For whom are the contributions?')
+print(paste('<B>For whom are the contributions?</B>'))
 unique(election_type_vacant$cand_nm)
 
-print('Since when and till when the nominees received them?')
+print(paste('<B>Since when and till when the nominees received them?</B>'))
 
 # To answer the question, I needed to group datas by each nominees and summarise the date for each group of datas. Therefore I used functions in dplyr package.
 election_type_vacant %>%
@@ -462,7 +460,7 @@ ggplot(aes(x = as.Date(format(contb_receipt_dt, '%Y-%m-01'),
   scale_x_date(date_breaks = '1 month') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
-print("Since when and till when the candidates who aren't nominees received them?")
+print(paste("<B>Since when and till when the candidates who aren't nominees received them?</B>"))
 range(subset(election_type_vacant, if_nominee == F)$contb_receipt_dt)
 
 ggplot(aes(x = contb_receipt_dt), 
@@ -623,10 +621,10 @@ contbs_in_worst_collapsion_date <- new_Data %>%
   ungroup() %>%
   filter(sum_amounts == min(sum_amounts))
 
-print('When did the worst collapsion happened?')
+print(paste('<B>When did the worst collapsion happened?</B>'))
 unique(contbs_in_worst_collapsion_date$contb_receipt_dt)
 
-print('How many contributions were done at the date?')
+print(paste('<B>How many contributions were done at the date?</B>'))
 nrow(contbs_in_worst_collapsion_date)
 
 # I designated x as names of candidates, y as amounts and color as receipt_desc. I did it to know the distribution of the amounts at the date by each candidate and the reasons for them.
