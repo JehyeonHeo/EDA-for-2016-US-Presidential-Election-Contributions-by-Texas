@@ -1,0 +1,27 @@
+# Exploration of Financial Contributions to Presidential Campaigns in Texas
+
+## Introduction
+ - Exploratory Data Analysis of contributions from Texas for 2016 US presidential election data. It was done as a [Udacity](https://www.udacity.com) EDA course project.
+ 
+ - Written in rmd(R MarkDown) file using R language. Use [Rstudio](https://www.rstudio.com/) to run the codes.
+ 
+## Contents
+
+ - Introduction
+ - Basic data exploration section
+ - Univariate plots section
+ - Univariate analysis
+ - Bivariate plots section
+ - Bivariate analysis
+ - Multivariate plots section
+ - Multivariate analysis
+ - Final plots and summary
+ - Reflection
+ - References
+ 
+## Data source
+
+ - [Federal election commision](https://classic.fec.gov/disclosurep/pnational.do)
+ 
+ - 2016 US presidential candidates information [table](https://github.com/JehyeonHeo/2016-US-Presidential-Candidates-info-table/blob/master/2016US-President-Candidates-Info.ipynb)(It is what I made using Python after searching each candidate's information.)
+ 
